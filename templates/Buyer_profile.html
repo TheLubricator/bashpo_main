@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{buyer_username}}'s Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        istok: ['"Istok Web"', 'sans-serif']
+                    },
+        letterSpacing: {
+        '5pct': '0.05em', // Define 5% spacing
+      }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="font-inter">
+    <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
+        <div class="flex navbar bg-base-100 justify-start rounded-lg">
+            <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-[2px]">
+                </div>
+                <a href="/">
+                    <img alt="Tailwind CSS Navbar component" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo" class="rounded-lg relative z-10">
+                </a>
+            </div>
+        </div>
+        <div class="mt-3 lg:mt-5 lg:mr-5">
+            <select id="user-name" name="user_name"
+                class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] font-bold focus:ring-2 focus:ring-white focus:text-black appearance-none"
+                onchange="handleDropdownChange(this)" required>
+                <!-- Disabled Option (Gradient Background) -->
+                <option value="" disabled selected 
+                    class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold">
+                    {{ buyer_username }} {{ balance }} $
+                </option>
+                
+                <option value="view_profile" class="bg-[#b3b3b3] text-white">View My Profile</option>
+                <option value="AddMonitorWallet" class="bg-[#b3b3b3] text-white">Add and Monitor Wallet</option>
+                <option value="update_pass" class="bg-[#b3b3b3] text-white">Update Password</option>
+                <option value="logout" class="bg-[#b3b3b3] text-white">Logout</option>
+            </select>
+        </div>
+    </header>
+
+
+
+
+
+
+<!-- Update Password Modal -->
+<div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+    <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                    <h3 class="font-semibold">
+                        Update Password
+                    </h3>
+                </div>
+                <div>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="UpdatePasswordModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal body: Update password form -->
+            <form id="updatePasswordForm" action="/update_password" method="POST" class="space-y-4">
+                <div>
+                    <label for="current-password" class="block text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
+                    <input type="password" id="current-password" name="current_password" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                    <label for="new-password" class="block text-sm font-medium text-gray-900 dark:text-white">New Password</label>
+                    <input type="password" id="new-password" name="new_password" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                    <label for="confirm-password" class="block text-sm font-medium text-gray-900 dark:text-white">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirm_password" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <!-- Error and Success Messages -->
+                <div id="password-error" class="text-red-600 hidden">Passwords do not match.</div>
+                <div id="password-success" class="text-green-600 hidden">Password updated successfully!</div>
+
+                <div class="mt-4 flex justify-end space-x-2">
+                    <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-lg" data-modal-toggle="UpdatePasswordModal">Cancel</button>
+                    <button type="submit" id="submit-password" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <section class="mt-5">
+        <div
+            class="gap-5 absolute bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80 z-0">
+            <div class="mt-5">
+                <h1
+  class="w-auto px-4 lg:w-[600px] mx-auto lg:mx-20 text-xl sm:text-2xl lg:text-4xl font-bold my-5 text-white text-center font-istok tracking-10pct">
+  {{buyer_username}}'s General Info
+</h1>
+            </div>
+            <div
+    class="flex flex-col lg:flex-row justify-between items-start lg:items-center mx-4 lg:mx-20 space-y-6 lg:space-y-0">
+    <div
+        class="box-border h-auto lg:h-[320px] w-full lg:w-[450px] p-4 border rounded-xl bg-[rgba(30,29,55,1)]">
+        <p class="text-base mb-5 font-bold text-white">
+            Buyer Username: 
+            <span class="ml-2">{{buyer_username}}</span>
+        </p>
+        <p class="text-base mb-5 font-bold text-white">
+            Email: 
+            <span class="ml-2">{{buyer_data[1]}}</span>
+        </p>
+        <p class="text-base mb-5 font-bold text-white">
+            Address: 
+            <span class="ml-2">{{buyer_data[2]}}</span>
+        </p>
+        <p class="text-base mb-5 font-bold text-white">
+            Store Region: 
+            <span class="ml-2">{{store_region}}</span>
+        </p>
+        <p class="text-base mb-5 font-bold text-white">
+            Card Info: 
+            <span class="ml-2 relative">
+                <!-- Masked Card Info -->
+                <span id="maskedCardInfo" class="text-gray-400 tracking-widest">**** **** **** {{card_info[-4:]}}</span>
+                
+                <!-- Full Card Info (hidden initially) -->
+                <span id="fullCardInfo" class="hidden text-green-500 tracking-widest">{{card_info}}</span>
+                
+                <!-- Toggle Button -->
+                <button
+                    type="button"
+                    class="ml-4 text-sm text-blue-500 hover:underline focus:outline-none"
+                    onclick="toggleCardInfo()">
+                    Show
+                </button>
+            </span>
+        </p>
+        <p class="text-base mb-5 font-bold text-white">
+            Account Status: 
+            <span class="ml-2 text-green-500">{{account_status}}</span>
+        </p>
+    </div>
+</div>
+
+
+                <div class="grid gap-4 w-full lg:w-auto">
+                    <div class="absolute right-0 top-0 flex flex-col gap-4 p-2 items-end">
+                        <div class="flex flex-row gap-4">
+                            <a href="publication_req.html">
+                                <button type="button"
+                                    class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#2B983F] to-[#115C1E] text-white rounded-lg">
+                                    View Cart
+                                </button>
+                            </a>
+                            <a href="act_buyer_lst.html">
+                                <button type="button"
+                                    class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#3E7C9B] to-[#4E6C9F] text-white rounded-lg">
+                                    WishList(n)
+                                </button>
+                            </a>
+                        </div>
+                    
+                    <a href="publication_req.html">
+                        <button type="button"
+                            class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            View Owned Games
+                        </button>
+                    </a>
+
+<!------------------------------------------##############SEND FRIEND Request FORM MODAL################------------------------------>
+
+
+
+
+<div class="flex justify-end">
+    <button type="button" id="SendFriendReqButton" data-modal-target="#SendFriendReqModal" data-modal-toggle="SendFriendReqModal"
+            class="w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+        Send Friend Request
+    </button>
+</div>
+
+<!-- Modal for sending publication request -->
+<div id="SendFriendReqModal" class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+        <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Send Friend Request</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-toggle="SendFriendReqModal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+        </div>
+
+        <!-- Modal body: send request form -->
+        <form id="SendFriendReqForm" action="/SendFriendRequest" method="POST" class="space-y-4">
+            <!-- Form fields for game name, genre, etc. -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-900 dark:text-white">Enter Friend's email:</label>
+                <input type="text" id="email" name="email" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter friend's email....."/>
+            </div>
+            
+            <div class="mt-4 flex justify-end space-x-2">
+                <button type="submit" id="submitSendFriendReq" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Send Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+     <!---------------------------------#################-END of send friend request form modal######################-------------------->
+     
+     
+     <!--##################################View and respond to Friend Request##############################################################-->
+
+
+
+
+
+                    <button type="button" id="ViewFriendReqButton" data-modal-target="ViewFriendReqModal" data-modal-toggle="ViewFriendReqModal"
+                            class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            Accept/Reject Friend Requests
+                        </button>
+                        <!-- Main modal -->
+<!-- Main modal -->
+<div id="ViewFriendReqModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+    <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                    <h3 class="font-semibold">
+                        Pending Friend Requests
+                    </h3>
+                </div>
+                <div>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="ViewFriendReqModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            
+
+            <!-- Display list of active buyers -->
+            <div class="mt-4">
+                <ul id="friendrequest" class="list-disc pl-5 space-y-4"> <!-- Added spacing between list items -->
+                    {% for friend_request in pending_requests %}
+                        <li class="flex items-center justify-between mb-4 p-4 border-gray-300 rounded-lg bg-transparent"> <!-- Removed white background -->
+                            <!-- Request details -->
+                            <div class="flex flex-col space-y-1">
+                                <span class="text-gray-700 font-medium text-white">{{friend_request[0]}}</span>
+
+                            </div>
+            
+                            <!-- Action buttons -->
+                            <div class="flex space-x-3">
+                                <!-- Accept Button -->
+                                <button type="button" 
+                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-4 py-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900" 
+                                    data-request_id="{{ friend_request[0] }}" 
+                                    data-status="Accepted" 
+                                    onclick="updateFriendRequest(this)">
+                                    Accept
+                                </button>
+                                <!-- Reject Button -->
+                                <button type="button" 
+                                    class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-4 py-2 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900" 
+                                    data-request_id="{{ friend_request[0] }}" 
+                                    data-status="Rejected" 
+                                    onclick="updateFriendRequest(this)">
+                                    Reject
+                                </button>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!--####################################################END OF VIEW and Repond to Friend Request####################################################-->
+
+
+<!--############################View Friend Requests and their profiles#########################################-->
+                    <button type="button" id="ViewFriendListButton" data-modal-target="ViewFriendListModal" data-modal-toggle="ViewFriendListModal"
+                            class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            View Friend List
+                        </button>
+                        <!-- Main modal -->
+<!-- Main modal -->
+<div id="ViewFriendListModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+    <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                    <h3 class="font-semibold">
+                        Friend list
+                    </h3>
+                </div>
+                <div>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="ViewFriendListModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mb-4">
+                <input type="text" id="searchInput_friend" placeholder="Search by username..." class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+            </div>
+
+            <!-- Display list of active buyers -->
+            <div class="mt-4">
+                <ul id="buyerList" class="list-disc pl-5">
+                    {% for friend in my_friends %}
+                        <li class="flex items-center justify-between mb-4">
+                            <span class="buyer-username">{{ friend[0] }}</span> <!-- Display the username -->
+                            <button type="button"
+                            class="text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700"
+                            data-friendusername="{{ friend[0] }}"
+                            onclick="ViewFriendProfile(this)">
+                            View Profile
+                        </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        // Function to handle the "Update Password" modal
+        function showUpdatePasswordModal() {
+        const modal = document.getElementById('UpdatePasswordModal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+    }
+
+    // Close the modal and reset the form if clicked outside of it
+    function initializeModal_update_password() {
+        const modal = document.getElementById('UpdatePasswordModal');
+        const closeModalButton = modal.querySelector('[data-modal-toggle="UpdatePasswordModal"]');
+        
+        closeModalButton.addEventListener('click', function() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // Handle form submission for password update
+    document.getElementById('updatePasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        // Check if new passwords match
+        if (newPassword !== confirmPassword) {
+            document.getElementById('password-error').classList.remove('hidden');
+            document.getElementById('password-success').classList.add('hidden');
+        } else {
+            // Send the password update request (if the new passwords match)
+            fetch('/update_password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('password-success').classList.remove('hidden');
+                    document.getElementById('password-error').classList.add('hidden');
+                    // Redirect to the homepage after a delay
+                    setTimeout(() => {
+                        window.location.href = '/logout';
+                    }, 2000);
+                } else {
+                    alert(data.error || 'Something went wrong!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong!');
+            });
+        }
+    });
+
+    // Initialize the modal functionality
+    window.addEventListener('DOMContentLoaded', function() {
+        initializeModal_update_password();
+    });
+
+
+
+
+         function handleDropdownChange(selectElement) {
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    
+    if (selectedValue === "logout") {
+        logout(); // Call the logout function
+    } else if (selectedValue === "AddMonitorWallet") {
+
+        pass; // changes will be made
+
+
+    } else if (selectedValue === "update_pass") {
+        showUpdatePasswordModal(); // Redirect to update password page
+    }
+    else if (selectedValue === "view_profile") {
+        window.location.href = '/ViewMyProfile'; // Redirect to update password page
+    }
+}
+
+
+ //////////////////////form for publishing/////////////////////////////////////////////////////////////////////
+
+
+    // Function to handle the "Update Password" modal
+    function showSendFriendReqModal() {
+        const modal = document.getElementById('SendFriendReqModal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+    }
+
+    // Close the modal and reset the form if clicked outside of it
+    function initializeModal_SendFriendReqModal() {
+        const modal = document.getElementById('SendFriendReqModal');
+    const openButton = document.getElementById('SendFriendReqButton');
+    const closeButton = modal.querySelector('[data-modal-toggle="SendFriendReqModal"]');
+
+    // Open modal
+    openButton.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    // Close modal
+    closeButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+        });
+    }
+
+    // Handle form submission for password update
+    document.getElementById('SendFriendReqForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+   
+    
+    console.log(email);
+
+    // Send the request
+    fetch('/SendFriendRequest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            email: email
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Redirect to the homepage after a delay
+
+        setTimeout(() => {
+            window.location.href = '/ViewMyProfile';
+        }, 2000);
+    } else {
+        alert(data.message);
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+    alert('Something went wrong!');
+});
+        
+    });
+    function showViewFriendReqModal() {
+        const modal = document.getElementById('ViewFriendReqModal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+    }
+
+  // Function to initialize modal functionality
+  function initializeModal_ViewFriendReq() {
+    const openModalButton = document.getElementById('ViewFriendReqButton');
+    const modal = document.getElementById('ViewFriendReqModal');
+    const closeModalButton = modal.querySelector('[data-modal-toggle="ViewFriendReqModal"]');
+    
+    // Open the modal when the button is clicked
+    openModalButton.addEventListener('click', function() {
+      modal.classList.remove('hidden'); // Show the modal
+      document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+    });
+
+    // Close the modal when the close button (X) is clicked
+    closeModalButton.addEventListener('click', function() {
+      modal.classList.add('hidden'); // Hide the modal
+      document.body.style.overflow = ''; // Re-enable body scrolling
+    });
+
+    // Close the modal if the user clicks outside of the modal content (overlay click)
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+
+
+  function initializeSearch_ViewFriendListModal() {
+    const searchInput = document.getElementById('searchInput_friend');
+    const userList = document.querySelectorAll('#ViewFriendListModal ul li'); // Correct selector
+
+    searchInput.addEventListener('input', function () {
+        const filter = searchInput.value.toLowerCase();
+
+        userList.forEach((userItem) => {
+            const username = userItem.querySelector('.buyer-username').textContent.toLowerCase();
+
+            // Show or hide the user based on the search input
+            if (username.includes(filter)) {
+                userItem.style.display = ''; // Show
+            } else {
+                userItem.style.display = 'none'; // Hide
+            }
+        });
+    });
+}
+ // Function to initialize modal functionality
+ function initializeModal_ViewFriendList() {
+    const openModalButton = document.getElementById('ViewFriendListButton');
+    const modal = document.getElementById('ViewFriendListModal');
+    const closeModalButton = modal.querySelector('[data-modal-toggle="ViewFriendListModal"]');
+    
+    // Open the modal when the button is clicked
+    openModalButton.addEventListener('click', function() {
+      modal.classList.remove('hidden'); // Show the modal
+      document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+    });
+
+    // Close the modal when the close button (X) is clicked
+    closeModalButton.addEventListener('click', function() {
+      modal.classList.add('hidden'); // Hide the modal
+      document.body.style.overflow = ''; // Re-enable body scrolling
+    });
+
+    // Close the modal if the user clicks outside of the modal content (overlay click)
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+
+
+
+    
+    window.addEventListener('DOMContentLoaded', function() {
+        initializeModal_SendFriendReqModal();
+        initializeModal_ViewFriendReq();
+        initializeModal_ViewFriendList() ;
+        initializeSearch_ViewFriendListModal();
+
+    });
+
+function toggleCardInfo() {
+    const masked = document.getElementById("maskedCardInfo");
+    const full = document.getElementById("fullCardInfo");
+    const toggleButton = event.target;
+
+    // Toggle visibility
+    if (full.classList.contains("hidden")) {
+        masked.classList.add("hidden");
+        full.classList.remove("hidden");
+        toggleButton.innerText = "Hide";
+    } else {
+        full.classList.add("hidden");
+        masked.classList.remove("hidden");
+        toggleButton.innerText = "Show";
+    }
+}
+function updateFriendRequest(button) {
+        const username_from = button.getAttribute('data-request_id');
+        const request_status= button.getAttribute('data-status');
+
+        fetch('/updateFriendRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username_from:username_from,request_status:request_status })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Display success message
+                button.closest('li').remove(); // Remove the user from the list
+                window.location.href = "/ViewMyProfile";
+            } else {
+                alert(data.error); // Display error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong!');
+        });
+        
+    }
+    function ViewFriendProfile(button) {
+        const friend_username = button.getAttribute('data-friendusername');
+        window.location.href = `/ViewFriendProfile/${friend_username}`;
+    }
+
+
+
+
+
+
+        // Logout function that clears the session and redirects to login
+        function logout() {
+            window.location.href = '/logout'; // Redirect to logout route
+        }
+
+        
+        
+    </script>
+</body>
+
+</html>

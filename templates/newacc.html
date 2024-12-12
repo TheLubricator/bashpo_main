@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New User Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body class="font-inter">
+    <header>
+        <div class="navbar bg-base-100 justify-start rounded-lg">
+            <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-[2px]">
+                </div>
+                <a href="/">
+                    <img alt="Tailwind CSS Navbar component" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo" class="rounded-lg relative z-10">
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+    <section class="flex mt-5 flex-col md:flex-row">
+        <div class="bg-gradient-to-r from-blue-800 to-blue-900 pr-20 md:w-1/2">
+            <div class="ml-7 lg:ml-20 text-white">
+                <h1 class="text-bold text-2xl mt-3">CREATE BUYER ACCOUNT</h1>
+                <form id="buyerForm" class="mt-10">
+                    <p class="text-l text-bold">Enter Your Name</p>
+                    <input type="text" id="user_name" name="user_name"
+                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                        placeholder="Enter Your Name here" required>
+
+                    <p class="text-l text-bold mt-5">Enter Your Email</p>
+                    <input type="text" id="email" name="email"
+                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                        placeholder="Enter Your Email here" required>
+
+                    <p class="text-l text-bold mt-5">Enter Password</p>
+                    <input type="password" id="password" name="password"
+                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                        placeholder="Enter Password" required>
+
+                    <p class="text-l text-bold mt-5">Enter Your Address</p>
+                    <input type="text" id="buyer_address" name="buyer_address"
+                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                        placeholder="Enter Your Address here" required>
+
+                    <p class="text-l text-bold mt-5">Enter Store Region (cannot be changed later)</p>
+                    <select id="store_region" name="store_region"
+                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[40px] mt-3 bg-white text-black" required>
+                        <option value="" disabled selected>Select Region</option>
+                        <option value="NA">North America(NA)</option>
+                        <option value="LA">Latin America(LA)</option>
+                        <option value="EU">Europe(EU)</option>
+                        <option value="ASI">Asia(ASI)</option>
+                    </select>
+
+                    <p class="text-l text-bold mt-5">Enter Your Card Info</p>
+                    <input type="text" id="card_info" name="card_info"
+                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                        placeholder="Enter Your Card Info here" required>
+
+                    <div id="error-message" class="text-red-500 text-center mt-3 hidden"></div>
+
+                    <div class="mt-6 text-center mb-10">
+                        <button type="button"
+                            class="px-5 h-[40px] lg:w-[300px] lg:h-[50px] bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-bold" onclick="sendBuyerRegistrationData()">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <div
+            class="justify-items-center relative bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full h-[500px] lg:h-[800px] md:block hidden">
+            <div class="absolute inset-0 bg-blue-800 opacity-20 z-0"></div>
+        </div>
+    </section>
+
+    <script>
+        // Function to send buyer registration data as JSON
+        async function sendBuyerRegistrationData() {
+            const formData = {
+                user_name: document.getElementById("user_name").value,
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value,
+                buyer_address: document.getElementById("buyer_address").value,
+                store_region: document.getElementById("store_region").value,
+                card_info: document.getElementById("card_info").value,
+            };
+
+            try {
+                const response = await fetch("/create_buyer", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+
+                // Show response as an alert and redirect if successful
+                if (response.ok) {
+                    alert(result.success);  // Success message
+                    window.location.href = result.redirect_url;  // Redirect to index or home page
+                } else {
+                    alert(result.error);  // Show error message
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An unexpected error occurred. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>
