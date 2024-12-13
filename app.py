@@ -496,7 +496,7 @@ def buyer_dashboard():
             featured_games[i]=list(featured_games[i])
         print(featured_games)
         
-        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list")
+        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list where game_status='Active'")
         game_list = c.fetchall()
         
         
@@ -532,6 +532,9 @@ def buyer_dashboard():
         featured_games=featured_games, 
         game_list = game_list
     )
+@app.route('/ViewGamePage/<game_name>',methods=['GET','POST'])
+def View_Game_Page(game_name):
+    return game_name
 
 
 
@@ -703,6 +706,7 @@ def view_friend_profile(friend_username):
         return render_template('ViewFriendProfile.html', friendusername=friend_username,buyer_username=session['username'],balance=balance,friend_email=friend_data[0],friend_account_status=friend_data[1].upper())
      
 @app.route('/UploadGameDataForm/<game_name>')
+@login_required('developer')
 def uploadgamedta_formpage(game_name):
      with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
 
