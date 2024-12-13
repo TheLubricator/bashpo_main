@@ -465,19 +465,35 @@ def developer_dashboard():
                            no_of_total__games_sold=no_of_total__games_sold, no_of_total_games= no_of_total_games,no_of_games_active=no_of_games_active,
                            delisted_games_count=delisted_games_count)
 
-@app.route('/buyer_dashboard',methods=['GET','POST'])
+@app.route('/buyer_dashboard', methods=['GET', 'POST'])
 @login_required('buyer')
 def buyer_dashboard():
     connect_db()
-    # Buyer-specific logic
-    buyer_username=session['username']
+    buyer_username = session['username']
     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
         c = db.cursor()
-        c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
-        balance = c.fetchone()[0]
-        
 
-    return render_template('buyer_storefront.html', buyer_username=buyer_username,balance=balance)
+        # Fetch wallet balance
+        c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?", (buyer_username,))
+        balance = c.fetchone()[0]
+
+        # Fetch the three most recently added games
+        c.execute("""
+            SELECT game_name, game_genre, img_path_ss1
+            FROM GAME_LIST
+            WHERE game_status = 'Active'
+            ORDER BY rowid DESC
+            LIMIT 3
+        """)
+        featured_games = c.fetchall()
+
+    # Pass the data to the storefront template
+    return render_template(
+        'buyer_storefront.html',
+        buyer_username=buyer_username,
+        balance=balance,
+        featured_games=featured_games
+    )
 
 
 
