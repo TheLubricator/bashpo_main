@@ -478,9 +478,18 @@ def buyer_dashboard():
         c = db.cursor()
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
         balance = c.fetchone()[0]
+        c.execute("""
+            SELECT game_name, game_genre, img_path_ss1
+            FROM GAME_LIST
+            WHERE game_status = 'Active'
+            ORDER BY rowid DESC
+            LIMIT 3
+        """)
+        featured_games = c.fetchall()
+        
         
 
-    return render_template('buyer_storefront.html', buyer_username=buyer_username,balance=balance)
+    return render_template('buyer_storefront.html', buyer_username=buyer_username,balance=balance,featured_games=featured_games)
 
 
 
@@ -754,8 +763,8 @@ def uploadgamedata():
         logo_data = base64.b64decode(logo)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_logo.png"
-        logo_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        logo_filename = f"{game_name.replace(' ', '_').lower()}_logo.png"
+        logo_file_path = os.path.join(app.config['UPLOAD_FOLDER'], logo_filename)
         
         # Save the image to the upload folder
         with open(logo_file_path, 'wb') as f:
@@ -764,8 +773,8 @@ def uploadgamedata():
         ss1_data = base64.b64decode(screenshot1)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_ss1.png"
-        ss1_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        ss1_filename = f"{game_name.replace(' ', '_').lower()}_ss1.png"
+        ss1_file_path = os.path.join(app.config['UPLOAD_FOLDER'], ss1_filename)
         
         # Save the image to the upload folder
         with open(ss1_file_path, 'wb') as f:
@@ -774,8 +783,8 @@ def uploadgamedata():
         ss2_data = base64.b64decode(screenshot2)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_ss2.png"
-        ss2_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        ss2_filename = f"{game_name.replace(' ', '_').lower()}_ss2.png"
+        ss2_file_path = os.path.join(app.config['UPLOAD_FOLDER'], ss2_filename)
         
         # Save the image to the upload folder
         with open(ss2_file_path, 'wb') as f:
@@ -784,19 +793,23 @@ def uploadgamedata():
         game_file_data = base64.b64decode(game_file)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_file.zip"
-        game_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        game_file_filename = f"{game_name.replace(' ', '_').lower()}_file.zip"
+        game_file_path = os.path.join(app.config['UPLOAD_FOLDER'], game_file_filename)
         
         # Save the image to the upload folder
         with open(game_file_path, 'wb') as f:
             f.write(game_file_data)     
+        logo_file_url = f"uploads/{logo_filename}"
+        ss1_file_url = f"uploads/{ss1_filename}"
+        ss2_file_url = f"uploads/{ss2_filename}"
+        game_file_url = f"uploads/{game_file_filename}"
 
  #########images send to  static/upload AND we will save the path data in DB
                  # def __init__(self,game_name,game_genre,game_description,base_price):
         game_data=Games_List(game_name,game_genre,game_description,base_price)
         c.execute("  INSERT INTO GAME_LIST VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   (game_data.game_name,game_data.game_genre,
-                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_path,ss1_file_path,ss2_file_path,game_file_path,False,game_data.base_price,None))
+                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_url,ss1_file_url,ss2_file_url,game_file_url,False,game_data.base_price,None))
         
         c.execute("UPDATE GAME_PUBLISH_REQUEST SET status = 'Completed' WHERE username = ? and game_name=?", (dev_username, game_name))
         db.commit()

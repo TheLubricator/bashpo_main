@@ -44,7 +44,7 @@
                 <!-- Disabled Option (Gradient Background) -->
                 <option value="" disabled selected 
                     class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold">
-                    {{ buyer_username }} {{ balance }} $
+                    {{ buyer_username }} {{ balance }} $ 
                 </option>
                 
                 <option value="view_profile" class="bg-[#b3b3b3] text-white">View My Profile</option>
@@ -169,7 +169,7 @@
                 <div class="mt-5 relative h-[500px] overflow-hidden rounded-lg">
                     <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
                         <a href="">
-                            <img src="{{ url_for('static', filename='img/The-Witcher-3.jpg') }}"
+                            <img src="{{ url_for('static', filename=featured_games[0][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 1">
                         </a>
