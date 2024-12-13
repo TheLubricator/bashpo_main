@@ -7,7 +7,7 @@ import os
 from flask_apscheduler import APScheduler
 from datetime import datetime
 import logging
-app=Flask(__name__)
+app = Flask(__name__)
 scheduler = APScheduler()
 app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
 UPLOAD_FOLDER = 'static/uploads'
@@ -496,15 +496,41 @@ def buyer_dashboard():
             featured_games[i]=list(featured_games[i])
         print(featured_games)
         
+        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list")
+        game_list = c.fetchall()
         
-
+        
+        for i in range(len(game_list)):
+            game_list[i] = list(game_list[i])
+        print(game_list)
+        
+        if session['store_region'] == 'ASI':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*.8
+            print(game_list)
+            
+        elif session['store_region'] == 'NA':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*1
+            print(game_list)
+            
+        elif session['store_region'] == 'LA':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*.9
+            print(game_list)
+            
+        elif session['store_region'] == 'EU':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*1.1
+            print(game_list)
 
     # Pass the data to the storefront template
     return render_template(
         'buyer_storefront.html',
         buyer_username=buyer_username,
         balance=balance,
-        featured_games=featured_games
+        featured_games=featured_games, 
+        game_list = game_list
     )
 
 
@@ -513,7 +539,7 @@ def buyer_dashboard():
 @app.route('/ViewMyProfile',methods=['GET','POST'])
 @login_required('buyer')
 def buyer_profile():
-    buyer_username=session['username']
+    buyer_username = session['username']
     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
         c = db.cursor()
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
@@ -608,9 +634,6 @@ def Delist_game():
         return jsonify({"error": "Invalid request"}), 400
 
 
-
-
-
 @app.route('/SendFriendRequest', methods=['GET','POST'])
 @login_required('buyer')
 def Send_Friend_Request():
@@ -687,14 +710,6 @@ def uploadgamedta_formpage(game_name):
         # Pass the friend's username to the template
         return render_template('upload_game_data.html',game_name=game_name,dev_username=session['username'])
      
-
-
-
-
-
-
-
-
 @app.route('/ViewBuyerProfile/<buyer_username>')
 def view_buyer_profile(buyer_username):
      with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
@@ -755,10 +770,6 @@ def Send_Sale_Request():
             db.close()
         
             return  jsonify({"success": True,"message": "Sale for "+req_json['game_name']+ " started successfully"})
-
-
-
-
         
 @app.route('/uploadgamedata', methods=['GET','POST'])
 def uploadgamedata():
@@ -833,12 +844,6 @@ def uploadgamedata():
         return jsonify({"message": "Data for "+game_name+" uploaded successfully"})
 
 
-
-
-
-
-
-
 @app.route('/getPubReq', methods=['GET'])
 def getPub_Req_Avail(game_name):
     game_name=game_name
@@ -876,15 +881,6 @@ def update_request():
         c.execute("UPDATE WALLET_BALANCE SET balance=balance+1000 where username='LordGaben'")
     db.commit()
     return jsonify({"message": "Request updated to "+status})
-
-
-    
-    
-
-
-
-
-
 
     
 @app.route('/update_password', methods=['GET', 'POST'])
