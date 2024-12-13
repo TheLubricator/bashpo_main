@@ -533,6 +533,80 @@ def buyer_dashboard():
         game_list = game_list
     )
 
+@app.route('/filter', methods=['GET'])
+def filter_games():
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+        genre = request.args.get('genre')
+        year = request.args.get('year')
+        price = request.args.get('price')
+
+        query = "SELECT * FROM GAME_LIST WHERE 1=1"
+
+
+        if genre:
+            query += f" AND game_genre = '{genre}'"
+
+        if year == "ascending":
+            query += " ORDER BY game_name ASC"
+        elif year == "descending":
+            query += " ORDER BY game_name DESC"
+        elif price == "low-to-high":
+            query += " ORDER BY base_price ASC" 
+        elif price == "high-to-low":
+            query += " ORDER BY base_price DESC" 
+
+        c.execute(query)
+        games = c.fetchall()
+        c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?", (session['username'],))
+        balance = c.fetchone()[0]
+
+        c.execute("""
+            SELECT game_name, game_genre, img_path_ss1
+            FROM GAME_LIST
+            WHERE game_status = 'Active'
+            ORDER BY rowid DESC
+            LIMIT 3
+        """)
+        featured_games = c.fetchall()
+
+        for i in range(len(featured_games)):
+            featured_games[i]=list(featured_games[i])
+        print(featured_games)
+        
+        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list")
+        game_list = c.fetchall()
+        
+        
+        for i in range(len(game_list)):
+            game_list[i] = list(game_list[i])
+        print(game_list)
+        
+        if session['store_region'] == 'ASI':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*.8
+            print(game_list)
+            
+        elif session['store_region'] == 'NA':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*1
+            print(game_list)
+            
+        elif session['store_region'] == 'LA':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*.9
+            print(game_list)
+            
+        elif session['store_region'] == 'EU':
+            for i in range(len(game_list)):
+                game_list[i] [2] = game_list[i] [2]*1.1
+            print(game_list)
+        return render_template("buyer_storefront.html", 
+                               games=games,
+                               buyer_username=session["username"],
+                               balance=balance,
+                              featured_games=featured_games, 
+                              game_list = game_list)
 
 
 

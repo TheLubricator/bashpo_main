@@ -210,42 +210,40 @@
             <div class="flex flex-wrap justify-center items-center gap-4 mt-4">
                 <div class="relative">
                     <select id="genre" name="genre"
-                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
-                        required>
+                        class="px-2 block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center">
                         <option value="" disabled selected>Genre</option>
-                        <option value="action">Action</option>
-                        <option value="racing">Racing</option>
-                        <option value="strategy">Strategy</option>
-                        <option value="adventure">Adventure</option>
-                        <option value="souls">Souls</option>
+                        <option value="action" class="bg-[#b3b3b3] text-white">Action</option>
+                        <option value="racing" class="bg-[#b3b3b3] text-white">Racing</option>
+                        <option value="strategy" class="bg-[#b3b3b3] text-white">Strategy</option>
+                        <option value="adventure" class="bg-[#b3b3b3] text-white">Adventure</option>
+                        <option value="souls" class="bg-[#b3b3b3] text-white">Souls</option>
                     </select>
                 </div>
                 <div class="relative">
                     <select id="year" name="year"
-                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
-                        required>
-                        <option value="" disabled selected>Year of Release</option>
-                        <option value="ascending">Ascending</option>
-                        <option value="descending">Descending</option>
+                        class="px-2 block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center">
+                        <option value="" disabled selected>Sort by Name</option>
+                        <option value="ascending" class="bg-[#b3b3b3] text-white">Ascending</option>
+                        <option value="descending" class="bg-[#b3b3b3] text-white">Descending</option>
                     </select>
                 </div>
                 <div class="relative">
                     <select id="price" name="price"
-                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
-                        required>
+                        class="px-2 block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center">
                         <option value="" disabled selected>Price</option>
-                        <option value="low-to-high">Low to High</option>
-                        <option value="high-to-low">High to Low</option>
+                        <option value="low-to-high" class="bg-[#b3b3b3] text-white">Low to High</option>
+                        <option value="high-to-low" class="bg-[#b3b3b3] text-white">High to Low</option>
                     </select>
                 </div>
+                
             </div>
 
             <div class="flex justify-center items-center flex-1 w-full">
-                <div class="lg:h-[600px] lg:w-[1200px] bg-[#0A0221] rounded-xl">
+                <div class="lg:h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl">
                     {% for games in game_list %}
                     <a href="" class="block">
                         <div
-                            class="px-2 flex justify-center items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
+                            class="px-2 flex justify-center items-center mx-[10rem] my-[3rem] lg:h-[auto] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
                             <div class="flex items-center">
                                 <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo" 
                                      class="mx-1 my-4 w-1/3 rounded-xl">
@@ -362,13 +360,11 @@
         window.location.href = '/ViewMyProfile'; // Redirect to update password page
     }
 }
-
-
-
         // Logout function that clears the session and redirects to login
         function logout() {
             window.location.href = '/logout'; // Redirect to logout route
         }
+
         
     </script>
 </body>
