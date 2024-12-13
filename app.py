@@ -4,8 +4,11 @@ import uuid
 from functools import wraps
 import base64
 import os
-
+from flask_apscheduler import APScheduler
+from datetime import datetime
+import logging
 app=Flask(__name__)
+scheduler = APScheduler()
 app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the folder if it doesn't exist
@@ -477,6 +480,7 @@ def buyer_dashboard():
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?", (buyer_username,))
         balance = c.fetchone()[0]
 
+
         # Fetch the three most recently added games
         c.execute("""
             SELECT game_name, game_genre, img_path_ss1
@@ -717,6 +721,36 @@ def Send_Publishing_Request():
         
             return  jsonify({"success": True,"message": "Publishing request for "+req_json['game_name']+ " sent successfully"})
         
+
+@app.route('/StartSaleRequest', methods=['GET','POST'])
+
+def Send_Sale_Request():
+    if request.method == 'POST':
+        db=sqlite3.connect("bashpos_--definitely--_secured_database.db")
+        c=db.cursor()
+        req_json = request.json
+        print(req_json)
+     
+        game_name=req_json.get('game_name')
+        sale_percentage=int(req_json.get('sale_percentage'))/100
+       
+        sale_end_date=req_json.get('sale_end_date')
+        if not req_json:
+            return jsonify({"success": False, "message": "Cannot send request as request for a game with the same name has already been accepted or waiting for approval"})
+        else:
+            c.execute("SELECT actual_price FROM GAME_LIST WHERE game_name=?",(game_name,))
+            actual_price_current=c.fetchone()[0]
+            new_actual_price=actual_price_current-actual_price_current*sale_percentage
+            c.execute("UPDATE GAME_LIST SET actual_price=?, sale_status=?,sale_end_time=? WHERE game_name=?",(new_actual_price,True,sale_end_date,game_name))
+            db.commit()
+            db.close()
+        
+            return  jsonify({"success": True,"message": "Sale for "+req_json['game_name']+ " started successfully"})
+
+
+
+
+        
 @app.route('/uploadgamedata', methods=['GET','POST'])
 def uploadgamedata():
      if request.method == 'POST':
@@ -737,8 +771,8 @@ def uploadgamedata():
         logo_data = base64.b64decode(logo)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_logo.png"
-        logo_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        logo_filename = f"{game_name.replace(' ', '_').lower()}_logo.png"
+        logo_file_path = os.path.join(app.config['UPLOAD_FOLDER'], logo_filename)
         
         # Save the image to the upload folder
         with open(logo_file_path, 'wb') as f:
@@ -747,8 +781,8 @@ def uploadgamedata():
         ss1_data = base64.b64decode(screenshot1)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_ss1.png"
-        ss1_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        ss1_filename = f"{game_name.replace(' ', '_').lower()}_ss1.png"
+        ss1_file_path = os.path.join(app.config['UPLOAD_FOLDER'], ss1_filename)
         
         # Save the image to the upload folder
         with open(ss1_file_path, 'wb') as f:
@@ -757,8 +791,8 @@ def uploadgamedata():
         ss2_data = base64.b64decode(screenshot2)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_ss2.png"
-        ss2_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        ss2_filename = f"{game_name.replace(' ', '_').lower()}_ss2.png"
+        ss2_file_path = os.path.join(app.config['UPLOAD_FOLDER'], ss2_filename)
         
         # Save the image to the upload folder
         with open(ss2_file_path, 'wb') as f:
@@ -767,19 +801,23 @@ def uploadgamedata():
         game_file_data = base64.b64decode(game_file)
 
         # Generate a safe filename for the image
-        filename = f"{game_name.replace(' ', '_').lower()}_file.zip"
-        game_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        game_file_filename = f"{game_name.replace(' ', '_').lower()}_file.zip"
+        game_file_path = os.path.join(app.config['UPLOAD_FOLDER'], game_file_filename)
         
         # Save the image to the upload folder
         with open(game_file_path, 'wb') as f:
             f.write(game_file_data)     
+        logo_file_url = f"uploads/{logo_filename}"
+        ss1_file_url = f"uploads/{ss1_filename}"
+        ss2_file_url = f"uploads/{ss2_filename}"
+        game_file_url = f"uploads/{game_file_filename}"
 
  #########images send to  static/upload AND we will save the path data in DB
                  # def __init__(self,game_name,game_genre,game_description,base_price):
         game_data=Games_List(game_name,game_genre,game_description,base_price)
         c.execute("  INSERT INTO GAME_LIST VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   (game_data.game_name,game_data.game_genre,
-                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_path,ss1_file_path,ss2_file_path,game_file_path,False,game_data.base_price,None))
+                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_url,ss1_file_url,ss2_file_url,game_file_url,False,game_data.base_price,None))
         
         c.execute("UPDATE GAME_PUBLISH_REQUEST SET status = 'Completed' WHERE username = ? and game_name=?", (dev_username, game_name))
         db.commit()
@@ -870,6 +908,33 @@ def update_password():
             return jsonify({"success": False, "error": "Incorrect current password!"})
 
     return redirect(url_for('logout'))
+
+
+
+def reset_expired_sales():
+    current_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    
+    db = sqlite3.connect("bashpos_--definitely--_secured_database.db")
+    c = db.cursor()
+  
+    
+    c.execute("""
+        UPDATE GAME_LIST SET actual_price = base_price, sale_status = ?, sale_end_time=? 
+        WHERE sale_end_time IS NOT NULL AND sale_end_time <= ?
+    """, (False, None,current_time))
+    
+    db.commit()
+    db.close()
+    logging.debug("reset_expired_sales function completed.")
+
+scheduler.add_job(id='reset_sales', func=reset_expired_sales, trigger='interval', seconds=20)
+scheduler.start()
+
+
+
+
+
+
 
 if __name__=="__main__":
     app.run(debug=True, port=1097)

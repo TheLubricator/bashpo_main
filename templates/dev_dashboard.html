@@ -144,7 +144,7 @@
 <div id="ViewPublishedGamesModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/2 lg:w-1/3">
         <!-- Modal content -->
-        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+        <div class="relative">
             <!-- Modal header -->
             <div class="flex justify-between mb-4 rounded-t sm:mb-5">
                 <div class="text-lg text-gray-900 md:text-xl dark:text-white">
@@ -152,12 +152,12 @@
                         Published Games:
                     </h3>
                 </div>
-                <div>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="ViewPublishedGamesModal">
-                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="ViewPublishedGamesModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
             </div>
 
             <!-- Search Bar -->
@@ -165,32 +165,24 @@
                 <input type="text" id="searchInput_games" placeholder="Search games..." class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
             </div>
 
-            <!-- Display list of active buyers -->
+            <!-- Game List -->
             <div class="mt-4">
-                <!-- Header row -->
                 <div class="flex justify-between font-semibold mb-4">
                     <div class="w-1/4 text-left">Game Name</div>
                     <div class="w-1/4 text-left">Status</div>
-                    <div class="w-1/4 text-left">Base Price(in dollars)</div>
-                    <div class="w-1/4 text-left">Copies Sold</div>
+                    <div class="w-1/4 text-left">Base Price</div>
                     <div class="w-1/4 text-left">Action</div>
                 </div>
-
-                <!-- List of game data -->
                 <ul id="buyerList" class="list-none">
                     {% for game_data in game_list_data %}
                         <li class="flex justify-between items-center mb-4">
                             <span class="w-1/4">{{ game_data[0] }}</span> <!-- Game Name -->
                             <span class="w-1/4">{{ game_data[1] }}</span> <!-- Status -->
                             <span class="w-1/4">{{ game_data[2] }}</span> <!-- Base Price -->
-                            <span class="w-1/4">{{ game_data[3] }}</span> <!-- Base Price -->
                             <div class="w-1/4 text-left">
-                                <!--will use this if i implement sale for project otherwise unused (not part of modules)-->
-                                {% if game_data[4] == 0 %}
-                                    <button type="button"
-                                            class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
-                                            data-game_name="{{ game_data[0] }}"
-                                            onclick="UploadGameData(this)">
+                                {% if game_data[4] == '0' %}
+                                    <button type="button" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
+                                        data-game_name_sale="{{ game_data[0] }}" onclick="switchToInnerModal('{{ game_data[0] }}')">
                                         Start Sale
                                     </button>
                                 {% endif %}
@@ -214,6 +206,42 @@
         </div>
     </div>
 </div>
+
+<!--start sale innermodal-->
+<div id="StartSaleModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/3">
+        <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Start Sale</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white" onclick="switchToOuterModal()">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+        </div>
+        <form id="StartSaleForm" action="/StartSaleRequest" method="POST" class="space-y-4">
+            <input type="hidden" id="game_name_hidden" name="game_name">
+            <!-- Numeric Input -->
+            <div>
+                <label for="sale_percentage" class="block text-sm font-medium text-gray-900 dark:text-white">Sale Percentage (10-90):</label>
+                <input type="number" id="sale_percentage" name="sale_percentage" min="10" max="90" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter percentage">
+            </div>
+            <!-- Date-Time Picker -->
+            <div>
+                <label for="sale_end_date" class="block text-sm font-medium text-gray-900 dark:text-white">End Date & Time:</label>
+                <input type="datetime-local" id="sale_end_date" name="sale_end_date" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mt-4 flex justify-end space-x-2">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!---inner modal end-->
+
+
+
+
 
 
 
@@ -586,6 +614,23 @@
       }
     });
   }
+
+  function switchToInnerModal(gameName) {
+    // Switch to the inner modal
+    document.getElementById('ViewPublishedGamesModal').classList.add('hidden');
+    const innerModal = document.getElementById('StartSaleModal');
+    innerModal.classList.remove('hidden');
+
+    // Populate the hidden game name field
+    document.getElementById('game_name_hidden').value = gameName;
+}
+
+function switchToOuterModal() {
+    // Switch back to the outer modal
+    document.getElementById('StartSaleModal').classList.add('hidden');
+    document.getElementById('ViewPublishedGamesModal').classList.remove('hidden');
+}
+
     // Initialize the modal functionality
     window.addEventListener('DOMContentLoaded', function() {
         initializeModal_SendPubReqModal();
@@ -645,6 +690,65 @@ function UploadGameData(button) {
         });
         
     }
+
+   
+   //SALE form
+   
+    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('StartSaleForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const game_name = document.getElementById('game_name_hidden').value
+    const sale_percentage = document.getElementById('sale_percentage').value;
+    const sale_end_date = document.getElementById('sale_end_date').value;
+  
+    
+    console.log(game_name, game_genre, sale_percentage,sale_end_date);
+
+    // Send the request
+    fetch('/StartSaleRequest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            game_name: game_name, 
+            sale_percentage: sale_percentage, 
+            sale_end_date: sale_end_date
+            
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Redirect to the homepage after a delay
+
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 2000);
+    } else {
+        alert(data.message);
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+    alert('Something went wrong!');
+});
+        
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
 
     
         // Logout function that clears the session and redirects to login
