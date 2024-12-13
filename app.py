@@ -146,6 +146,7 @@ def connect_db():
               sale_status TEXT CHECK(sale_status in(True,False)),
               actual_price INT NOT NULL CHECK(actual_price between 0 AND 120),
               sale_end_time DATETIME,
+              sale_percentage INT CHECK(sale_percentage between 0 AND 90),
               FOREIGN KEY (dev_username) REFERENCES USERS(username)
 
 
@@ -724,6 +725,7 @@ def Send_Sale_Request():
         print(req_json)
      
         game_name=req_json.get('game_name')
+        sale_percentage_value=req_json.get('sale_percentage')
         sale_percentage=int(req_json.get('sale_percentage'))/100
        
         sale_end_date=req_json.get('sale_end_date')
@@ -733,7 +735,7 @@ def Send_Sale_Request():
             c.execute("SELECT actual_price FROM GAME_LIST WHERE game_name=?",(game_name,))
             actual_price_current=c.fetchone()[0]
             new_actual_price=actual_price_current-actual_price_current*sale_percentage
-            c.execute("UPDATE GAME_LIST SET actual_price=?, sale_status=?,sale_end_time=? WHERE game_name=?",(new_actual_price,True,sale_end_date,game_name))
+            c.execute("UPDATE GAME_LIST SET actual_price=?, sale_status=?,sale_end_time=?,sale_percentage=? WHERE game_name=?",(new_actual_price,True,sale_end_date,sale_percentage_value,game_name))
             db.commit()
             db.close()
         
@@ -911,9 +913,9 @@ def reset_expired_sales():
   
     
     c.execute("""
-        UPDATE GAME_LIST SET actual_price = base_price, sale_status = ?, sale_end_time=? 
+        UPDATE GAME_LIST SET actual_price = base_price, sale_status = ?, sale_end_time=?,sale_percentage=? 
         WHERE sale_end_time IS NOT NULL AND sale_end_time <= ?
-    """, (False, None,current_time))
+    """, (False, None,None,current_time))
     
     db.commit()
     db.close()
