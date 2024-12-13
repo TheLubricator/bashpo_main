@@ -4,8 +4,11 @@ import uuid
 from functools import wraps
 import base64
 import os
-
+from flask_apscheduler import APScheduler
+from datetime import datetime
+import logging
 app=Flask(__name__)
+scheduler = APScheduler()
 app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the folder if it doesn't exist
@@ -701,6 +704,36 @@ def Send_Publishing_Request():
         
             return  jsonify({"success": True,"message": "Publishing request for "+req_json['game_name']+ " sent successfully"})
         
+
+@app.route('/StartSaleRequest', methods=['GET','POST'])
+
+def Send_Sale_Request():
+    if request.method == 'POST':
+        db=sqlite3.connect("bashpos_--definitely--_secured_database.db")
+        c=db.cursor()
+        req_json = request.json
+        print(req_json)
+     
+        game_name=req_json.get('game_name')
+        sale_percentage=int(req_json.get('sale_percentage'))/100
+       
+        sale_end_date=req_json.get('sale_end_date')
+        if not req_json:
+            return jsonify({"success": False, "message": "Cannot send request as request for a game with the same name has already been accepted or waiting for approval"})
+        else:
+            c.execute("SELECT actual_price FROM GAME_LIST WHERE game_name=?",(game_name,))
+            actual_price_current=c.fetchone()[0]
+            new_actual_price=actual_price_current-actual_price_current*sale_percentage
+            c.execute("UPDATE GAME_LIST SET actual_price=?, sale_status=?,sale_end_time=? WHERE game_name=?",(new_actual_price,True,sale_end_date,game_name))
+            db.commit()
+            db.close()
+        
+            return  jsonify({"success": True,"message": "Sale for "+req_json['game_name']+ " started successfully"})
+
+
+
+
+        
 @app.route('/uploadgamedata', methods=['GET','POST'])
 def uploadgamedata():
      if request.method == 'POST':
@@ -854,6 +887,33 @@ def update_password():
             return jsonify({"success": False, "error": "Incorrect current password!"})
 
     return redirect(url_for('logout'))
+
+
+
+def reset_expired_sales():
+    current_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    
+    db = sqlite3.connect("bashpos_--definitely--_secured_database.db")
+    c = db.cursor()
+  
+    
+    c.execute("""
+        UPDATE GAME_LIST SET actual_price = base_price, sale_status = ?, sale_end_time=? 
+        WHERE sale_end_time IS NOT NULL AND sale_end_time <= ?
+    """, (False, None,current_time))
+    
+    db.commit()
+    db.close()
+    logging.debug("reset_expired_sales function completed.")
+
+scheduler.add_job(id='reset_sales', func=reset_expired_sales, trigger='interval', seconds=20)
+scheduler.start()
+
+
+
+
+
+
 
 if __name__=="__main__":
     app.run(debug=True, port=1097)
