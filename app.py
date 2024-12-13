@@ -487,6 +487,9 @@ def buyer_dashboard():
             LIMIT 3
         """)
         featured_games = c.fetchall()
+        for i in range(len(featured_games)):
+            featured_games[i]=list(featured_games[i])
+        print(featured_games)
         
         
 
