@@ -14,6 +14,10 @@ UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the folder if it doesn't exist
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+class GlobalVar:
+    def __init__(self,value):
+        self.value=value
+global_var=GlobalVar('First')
 
 class User:
     def __init__(self,username,email,password,user_type):
@@ -147,6 +151,7 @@ def connect_db():
               actual_price INT NOT NULL CHECK(actual_price between 0 AND 120),
               sale_end_time DATETIME,
               sale_percentage INT CHECK(sale_percentage between 0 AND 90),
+              release_year INT NOT NULL,
               FOREIGN KEY (dev_username) REFERENCES USERS(username)
 
 
@@ -496,41 +501,15 @@ def buyer_dashboard():
             featured_games[i]=list(featured_games[i])
         print(featured_games)
         
-        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list")
-        game_list = c.fetchall()
         
-        
-        for i in range(len(game_list)):
-            game_list[i] = list(game_list[i])
-        print(game_list)
-        
-        if session['store_region'] == 'ASI':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*.8
-            print(game_list)
-            
-        elif session['store_region'] == 'NA':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*1
-            print(game_list)
-            
-        elif session['store_region'] == 'LA':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*.9
-            print(game_list)
-            
-        elif session['store_region'] == 'EU':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*1.1
-            print(game_list)
+
 
     # Pass the data to the storefront template
     return render_template(
         'buyer_storefront.html',
         buyer_username=buyer_username,
         balance=balance,
-        featured_games=featured_games, 
-        game_list = game_list
+        featured_games=featured_games
     )
 
 @app.route('/filter', methods=['GET'])
@@ -777,6 +756,7 @@ def view_friend_profile(friend_username):
         return render_template('ViewFriendProfile.html', friendusername=friend_username,buyer_username=session['username'],balance=balance,friend_email=friend_data[0],friend_account_status=friend_data[1].upper())
      
 @app.route('/UploadGameDataForm/<game_name>')
+@login_required('developer')
 def uploadgamedta_formpage(game_name):
      with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
 
@@ -860,8 +840,9 @@ def uploadgamedata():
         screenshot1=req_json.get('screenshot1')
         screenshot2=req_json.get('screenshot2')
         game_file=req_json.get('game_file')
+        release_year=req_json.get('release_year')
         
-        print(game_description)
+        print(release_year)
         logo_data = base64.b64decode(logo)
 
         # Generate a safe filename for the image
@@ -909,10 +890,10 @@ def uploadgamedata():
  #########images send to  static/upload AND we will save the path data in DB
                  # def __init__(self,game_name,game_genre,game_description,base_price):
         game_data=Games_List(game_name,game_genre,game_description,base_price)
-        c.execute("  INSERT INTO GAME_LIST VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        c.execute("  INSERT INTO GAME_LIST VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   (game_data.game_name,game_data.game_genre,
-                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_url,ss1_file_url,ss2_file_url,game_file_url,False,game_data.base_price,None,None))
-        
+                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_url,ss1_file_url,ss2_file_url,game_file_url,False,game_data.base_price,None,None,release_year))
+        db.commit()
         c.execute("UPDATE GAME_PUBLISH_REQUEST SET status = 'Completed' WHERE username = ? and game_name=?", (dev_username, game_name))
         db.commit()
         return jsonify({"message": "Data for "+game_name+" uploaded successfully"})
