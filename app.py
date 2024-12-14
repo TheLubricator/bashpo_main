@@ -605,7 +605,7 @@ def ReturnFilter():
                 for i in range(len(game_list)):
                     game_list[i] [2] = round(game_list[i] [2]*1.1,2)
                     
-            return render_template('game_list_jinga.html',game_list=game_list)
+            return render_template('game_list_jinga.html',game_list_sort=game_list)
 
 
 
