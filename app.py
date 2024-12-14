@@ -13,7 +13,11 @@ app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the folder if it doesn't exist
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+#gamelord
+class GlobalVar:
+    def __init__(self,value):
+        self.value=value
+global_var=GlobalVar('First')
 
 class User:
     def __init__(self,username,email,password,user_type):
@@ -147,6 +151,7 @@ def connect_db():
               actual_price INT NOT NULL CHECK(actual_price between 0 AND 120),
               sale_end_time DATETIME,
               sale_percentage INT CHECK(sale_percentage between 0 AND 90),
+              release_year INT NOT NULL,
               FOREIGN KEY (dev_username) REFERENCES USERS(username)
 
 
@@ -496,7 +501,7 @@ def buyer_dashboard():
             featured_games[i]=list(featured_games[i])
         print(featured_games)
         
-        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list")
+        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list where game_status='Active'")
         game_list = c.fetchall()
         
         
@@ -506,107 +511,110 @@ def buyer_dashboard():
         
         if session['store_region'] == 'ASI':
             for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*.8
+                game_list[i] [2] = round(game_list[i] [2]*.8,2)
             print(game_list)
             
         elif session['store_region'] == 'NA':
             for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*1
+                game_list[i] [2] =round(game_list[i] [2]*1,2)
             print(game_list)
             
         elif session['store_region'] == 'LA':
             for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*.9
+                game_list[i] [2] = round(game_list[i] [2]*.9,2)
             print(game_list)
             
         elif session['store_region'] == 'EU':
             for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*1.1
+                game_list[i] [2] = round(game_list[i] [2]*1.1,2)
             print(game_list)
-
+    print(global_var.value)
     # Pass the data to the storefront template
     return render_template(
         'buyer_storefront.html',
         buyer_username=buyer_username,
         balance=balance,
         featured_games=featured_games, 
-        game_list = game_list
-    )
+        game_list = game_list )
 
-@app.route('/filter', methods=['GET'])
-def filter_games():
+@app.route('/SearchFilterApi',methods=['GET','POST'])
+def SearchFilter():
+    if request.method=='POST':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+
+            req_json=request.json
+            print(req_json)
+            ordertype=req_json.get('ordertype')
+            secondcondition=req_json.get('query_filter')
+            sqlcommand=SearchQueryMaker(ordertype,secondcondition)
+            print(sqlcommand)
+            global_var.value=sqlcommand
+        return ""
+
+def SearchQueryMaker(ordertype,query_filter):
+    query_filter=query_filter
+    if ordertype=='game_genre':
+        strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY CASE WHEN game_genre = "+"'"+query_filter+"'"+ " THEN 1 ELSE 2 END, game_name"
+        
+    elif ordertype=='release_year':
+        if query_filter=='ascending':
+            strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY release_year ASC"
+
+        elif query_filter=='descending':
+            strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY release_year DESC"   
+    elif ordertype=='actual_price':
+        if query_filter=="low-to-high":
+           strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY actual_price ASC"  
+        elif query_filter=="high-to-low":
+            strings=strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY actual_price DESC" 
+
+
+             
+    return strings
+    
+
+@app.route('/SearchFilterReturner',methods=['GET','POST'])
+def ReturnFilter():
+   
+    sqlcommand=global_var.value
     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
-        c = db.cursor()
-        genre = request.args.get('genre')
-        year = request.args.get('year')
-        price = request.args.get('price')
-
-        query = "SELECT * FROM GAME_LIST WHERE 1=1"
-
-
-        if genre:
-            query += f" AND game_genre = '{genre}'"
-
-        if year == "ascending":
-            query += " ORDER BY game_name ASC"
-        elif year == "descending":
-            query += " ORDER BY game_name DESC"
-        elif price == "low-to-high":
-            query += " ORDER BY base_price ASC" 
-        elif price == "high-to-low":
-            query += " ORDER BY base_price DESC" 
-
-        c.execute(query)
-        games = c.fetchall()
-        c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?", (session['username'],))
-        balance = c.fetchone()[0]
-
-        c.execute("""
-            SELECT game_name, game_genre, img_path_ss1
-            FROM GAME_LIST
-            WHERE game_status = 'Active'
-            ORDER BY rowid DESC
-            LIMIT 3
-        """)
-        featured_games = c.fetchall()
-
-        for i in range(len(featured_games)):
-            featured_games[i]=list(featured_games[i])
-        print(featured_games)
-        
-        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list")
-        game_list = c.fetchall()
-        
-        
-        for i in range(len(game_list)):
-            game_list[i] = list(game_list[i])
-        print(game_list)
-        
-        if session['store_region'] == 'ASI':
+            c = db.cursor()
+            c.execute(sqlcommand)
+            game_list=c.fetchall()
             for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*.8
+                game_list[i] = list(game_list[i])
             print(game_list)
-            
-        elif session['store_region'] == 'NA':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*1
-            print(game_list)
-            
-        elif session['store_region'] == 'LA':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*.9
-            print(game_list)
-            
-        elif session['store_region'] == 'EU':
-            for i in range(len(game_list)):
-                game_list[i] [2] = game_list[i] [2]*1.1
-            print(game_list)
-        return render_template("buyer_storefront.html", 
-                               games=games,
-                               buyer_username=session["username"],
-                               balance=balance,
-                              featured_games=featured_games, 
-                              game_list = game_list)
+        
+            if session['store_region'] == 'ASI':
+                for i in range(len(game_list)):
+                    game_list[i] [2] = round(game_list[i] [2]*.8,2)
+                print(game_list)
+                
+            elif session['store_region'] == 'NA':
+                for i in range(len(game_list)):
+                    game_list[i] [2] = round(game_list[i] [2]*1,2)
+                print(game_list)
+                
+            elif session['store_region'] == 'LA':
+                for i in range(len(game_list)):
+                    game_list[i] [2] =round(game_list[i] [2]*.9,2)
+                print(game_list)
+                
+            elif session['store_region'] == 'EU':
+                for i in range(len(game_list)):
+                    game_list[i] [2] = round(game_list[i] [2]*1.1,2)
+                    
+            return render_template('game_list_jinga.html',game_list=game_list)
+
+
+
+
+
+@app.route('/ViewGamePage/<game_name>',methods=['GET','POST'])
+def View_Game_Page(game_name):
+    return game_name
+
 
 
 
@@ -777,6 +785,7 @@ def view_friend_profile(friend_username):
         return render_template('ViewFriendProfile.html', friendusername=friend_username,buyer_username=session['username'],balance=balance,friend_email=friend_data[0],friend_account_status=friend_data[1].upper())
      
 @app.route('/UploadGameDataForm/<game_name>')
+@login_required('developer')
 def uploadgamedta_formpage(game_name):
      with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
 
@@ -860,8 +869,9 @@ def uploadgamedata():
         screenshot1=req_json.get('screenshot1')
         screenshot2=req_json.get('screenshot2')
         game_file=req_json.get('game_file')
+        release_year=req_json.get('release_year')
         
-        print(game_description)
+        print(release_year)
         logo_data = base64.b64decode(logo)
 
         # Generate a safe filename for the image
@@ -909,10 +919,10 @@ def uploadgamedata():
  #########images send to  static/upload AND we will save the path data in DB
                  # def __init__(self,game_name,game_genre,game_description,base_price):
         game_data=Games_List(game_name,game_genre,game_description,base_price)
-        c.execute("  INSERT INTO GAME_LIST VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        c.execute("  INSERT INTO GAME_LIST VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   (game_data.game_name,game_data.game_genre,
-                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_url,ss1_file_url,ss2_file_url,game_file_url,False,game_data.base_price,None,None))
-        
+                game_data.game_description,game_data.base_price,'Active',dev_username,0,0,0,0,logo_file_url,ss1_file_url,ss2_file_url,game_file_url,False,game_data.base_price,None,None,release_year))
+        db.commit()
         c.execute("UPDATE GAME_PUBLISH_REQUEST SET status = 'Completed' WHERE username = ? and game_name=?", (dev_username, game_name))
         db.commit()
         return jsonify({"message": "Data for "+game_name+" uploaded successfully"})

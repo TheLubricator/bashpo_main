@@ -153,7 +153,7 @@
                 <h1 class="text-3xl font-bold font-istok tracking-widest">Featured & Recommended</h1>
                 <div class="mt-5 relative h-[500px] overflow-hidden rounded-lg">
                     <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
-                        <a href="">
+                        <a href="/ViewGamePage/{{featured_games[0][0]}}">
                             <img src="{{ url_for('static', filename=featured_games[0][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 1">
@@ -210,40 +210,42 @@
             <div class="flex flex-wrap justify-center items-center gap-4 mt-4">
                 <div class="relative">
                     <select id="genre" name="genre"
-                        class="px-2 block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center">
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
+                        onchange="handleDropdownChangeGenre(this)" required>
                         <option value="" disabled selected>Genre</option>
-                        <option value="action" class="bg-[#b3b3b3] text-white">Action</option>
-                        <option value="racing" class="bg-[#b3b3b3] text-white">Racing</option>
-                        <option value="strategy" class="bg-[#b3b3b3] text-white">Strategy</option>
-                        <option value="adventure" class="bg-[#b3b3b3] text-white">Adventure</option>
-                        <option value="souls" class="bg-[#b3b3b3] text-white">Souls</option>
+                        <option value="Action" id="Action">Action</option>
+                        <option value="Racing" id="Racing">Racing</option>
+                        <option value="Strategy" id="Strategy">Strategy</option>
+                        <option value="Adventure" id="Adventure">Adventure</option>
+                        <option value="Souls" id="Souls">Souls</option>
                     </select>
                 </div>
                 <div class="relative">
                     <select id="year" name="year"
-                        class="px-2 block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center">
-                        <option value="" disabled selected>Sort by Name</option>
-                        <option value="ascending" class="bg-[#b3b3b3] text-white">Ascending</option>
-                        <option value="descending" class="bg-[#b3b3b3] text-white">Descending</option>
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" onchange="handleDropDownChangeYOR(this)"
+                        required>
+                        <option value="" disabled selected>Year of Release</option>
+                        <option value="ascending">Ascending</option>
+                        <option value="descending">Descending</option>
                     </select>
                 </div>
                 <div class="relative">
-                    <select id="price" name="price"
-                        class="px-2 block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center">
+                    <select id="price" name="price" 
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" onchange="handleDropDownChangePrice(this)"
+                        required>
                         <option value="" disabled selected>Price</option>
-                        <option value="low-to-high" class="bg-[#b3b3b3] text-white">Low to High</option>
-                        <option value="high-to-low" class="bg-[#b3b3b3] text-white">High to Low</option>
+                        <option value="low-to-high">Low to High</option>
+                        <option value="high-to-low">High to Low</option>
                     </select>
                 </div>
-                
             </div>
 
             <div class="flex justify-center items-center flex-1 w-full">
-                <div class="lg:h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl">
+                <div class="lg:h-[600px] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
                     {% for games in game_list %}
                     <a href="" class="block">
                         <div
-                            class="px-2 flex justify-center items-center mx-[10rem] my-[3rem] lg:h-[auto] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
+                            class="px-2 flex justify-center items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
                             <div class="flex items-center">
                                 <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo" 
                                      class="mx-1 my-4 w-1/3 rounded-xl">
@@ -360,11 +362,103 @@
         window.location.href = '/ViewMyProfile'; // Redirect to update password page
     }
 }
+
+function handleDropdownChangeGenre(selectElement) {
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    
+    if (selectedValue === "Action") {
+        search_filter('game_genre',selectedValue);
+    } else if (selectedValue === "Racing") {
+
+       search_filter('game_genre',selectedValue)
+
+
+    } else if (selectedValue === "Strategy") {
+        search_filter('game_genre',selectedValue);
+    }
+    else if (selectedValue === "Adventure") {
+        search_filter('game_genre',selectedValue); 
+    }
+    else if (selectedValue === "Souls") {
+        search_filter('game_genre',selectedValue); 
+    }
+}
+function handleDropDownChangeYOR(selectElement){
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    console.log(selectedValue)
+    if (selectedValue === "ascending") {
+        search_filter('release_year',selectedValue);
+    } else if (selectedValue === "descending") {
+
+       search_filter('release_year',selectedValue)
+
+
+    } 
+
+}
+
+function handleDropDownChangePrice(selectElement){
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    console.log(selectedValue)
+    if (selectedValue === "low-to-high") {
+        search_filter('actual_price',selectedValue);
+    } else if (selectedValue === "high-to-low") {
+
+       search_filter('actual_price',selectedValue)
+
+
+    } 
+
+}
+
+
+
+function search_filter(orderbytype,secondcondition){
+    const ordertype=orderbytype
+    const query_filter=secondcondition
+    const SortingTest=document.getElementById('SortingTest')
+    console.log(ordertype,query_filter)
+    if (ordertype){
+        fetch('/SearchFilterApi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ordertype:ordertype, query_filter:query_filter})
+            })
+            .then(response=>{
+
+            })
+            .then (()=> {
+               
+                fetch("/SearchFilterReturner",{
+                    method: "GET"
+                })
+                .then(response=>{
+                    return response.text();
+                })
+                .then(html=>{
+                    SortingTest.innerHTML=html
+                })
+                
+            }
+        )
+    }
+    
+
+}
+
+
+
+
+
         // Logout function that clears the session and redirects to login
         function logout() {
             window.location.href = '/logout'; // Redirect to logout route
         }
-
         
     </script>
 </body>
