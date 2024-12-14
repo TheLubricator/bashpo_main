@@ -211,18 +211,18 @@
                 <div class="relative">
                     <select id="genre" name="genre"
                         class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
-                        required>
+                        onchange="handleDropdownChangeGenre(this)" required>
                         <option value="" disabled selected>Genre</option>
-                        <option value="action">Action</option>
-                        <option value="racing">Racing</option>
-                        <option value="strategy">Strategy</option>
-                        <option value="adventure">Adventure</option>
-                        <option value="souls">Souls</option>
+                        <option value="Action" id="Action">Action</option>
+                        <option value="Racing" id="Racing">Racing</option>
+                        <option value="Strategy" id="Strategy">Strategy</option>
+                        <option value="Adventure" id="Adventure">Adventure</option>
+                        <option value="Souls" id="Souls">Souls</option>
                     </select>
                 </div>
                 <div class="relative">
                     <select id="year" name="year"
-                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" onchange="handleDropDownChangeYOR(this)"
                         required>
                         <option value="" disabled selected>Year of Release</option>
                         <option value="ascending">Ascending</option>
@@ -230,8 +230,8 @@
                     </select>
                 </div>
                 <div class="relative">
-                    <select id="price" name="price"
-                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
+                    <select id="price" name="price" 
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" onchange="handleDropDownChangePrice(this)"
                         required>
                         <option value="" disabled selected>Price</option>
                         <option value="low-to-high">Low to High</option>
@@ -241,7 +241,7 @@
             </div>
 
             <div class="flex justify-center items-center flex-1 w-full">
-                <div class="lg:h-[600px] lg:w-[1200px] bg-[#0A0221] rounded-xl">
+                <div class="lg:h-[600px] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
                     {% for games in game_list %}
                     <a href="" class="block">
                         <div
@@ -362,6 +362,96 @@
         window.location.href = '/ViewMyProfile'; // Redirect to update password page
     }
 }
+
+function handleDropdownChangeGenre(selectElement) {
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    
+    if (selectedValue === "Action") {
+        search_filter('game_genre',selectedValue);
+    } else if (selectedValue === "Racing") {
+
+       search_filter('game_genre',selectedValue)
+
+
+    } else if (selectedValue === "Strategy") {
+        search_filter('game_genre',selectedValue);
+    }
+    else if (selectedValue === "Adventure") {
+        search_filter('game_genre',selectedValue); 
+    }
+    else if (selectedValue === "Souls") {
+        search_filter('game_genre',selectedValue); 
+    }
+}
+function handleDropDownChangeYOR(selectElement){
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    console.log(selectedValue)
+    if (selectedValue === "ascending") {
+        search_filter('release_year',selectedValue);
+    } else if (selectedValue === "descending") {
+
+       search_filter('release_year',selectedValue)
+
+
+    } 
+
+}
+
+function handleDropDownChangePrice(selectElement){
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    console.log(selectedValue)
+    if (selectedValue === "low-to-high") {
+        search_filter('actual_price',selectedValue);
+    } else if (selectedValue === "high-to-low") {
+
+       search_filter('actual_price',selectedValue)
+
+
+    } 
+
+}
+
+
+
+function search_filter(orderbytype,secondcondition){
+    const ordertype=orderbytype
+    const query_filter=secondcondition
+    const SortingTest=document.getElementById('SortingTest')
+    console.log(ordertype,query_filter)
+    if (ordertype){
+        fetch('/SearchFilterApi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ordertype:ordertype, query_filter:query_filter})
+            })
+            .then(response=>{
+
+            })
+            .then (()=> {
+               
+                fetch("/SearchFilterReturner",{
+                    method: "GET"
+                })
+                .then(response=>{
+                    return response.text();
+                })
+                .then(html=>{
+                    SortingTest.innerHTML=html
+                })
+                
+            }
+        )
+    }
+    
+
+}
+
+
 
 
 

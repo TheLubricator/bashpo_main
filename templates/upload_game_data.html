@@ -66,6 +66,11 @@
                     <input type="text" id="game_description" name="game_description"
                         class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
                         placeholder="Enter game desciption" required>
+                        <p class="text-l text-bold mt-5">Enter Release Year</p>
+                    <input type="number" id="release_year" name="release_year"
+                                class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                            placeholder="Enter price in dollars (price can range from 0 to 120 dollars)"
+                            min="0" max="120" required>    
                      
                     <p class="text-l text-bold mt-5">Enter Base Price(minimum price: 0, maximum price=120$)</p>
                     <input type="number" id="base_price" name="base_price"
@@ -142,11 +147,13 @@
     const dev_username = document.getElementById('dev_username').value;
     const game_genre = document.getElementById('game_genre').value;
     const game_description = document.getElementById('game_description').value;
+    const release_year=document.getElementById('release_year').value;
     const base_price = document.getElementById('base_price').value;
     const logoFile = document.getElementById('img_logo').files[0];
     const screenshot1 = document.getElementById('img_ss1').files[0];
     const screenshot2 = document.getElementById('img_ss2').files[0];
     const game_file = document.getElementById('game_file').files[0];
+   
 
     // Log files to debug
     console.log("Logo file:", logoFile);
@@ -165,6 +172,7 @@
         dev_username: dev_username,
         game_genre: game_genre,
         game_description: game_description,
+        release_year:release_year,
         base_price: base_price,
         logo: base64Logo,
         screenshot1: base64Screenshot1,
