@@ -805,9 +805,38 @@ def buyer_profile():
         pending_requests=c.fetchall()
         c.execute("SELECT username_friendswith FROM FRIENDS where username_me=?",(session['username'],))
         my_friends=c.fetchall()
+        c.execute("SELECT COUNT(*) FROM WISHLIST w INNER JOIN GAME_LIST g ON g.game_name=w.game_name WHERE w.username=? and g.game_status='Active'",(buyer_username,))
+        wishlist_value=c.fetchone()[0]
+        c.execute("SELECT w.username, w.game_name, g.base_price,g.actual_price,g.sale_status FROM WISHLIST w INNER JOIN game_list g ON g.game_name=w.game_name WHERE username=?",(buyer_username,))
+        wishlist_user=c.fetchall()
+        print(wishlist_user)
+        for i in range(len(wishlist_user)):
+                wishlist_user[i] = list(wishlist_user[i])
+        if session['store_region'] == 'ASI':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] = round(wishlist_user[i] [2]*.8,2)
+                wishlist_user[i] [3] = round(wishlist_user[i] [3]*.8,2)
+            print(wishlist_user)
+            
+        elif session['store_region'] == 'NA':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] = round(wishlist_user[i] [2]*1,2)
+                wishlist_user[i] [3] =round(wishlist_user[i] [3]*1,2)
+            print(wishlist_user)
+            
+        elif session['store_region'] == 'LA':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] =round(wishlist_user[i] [2]*.9,2)
+                wishlist_user[i] [3] = round(wishlist_user[i] [3]*.9,2)
+            print(wishlist_user)
+            
+        elif session['store_region'] == 'EU':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] = round(wishlist_user[i] [2]*1.1,2)
+                wishlist_user[i] [3] = round(wishlist_user[i] [3]*1.1,2)    
 
     return render_template('Buyer_profile.html',balance=balance,buyer_username=buyer_username,buyer_data=buyer_details,account_status=status,
-                           card_info=card_info,pending_requests=pending_requests,my_friends=my_friends,store_region=session['store_region'])
+                           card_info=card_info,pending_requests=pending_requests,my_friends=my_friends,store_region=session['store_region'],wishlist_value=wishlist_value,wishlist_user=wishlist_user)
 
 
 
