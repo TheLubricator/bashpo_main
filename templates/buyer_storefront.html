@@ -161,13 +161,13 @@
                     </div>
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                         <a href="">
-                            <img   src="{{ url_for('static', filename=featured_games[1][2]) }}"
+                            <img src="{{ url_for('static', filename=featured_games[1][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 2">
                         </a>
                     </div>
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <a href="">
+                        <a href="/ViewGamePage/{{featured_games[2][0]}}">
                             <img src="{{ url_for('static', filename=featured_games[2][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 3">
@@ -243,7 +243,7 @@
             <div class="flex justify-center items-center flex-1 w-full">
                 <div class="lg:h-[600px] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
                     {% for games in game_list %}
-                    <a href="" class="block">
+                    <a href="/ViewGamePage/{{games[0]}}" class="block">
                         <div
                             class="px-2 flex justify-center items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
                             <div class="flex items-center">

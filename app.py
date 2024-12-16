@@ -158,6 +158,15 @@ def connect_db():
               )
 
 """)
+    c.execute("""
+                CREATE TABLE IF NOT EXISTS WISHLIST(
+              username TEXT NOT NULL,
+              game_name TEXT NOT NULL,
+              FOREIGN KEY (username) REFERENCES USERS(username),
+              FOREIGN KEY (game_name) REFERENCES game_list(game_name)
+
+              )
+        """)
 
     
 
@@ -541,6 +550,34 @@ def buyer_dashboard():
         featured_games=featured_games, 
         game_list = game_list )
 
+@app.route('/AddtoWishlist',methods=['GET','POST'])
+def Add_to_Wishlist():
+    if request.method=='POST':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            req_json=request.json
+            game_name=req_json.get('game_name')
+            username=session['username']
+            #check if game already in user wishlist
+
+            c.execute("SELECT * FROM WISHLIST WHERE game_name=? and username=?",(game_name,username))
+            
+            already_check=c.fetchall()
+            print('wishlisted',already_check)
+            if len(already_check)>0:
+                return jsonify({"message": f"{game_name} cannot be added as it already exists in your wishlist."})
+            else:
+                c.execute("INSERT INTO WISHLIST VALUES (?,?)",(username,game_name))
+                db.commit()
+                return jsonify({"message": f"{game_name} added to wishlist!"})
+
+
+
+
+
+
+
+
 @app.route('/SearchFilterApi',methods=['GET','POST'])
 def SearchFilter():
     if request.method=='POST':
@@ -621,9 +658,79 @@ def ReturnFilter():
 
 @app.route('/ViewGamePage/<game_name>',methods=['GET','POST'])
 def View_Game_Page(game_name):
-    return game_name
+     if request.method=='GET':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            c.execute("SELECT * from game_list where game_name = ?", (game_name,))
+            game_info = c.fetchall()
+            for i in range(len(game_info)):
+                game_info[i] = list(game_info[i])
+            print(game_info)
+            game_info=game_info[0]
+            print(game_info)
+            rating_yes=game_info[6]
+            rating_no=game_info[7]
+            rating=RatingCalculator(rating_yes,rating_no)
+            if session['store_region'] == 'ASI':
+               
+                    game_info[3] = round(game_info[3]*.8,2)
+                    game_info [15] = round(game_info [15]*.8,2)
+                
+                
+            elif session['store_region'] == 'NA':
+                
+                    game_info [3] = round(game_info[i] [3]*1,2)
+                    game_info[15] =round(game_info[i] [15]*1,2)
+          
+                
+            elif session['store_region'] == 'LA':
+              
+                game_info [3] =round(game_info[3]*.9,2)
+                game_info [15] = round(game_info [15]*.9,2)
+               
+                
+            elif session['store_region'] == 'EU':
+              
+                    game_info [3] = round(game_info [3]*1.1,2)
+                    game_info [15] = round(game_info [15]*1.1,2)
+            
+        
+            c.execute("SELECT publisher_name from users where username = ?", (game_info[5],))
+            publisher_name = c.fetchone()[0]
+            buyer_username = session['username']
+            c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
+            balance = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM WISHLIST WHERE username=?",(buyer_username,))
+            wishlist_value=c.fetchone()[0]
 
-
+            return render_template('game_page.html', game_info = game_info, publisher_name = publisher_name,rating=rating,buyer_username=buyer_username,balance=balance,wishlist_value=wishlist_value)
+def RatingCalculator(ratings_yes,ratings_no):
+    if ratings_no==0 and ratings_yes==0:
+        return 'Not enough ratings'
+    elif ratings_yes>0 and ratings_no==0:
+        if ratings_yes>10:
+            return "Overwhelmingly Positive"
+        else:
+            return "Very Positive"
+    elif ratings_yes>0 and ratings_no>0:
+        total_ratings=ratings_yes+ratings_no
+        ratings_percentage=(ratings_yes/total_ratings)*100
+        if ratings_percentage>=96:
+            return "Overwhelmingly Positive"
+        elif ratings_percentage<96 and ratings_percentage>=84:
+            return "Very Positive"
+        elif ratings_percentage<84 and ratings_percentage>=75:
+            return "Positive"
+        elif ratings_percentage<75 and ratings_percentage>=65:
+            return "Mostly Positive"
+        elif ratings_percentage<65 and ratings_percentage>=55:
+            return "Mixed"
+        elif ratings_percentage<55 and ratings_percentage>=45:
+            return "Negative"
+        elif ratings_percentage<45 and ratings_percentage>=35:
+            return "Very Negative"
+        elif ratings_percentage<35:
+            return "Overwhelmingly Negative"
 
 
 @app.route('/ViewMyProfile',methods=['GET','POST'])
@@ -882,7 +989,7 @@ def uploadgamedata():
         print(release_year)
         logo_data = base64.b64decode(logo)
 
-        # Generate a safe filename for the image
+        # Generate a safe filename for the image to find em properlyy
         logo_filename = f"{game_name.replace(' ', '_').lower()}_logo.png"
         logo_file_path = os.path.join(app.config['UPLOAD_FOLDER'], logo_filename)
         
@@ -892,7 +999,7 @@ def uploadgamedata():
         
         ss1_data = base64.b64decode(screenshot1)
 
-        # Generate a safe filename for the image
+        # Generate a safe filename for the image  to find em properlyy
         ss1_filename = f"{game_name.replace(' ', '_').lower()}_ss1.png"
         ss1_file_path = os.path.join(app.config['UPLOAD_FOLDER'], ss1_filename)
         
@@ -902,7 +1009,7 @@ def uploadgamedata():
 
         ss2_data = base64.b64decode(screenshot2)
 
-        # Generate a safe filename for the image
+        # Generate a safe filename for the image  to find em properlyy
         ss2_filename = f"{game_name.replace(' ', '_').lower()}_ss2.png"
         ss2_file_path = os.path.join(app.config['UPLOAD_FOLDER'], ss2_filename)
         
@@ -912,11 +1019,11 @@ def uploadgamedata():
         
         game_file_data = base64.b64decode(game_file)
 
-        # Generate a safe filename for the image
+        # Generate a safe filename for the zipped file
         game_file_filename = f"{game_name.replace(' ', '_').lower()}_file.zip"
         game_file_path = os.path.join(app.config['UPLOAD_FOLDER'], game_file_filename)
         
-        # Save the image to the upload folder
+        # Save the files to the upload folder
         with open(game_file_path, 'wb') as f:
             f.write(game_file_data)     
         logo_file_url = f"uploads/{logo_filename}"
