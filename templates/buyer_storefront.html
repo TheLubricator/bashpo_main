@@ -168,7 +168,7 @@
                     </div>
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                         <a href="">
-                            <img src="{{ url_for('static', filename='img/3rd-carou.jpg') }}"
+                            <img src="{{ url_for('static', filename=featured_games[2][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 3">
                         </a>
@@ -255,7 +255,22 @@
                                 </div>
                             </div>
                             <div class="flex flex-col items-center justify-center">
-                                <h1 class="text-black text-xl font-bold">{{games[2]}}$</h1>
+
+                                {% if games[5] == '1' %}
+                                <h1 class="flex items-center text-xl font-bold">
+                                    <!-- games[6]% in light green -->
+                                    <span class="text-green-300 font-semibold bg-green-700 px-2 py-1 rounded mr-2">
+                                        {{games[6]}}%
+                                    </span>
+                                    <!-- games[4] with line-through -->
+                                    <span class="text-black line-through mr-2">{{games[4]}}$</span>
+                                    <!-- games[2] in normal text -->
+                                    <span class="text-black">{{games[2]}}$</span>
+                                  </h1>
+                                  >
+                                {% else %}
+                                <h1 class="text-black text-xl font-bold"> {{games[2]}}$</h1>
+                                {% endif %}
                             </div>
                         </div>
                     </a>
@@ -365,7 +380,7 @@
 
 function handleDropdownChangeGenre(selectElement) {
     const selectedValue = selectElement.value;
-    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    selectElement.value = ""; 
     
     if (selectedValue === "Action") {
         search_filter('game_genre',selectedValue);

@@ -501,7 +501,7 @@ def buyer_dashboard():
             featured_games[i]=list(featured_games[i])
         print(featured_games)
         
-        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list where game_status='Active'")
+        c.execute("SELECT game_name, game_genre, actual_price, img_path_logo,base_price,sale_status,sale_percentage FROM game_list where game_status='Active'")
         game_list = c.fetchall()
         
         
@@ -512,21 +512,25 @@ def buyer_dashboard():
         if session['store_region'] == 'ASI':
             for i in range(len(game_list)):
                 game_list[i] [2] = round(game_list[i] [2]*.8,2)
+                game_list[i] [4] = round(game_list[i] [4]*.8,2)
             print(game_list)
             
         elif session['store_region'] == 'NA':
             for i in range(len(game_list)):
                 game_list[i] [2] =round(game_list[i] [2]*1,2)
+                game_list[i] [4] =round(game_list[i] [4]*1,2)
             print(game_list)
             
         elif session['store_region'] == 'LA':
             for i in range(len(game_list)):
                 game_list[i] [2] = round(game_list[i] [2]*.9,2)
+                game_list[i] [4] = round(game_list[i] [4]*.9,2)
             print(game_list)
             
         elif session['store_region'] == 'EU':
             for i in range(len(game_list)):
                 game_list[i] [2] = round(game_list[i] [2]*1.1,2)
+                game_list[i] [4] = round(game_list[i] [4]*1.1,2)
             print(game_list)
     print(global_var.value)
     # Pass the data to the storefront template
@@ -555,19 +559,19 @@ def SearchFilter():
 def SearchQueryMaker(ordertype,query_filter):
     query_filter=query_filter
     if ordertype=='game_genre':
-        strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY CASE WHEN game_genre = "+"'"+query_filter+"'"+ " THEN 1 ELSE 2 END, game_name"
+        strings="SELECT game_name, game_genre, actual_price, img_path_logo,base_price,sale_status,sale_percentage  FROM game_list ORDER BY CASE WHEN game_genre = "+"'"+query_filter+"'"+ " THEN 1 ELSE 2 END, game_name"
         
     elif ordertype=='release_year':
         if query_filter=='ascending':
-            strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY release_year ASC"
+            strings="SELECT game_name, game_genre, actual_price, img_path_logo,base_price,sale_status,sale_percentage FROM game_list ORDER BY release_year ASC"
 
         elif query_filter=='descending':
-            strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY release_year DESC"   
+            strings="SELECT game_name, game_genre, actual_price, img_path_logo,base_price,sale_status,sale_percentage FROM game_list ORDER BY release_year DESC"   
     elif ordertype=='actual_price':
         if query_filter=="low-to-high":
-           strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY actual_price ASC"  
+           strings="SELECT game_name, game_genre, actual_price, img_path_logo,base_price,sale_status,sale_percentage FROM game_list ORDER BY actual_price ASC"  
         elif query_filter=="high-to-low":
-            strings=strings="SELECT game_name, game_genre, actual_price, img_path_logo FROM game_list ORDER BY actual_price DESC" 
+            strings=strings="SELECT game_name, game_genre, actual_price, img_path_logo,base_price,sale_status,sale_percentage FROM game_list ORDER BY actual_price DESC" 
 
 
              
@@ -589,21 +593,25 @@ def ReturnFilter():
             if session['store_region'] == 'ASI':
                 for i in range(len(game_list)):
                     game_list[i] [2] = round(game_list[i] [2]*.8,2)
+                    game_list[i] [4] = round(game_list[i] [4]*.8,2)
                 print(game_list)
                 
             elif session['store_region'] == 'NA':
                 for i in range(len(game_list)):
                     game_list[i] [2] = round(game_list[i] [2]*1,2)
+                    game_list[i] [4] =round(game_list[i] [4]*1,2)
                 print(game_list)
                 
             elif session['store_region'] == 'LA':
                 for i in range(len(game_list)):
                     game_list[i] [2] =round(game_list[i] [2]*.9,2)
+                    game_list[i] [4] = round(game_list[i] [4]*.9,2)
                 print(game_list)
                 
             elif session['store_region'] == 'EU':
                 for i in range(len(game_list)):
                     game_list[i] [2] = round(game_list[i] [2]*1.1,2)
+                    game_list[i] [4] = round(game_list[i] [4]*1.1,2)
                     
             return render_template('game_list_jinga.html',game_list_sort=game_list)
 
