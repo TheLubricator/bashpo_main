@@ -541,14 +541,43 @@ def buyer_dashboard():
                 game_list[i] [2] = round(game_list[i] [2]*1.1,2)
                 game_list[i] [4] = round(game_list[i] [4]*1.1,2)
             print(game_list)
-    print(global_var.value)
+        print(global_var.value)
+        c.execute("SELECT COUNT(*) FROM WISHLIST w INNER JOIN GAME_LIST g ON g.game_name=w.game_name WHERE w.username=? and g.game_status='Active'",(buyer_username,))
+        wishlist_value=c.fetchone()[0]
+        c.execute("SELECT w.username, w.game_name, g.base_price,g.actual_price,g.sale_status FROM WISHLIST w INNER JOIN game_list g ON g.game_name=w.game_name WHERE username=?",(buyer_username,))
+        wishlist_user=c.fetchall()
+        print(wishlist_user)
+        for i in range(len(wishlist_user)):
+                wishlist_user[i] = list(wishlist_user[i])
+        if session['store_region'] == 'ASI':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] = round(wishlist_user[i] [2]*.8,2)
+                wishlist_user[i] [3] = round(wishlist_user[i] [3]*.8,2)
+            print(wishlist_user)
+            
+        elif session['store_region'] == 'NA':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] = round(wishlist_user[i] [2]*1,2)
+                wishlist_user[i] [3] =round(wishlist_user[i] [3]*1,2)
+            print(wishlist_user)
+            
+        elif session['store_region'] == 'LA':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] =round(wishlist_user[i] [2]*.9,2)
+                wishlist_user[i] [3] = round(wishlist_user[i] [3]*.9,2)
+            print(wishlist_user)
+            
+        elif session['store_region'] == 'EU':
+            for i in range(len(wishlist_user)):
+                wishlist_user[i] [2] = round(wishlist_user[i] [2]*1.1,2)
+                wishlist_user[i] [3] = round(wishlist_user[i] [3]*1.1,2)     
     # Pass the data to the storefront template
     return render_template(
         'buyer_storefront.html',
         buyer_username=buyer_username,
         balance=balance,
         featured_games=featured_games, 
-        game_list = game_list )
+        game_list = game_list, wishlist_value=wishlist_value,wishlist_user=wishlist_user )
 
 @app.route('/AddtoWishlist',methods=['GET','POST'])
 def Add_to_Wishlist():
@@ -700,10 +729,37 @@ def View_Game_Page(game_name):
             buyer_username = session['username']
             c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
             balance = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM WISHLIST WHERE username=?",(buyer_username,))
+            c.execute("SELECT COUNT(*) FROM WISHLIST w INNER JOIN GAME_LIST g ON g.game_name=w.game_name WHERE w.username=? and g.game_status='Active'",(buyer_username,))
             wishlist_value=c.fetchone()[0]
+            c.execute("SELECT w.username, w.game_name, g.base_price,g.actual_price,g.sale_status FROM WISHLIST w INNER JOIN game_list g ON g.game_name=w.game_name WHERE username=?",(buyer_username,))
+            wishlist_user=c.fetchall()
+            print(wishlist_user)
+            for i in range(len(wishlist_user)):
+                 wishlist_user[i] = list(wishlist_user[i])
+            if session['store_region'] == 'ASI':
+                for i in range(len(wishlist_user)):
+                    wishlist_user[i] [2] = round(wishlist_user[i] [2]*.8,2)
+                    wishlist_user[i] [3] = round(wishlist_user[i] [3]*.8,2)
+                print(wishlist_user)
+                
+            elif session['store_region'] == 'NA':
+                for i in range(len(wishlist_user)):
+                    wishlist_user[i] [2] = round(wishlist_user[i] [2]*1,2)
+                    wishlist_user[i] [3] =round(wishlist_user[i] [3]*1,2)
+                print(wishlist_user)
+                
+            elif session['store_region'] == 'LA':
+                for i in range(len(wishlist_user)):
+                    wishlist_user[i] [2] =round(wishlist_user[i] [2]*.9,2)
+                    wishlist_user[i] [3] = round(wishlist_user[i] [3]*.9,2)
+                print(wishlist_user)
+                
+            elif session['store_region'] == 'EU':
+                for i in range(len(wishlist_user)):
+                    wishlist_user[i] [2] = round(wishlist_user[i] [2]*1.1,2)
+                    wishlist_user[i] [3] = round(wishlist_user[i] [3]*1.1,2)     
 
-            return render_template('game_page.html', game_info = game_info, publisher_name = publisher_name,rating=rating,buyer_username=buyer_username,balance=balance,wishlist_value=wishlist_value)
+            return render_template('game_page.html', game_info = game_info, publisher_name = publisher_name,rating=rating,buyer_username=buyer_username,balance=balance,wishlist_value=wishlist_value,wishlist_user=wishlist_user)
 def RatingCalculator(ratings_yes,ratings_no):
     if ratings_no==0 and ratings_yes==0:
         return 'Not enough ratings'
