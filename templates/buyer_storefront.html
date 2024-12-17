@@ -30,7 +30,7 @@
         <div class="flex navbar bg-base-100 justify-start rounded-lg">
             <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
                 <div
-                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-[2px]">
+                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-2">
                 </div>
                 <a href="/">
                     <img alt="Tailwind CSS Navbar component" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo" class="rounded-lg relative z-10">
@@ -241,12 +241,12 @@
             </div>
 
             <div class="flex justify-center items-center flex-1 w-full">
-                <div class="lg:h-[600px] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
+                <div class="h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
                     {% for games in game_list %}
                     <a href="/ViewGamePage/{{games[0]}}" class="block">
                         <div
-                            class="px-2 flex justify-center items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
-                            <div class="flex items-center">
+                            class="px-2 flex justify-between items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
+                            <div class="flex items-center mx-5">
                                 <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo" 
                                      class="mx-1 my-4 w-1/3 rounded-xl">
                                 <div class="ml-5">
