@@ -188,7 +188,8 @@
                     {{game_info[15]}}$
                 </div>
                 <a href="">
-                    <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">
+                    <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md" data-game_name_cart="{{game_info[0]}}" 
+                    data-game_sale_status="{{game_info[14]}}"  onclick="AddtoCart(this)">
                         Add To Cart
                     </button>
                     
@@ -218,7 +219,8 @@
 
         <!-- Add to Cart Button -->
         <a href="">
-            <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">
+            <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"data-game_name_cart="{{game_info[0]}}" 
+            data-game_sale_status="{{game_info[14]}}" onclick="AddtoCart(this)">
                 Add To Cart
             </button>
         </a>
@@ -465,6 +467,33 @@
                 console.error('Error:', error);
                 alert('Something went wrong!');
             });
+        }
+        function AddtoCart(button){
+            const game_name=button.getAttribute('data-game_name_cart') 
+            const was_it_on_sale=button.getAttribute('data-game_sale_status')
+
+            fetch('/AddtoCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ game_name: game_name,was_it_on_sale:was_it_on_sale})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message); // Display success message
+                    
+                    
+                } else {
+                    alert(data.error); // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong!');
+            });
+        
         }
 
         function initializeSearch_wishlistedgames() {

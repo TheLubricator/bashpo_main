@@ -167,6 +167,16 @@ def connect_db():
 
               )
         """)
+    c.execute("""
+            CREATE TABLE IF NOT EXISTS CART_SYSTEM (
+              username TEXT NOT NULL,
+              game_name TEXT NOT NULL,
+              was_it_on_sale TEXT check(was_it_on_sale in(True,False)),
+              FOREIGN KEY (username) REFERENCES USERS(username),
+              FOREIGN KEY (game_name) REFERENCES game_list(game_name)
+
+              )
+            """)
 
     
 
@@ -599,6 +609,29 @@ def Add_to_Wishlist():
                 c.execute("INSERT INTO WISHLIST VALUES (?,?)",(username,game_name))
                 db.commit()
                 return jsonify({"message": f"{game_name} added to wishlist!"})
+
+
+@app.route('/AddtoCart',methods=['GET','POST'])
+def Add_to_Cart():
+    if request.method=='POST':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            req_json=request.json
+            game_name=req_json.get('game_name')
+            username=session['username']
+            was_it_on_sale=req_json.get('was_it_on_sale')
+            #check if game already in user wishlist
+
+            c.execute("SELECT * FROM CART_SYSTEM WHERE game_name=? and username=?",(game_name,username))
+            
+            already_check=c.fetchall()
+            print('wishlisted',already_check)
+            if len(already_check)>0:
+                return jsonify({"message": f"{game_name} cannot be added as it already in your cart."})
+            else:
+                c.execute("INSERT INTO CART_SYSTEM VALUES (?,?,?)",(username,game_name,was_it_on_sale))
+                db.commit()
+            return jsonify({"message": f"{game_name} added to cart!"})
 
 
 
