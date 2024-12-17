@@ -340,8 +340,10 @@
                                     
                                         <button type="button"
                                                 class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
-                                                data-username="{{wishlist[0]}}" data-game_name="{{ wishlist[1] }}"
-                                                onclick="AddtoCart(this)">
+                                                data-username="{{wishlist[0]}}" data-game_name="{{ wishlist[1] }}"   data-game_name_cart="{{ wishlist[1] }}" 
+                                                data-game_sale_status="{{wishlist[4]}}"
+                                                                                onclick="AddtoCart(this)">
+                                               
                                             Add to Cart
                                         </button>
                                  
@@ -589,6 +591,33 @@ function initializeSearch_wishlistedgames() {
 
 });
 
+function AddtoCart(button){
+    const game_name=button.getAttribute('data-game_name_cart') 
+    const was_it_on_sale=button.getAttribute('data-game_sale_status')
+
+    fetch('/AddtoCart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ game_name: game_name,was_it_on_sale:was_it_on_sale})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message); // Display success message
+            
+            
+        } else {
+            alert(data.error); // Display error message
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong!');
+    });
+
+}
 
 
 
