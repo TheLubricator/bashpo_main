@@ -66,7 +66,7 @@ def connect_db():
         store_region TEXT CHECK(store_region IN('NA','LA','EU','ASI','')),
         card_info INT,
         company_name TEXT,
-        publisher_name TEXT CHECK(publisher_name IN('bandai_namco','playstation_publishing','xbox_game_studios','square_enix','self','')),
+        publisher_name TEXT CHECK(publisher_name IN('bandai_namco','playstation_publishing','xbox_game_studios','square_enix','sega','self','')),
         user_type TEXT CHECK(user_type IN('buyer','developer','admin')) NOT NULL,
         account_status TEXT CHECK(account_status IN('active','terminated')) NOT NULL
     )
