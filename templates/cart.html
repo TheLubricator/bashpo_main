@@ -157,8 +157,11 @@
                 </div>
             </form>
         </div>
-        <div class="flex justify-center items-center flex-2 w-full">
-            <div class="gap-1- relative h-[auto] lg:w-[1200px]" id="SortingTest"> <!-- Set parent as relative -->
+        <div class="absolute">
+
+        </div>
+        <div class="relative mt-[10rem] flex justify-center items-center flex-col">
+            <div class="gap-1 box border-0  h-[auto] lg:w-[1200px]" id="SortingTest"> <!-- Set parent as relative -->
                 {% for games in game_list %}
 
                 <div
@@ -169,7 +172,7 @@
                         <div class="ml-5">
                             <h1 class="text-xl font-bold text-white">{{games[0]}}</h1>
 
-                            <p class="text-semibold italic">Game price set to main price
+                            <p class="font-semibold italic">Game price set to main price
                                 <br>
                                 as the sell period has ended.
                             </p>
@@ -205,12 +208,12 @@
                 <div class="absolute top-7 right-[-5rem] mt-5">
                     <div
                         class="box rounded-xl bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl lg:h-[180px] w-[340px] grid items-center justify-around">
-                        <div class="text-white grid gap-5 justify-between">
+                        <div class="text-white font-semibold grid gap-5 justify-between">
                             <h1>Estimated Price</h1>
                             <h1>Region:{}</h1>
                         </div>
                         <div class="flex gap-2">
-                            <button class="w-full text-white h-12 bg-black rounded hover:bg-gray-400">Pay using
+                            <button class="w-full font-semibold text-white h-12 bg-black rounded hover:bg-gray-400">Pay using
                                 Card</button>
                             <button class="w-full text-white h-12 bg-black rounded hover:bg-gray-400">Pay Using Wallet
                                 Balance</button>
