@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bashpo</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="font-inter">
+
+    <header
+        class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
+        <div class="flex navbar bg-base-100 justify-start rounded-lg">
+            <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-[2px]">
+                </div>
+                <a href="/">
+                    <img alt="Tailwind CSS Navbar component" src="{{ url_for('static', filename='img/logo.jpg') }}"
+                        alt="Logo" class="rounded-lg relative z-10">
+                </a>
+            </div>
+        </div>
+        <div class="mt-3 lg:mt-5 lg:mr-5">
+            <select id="user-name" name="user_name"
+                class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] font-bold focus:ring-2 focus:ring-white focus:text-black appearance-none"
+                onchange="handleDropdownChange(this)" required>
+                <!-- Disabled Option (Gradient Background) -->
+                <option value="" disabled selected
+                    class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold">
+                    {{ buyer_username }} {{ balance }} $
+                </option>
+
+                <option value="view_profile" class="bg-[#b3b3b3] text-white">View My Profile</option>
+                <option value="AddMonitorWallet" class="bg-[#b3b3b3] text-white">Add and Monitor Wallet</option>
+                <option value="update_pass" class="bg-[#b3b3b3] text-white">Update Password</option>
+                <option value="logout" class="bg-[#b3b3b3] text-white">Logout</option>
+            </select>
+        </div>
+    </header>
+    <!-- Update Password Modal -->
+    <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
+        <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+            <!-- Modal content -->
+            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                <!-- Modal header -->
+                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                        <h3 class="font-semibold">Update Password</h3>
+                    </div>
+                    <div>
+                        <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-toggle="UpdatePasswordModal">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal body: Update password form -->
+                <form id="updatePasswordForm" action="/update_password" method="POST" class="space-y-4">
+                    <div>
+                        <label for="current-password"
+                            class="block text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
+                        <input type="password" id="current-password" name="current_password" required
+                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                        <label for="new-password" class="block text-sm font-medium text-gray-900 dark:text-white">New
+                            Password</label>
+                        <input type="password" id="new-password" name="new_password" required
+                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                        <label for="confirm-password"
+                            class="block text-sm font-medium text-gray-900 dark:text-white">Confirm New Password</label>
+                        <input type="password" id="confirm-password" name="confirm_password" required
+                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <!-- Error and Success Messages -->
+                    <div id="password-error" class="text-red-600 hidden">Passwords do not match.</div>
+                    <div id="password-success" class="text-green-600 hidden">Password updated successfully!</div>
+
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-lg"
+                            data-modal-toggle="UpdatePasswordModal">Cancel</button>
+                        <button type="submit" id="submit-password"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="flex justify-center items-center">
+        <div class="flex justify-center items-center flex-1 w-full mt-5">
+            <div class="h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
+                {% for games in game_list %}
+                <a href="/ViewGamePage/{{games[0]}}" class="block">
+                    <div
+                        class="px-2 flex justify-between items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
+                        <div class="flex items-center mx-5">
+                            <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo"
+                                class="mx-1 my-4 w-1/3 rounded-xl">
+                            <div class="ml-5">
+                                <h1 class="text-xl font-bold text-white">{{games[0]}}</h1>
+                                <h1 class="text-xl text-slate-300 font-semibold mt-5 italic">{{games[1]}}</h1>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center">
+
+                            {% if games[5] == '1' %}
+                            <h1 class="flex items-center text-xl font-bold">
+                                <!-- games[6]% in light green -->
+                                <span
+                                    class="bg-[#335c1b] text-[#3ae310] text-sm font-bold py-1 px-2 rounded-lg shadow-md mr-2">
+                                    {{games[6]}}%
+                                </span>
+                                <!-- games[4] with line-through -->
+                                <span class="text-black line-through mr-2">{{games[4]}}$</span>
+                                <!-- games[2] in normal text -->
+                                <span class="text-black">{{games[2]}}$</span>
+                            </h1>
+                            >
+                            {% else %}
+                            <h1 class="text-black text-xl font-bold"> {{games[2]}}$</h1>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="box rounded-xl border-2 h-[80px] w-[200px] flex mt-5 mx-auto">
+            <div>
+
+            </div>
+            <div class="justify-center flex">
+                <div>
+                    <button>
+                        1
+                    </button>
+                </div>
+                <div>
+                    <button>
+                        2
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+<script>
+    // Function to handle the dropdown change
+    function handleDropdownChange(dropdown) {
+        const selectedValue = dropdown.value;
+
+        switch (selectedValue) {
+            case "view_profile":
+                window.location.href = "/profile";
+                break;
+            case "AddMonitorWallet":
+                window.location.href = "/wallet";
+                break;
+            case "update_pass":
+                window.location.href = "/update-password";
+                break;
+            case "logout":
+                window.location.href = "/logout";
+                break;
+            default:
+                console.error("Unhandled option:", selectedValue);
+        }
+    }
+
+    // Implement search functionality for games
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.querySelector("#searchInput_wishlistedgames");
+        const gameList = document.querySelector("#SortingTest");
+
+        if (searchInput) {
+            searchInput.addEventListener("input", function () {
+                const filter = searchInput.value.toLowerCase();
+                const gameCards = gameList.querySelectorAll("a");
+
+                gameCards.forEach((gameCard) => {
+                    const gameTitle = gameCard.querySelector("h1.text-xl.font-bold").textContent.toLowerCase();
+                    if (gameTitle.includes(filter)) {
+                        gameCard.style.display = "";
+                    } else {
+                        gameCard.style.display = "none";
+                    }
+                });
+            });
+        }
+    });
+
+    // Add wishlist modal behavior
+    const modal = document.getElementById("ViewWishlistedGamesModal");
+    const modalToggleButtons = document.querySelectorAll("[data-modal-toggle='ViewWishlistedGamesModal']");
+
+    if (modal) {
+        modalToggleButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                modal.classList.toggle("hidden");
+            });
+        });
+
+        // Close modal when clicking outside of it
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.classList.add("hidden");
+            }
+        });
+    }
+
+    // Functionality for "Add to Cart" and "Remove from Wishlist"
+    function AddtoCart(button) {
+        const username = button.dataset.username;
+        const gameName = button.dataset.game_name;
+
+        console.log("Adding to cart:", username, gameName);
+        // Send a request to the backend to add the game to the cart
+        fetch("/add-to-cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, gameName })
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    alert("Game added to cart!");
+                } else {
+                    alert("Failed to add game to cart.");
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+    }
+
+    function RemoveFromWishList(button) {
+        const username = button.dataset.username;
+        const gameName = button.dataset.game_name;
+
+        console.log("Removing from wishlist:", username, gameName);
+        // Send a request to the backend to remove the game from the wishlist
+        fetch("/remove-from-wishlist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, gameName })
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    alert("Game removed from wishlist!");
+                    // Optionally refresh the page or remove the item from the UI
+                    button.closest("li").remove();
+                } else {
+                    alert("Failed to remove game from wishlist.");
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+    }
+</script>
+
+</html>
