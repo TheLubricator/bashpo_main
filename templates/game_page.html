@@ -64,12 +64,20 @@
         <div class="relative z-10 flex flex-col justify-center gap-6 text-center text-white mt-5">
             <div class="absolute right-0 top-0 flex flex-col gap-4 p-2 items-end">
                 <div class="flex flex-row gap-4">
-                    <a href="publication_req.html">
-                        <button type="button" 
+                    {% if cart_status=='1' %}
+                    <a href="/ViewCart">
+                   
+                        <button type="button"
                             class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#2B983F] to-[#115C1E] text-white rounded-lg">
-                            View Cart
+                            View Cart({{cart_value}})
                         </button>
                     </a>
+                   {% else %}
+                   <button type="button"
+                            class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#2B983F] to-[#115C1E] text-white rounded-lg">
+                            View Cart
+                        </button> 
+                   {% endif %}
                     
                         <button type="button"  id="ViewWishlistedGamesButton" data-modal-target="ViewWishlistedGamesModal" data-modal-toggle="ViewWishlistedGamesModal"
                             class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#3E7C9B] to-[#4E6C9F] text-white rounded-lg">
@@ -179,7 +187,11 @@
        {% if game_info[14]=='0' %}
         <div
             class="relative flex flex-col justify-between items-start mt-10 bg-gradient-to-r from-[#57565F] to-[#57565F] w-full opacity-90 lg:w-[800px] p-6 lg:p-8 shadow-lg rounded-lg mx-auto mb-[5rem]">
-            <h1 class="text-lg lg:text-2xl font-bold text-white">{{game_info[0]}}</h1>
+            <h1 class="text-lg lg:text-2xl font-bold text-white">{{game_info[0]}}
+                {% if bought_check=='1' %}
+                (Game already in your library)
+                {% endif %}
+            </h1>
             <h1 class="text-lg lg:text-m font-regular text-white italic">               </h1>
 
             <div
@@ -187,20 +199,29 @@
                 <div class="text-white text-lg">
                     {{game_info[15]}}$
                 </div>
-                <a href="">
+                
+                    {% if bought_check=='1' %}
+                    <button class="bg-orange-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md" data-game_name_cart="{{game_info[0]}}" 
+                    data-game_sale_status="{{game_info[14]}}" disabled>
+                        Not Available
+                    </button>
+                    {% else %}
                     <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md" data-game_name_cart="{{game_info[0]}}" 
                     data-game_sale_status="{{game_info[14]}}"  onclick="AddtoCart(this)">
                         Add To Cart
                     </button>
-                    
-                </a>
+               {% endif %}
             </div>
            
         </div>
         {% elif game_info[14]=='1' %}
         <div
     class="relative flex flex-col justify-between items-start mt-10 bg-gradient-to-r from-[#57565F] to-[#57565F] w-full opacity-90 lg:w-[800px] p-6 lg:p-8 shadow-lg rounded-lg mx-auto mb-[5rem]">
-    <h1 class="text-lg lg:text-2xl font-bold text-white">{{game_info[0]}}</h1>
+    <h1 class="text-lg lg:text-2xl font-bold text-white">{{game_info[0]}}
+        {% if bought_check=='1' %}
+        (Game already in your library)
+        {% endif %}
+    </h1>
     <h1 class="text-lg lg:text-m font-regular text-white italic">Special Offer: offer active for {{game_info[16]}}</h1>
 
     <!-- Black Box -->

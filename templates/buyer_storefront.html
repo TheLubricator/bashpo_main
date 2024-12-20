@@ -110,13 +110,20 @@
         <div class="grid relative min-h-screen bg-blue-950 opacity-100">
             <div class="absolute right-0 top-0 flex flex-col gap-4 p-2 items-end">
                 <div class="flex flex-row gap-4 mt-5">
-                    <a href="publication_req.html">
+                    {% if cart_status=='1' %}
+                    <a href="/ViewCart">
+                   
                         <button type="button"
                             class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#2B983F] to-[#115C1E] text-white rounded-lg">
-                            View Cart
+                            View Cart({{cart_value}})
                         </button>
                     </a>
-                   
+                   {% else %}
+                   <button type="button"
+                            class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#2B983F] to-[#115C1E] text-white rounded-lg">
+                            View Cart
+                        </button> 
+                   {% endif %}
                         <button type="button" id="ViewWishlistedGamesButton" data-modal-target="ViewWishlistedGamesModal" data-modal-toggle="ViewWishlistedGamesModal"
                             class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#3E7C9B] to-[#4E6C9F] text-white rounded-lg">
                             WishList({{wishlist_value}})
