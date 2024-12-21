@@ -99,7 +99,53 @@
     </div>
 </div>
 
+<!--//////////////////////////////////////revenue modal-->
+<div id="RevenueModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+    <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                    <h3 class="font-semibold">
+                        Total earnings: {{ balance }} $
+                    </h3>
+                </div>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="RevenueModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
 
+            <!-- Search Bar -->
+            <div class="mb-4">
+                <input type="text" id="searchInput_games_earning" placeholder="Search games..." class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+            </div>
+
+            <!-- Game List -->
+            <div class="mt-4">
+                <div class="flex justify-between font-semibold mb-4">
+                    <div class="w-1/4 text-left">Game Name</div>
+                    <div class="w-1/4 text-left">Copies Sold</div>
+                    <div class="w-1/4 text-left">Earnings</div>
+                    
+                </div>
+                <ul id="buyerList" class="list-none">
+                    {% for revenue_data_per_game in revenue_data %}
+                        <li class="flex justify-between items-center mb-4">
+                            <span class="w-1/4 game_name">{{ revenue_data_per_game[0] }}</span> <!-- Game Name -->
+                            <span class="w-1/4">{{ revenue_data_per_game[1] }}</span> <!-- Status -->
+                            <span class="w-1/4">{{ revenue_data_per_game[2] }}</span> <!-- Base Price -->
+                           
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -631,12 +677,79 @@ function switchToOuterModal() {
     document.getElementById('ViewPublishedGamesModal').classList.remove('hidden');
 }
 
+/////////////////working
+function showRevenueModal() {
+    const modal = document.getElementById('RevenueModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+}
+function initializeSearch_revenue() {
+    const searchInput = document.getElementById('searchInput_games_earning');
+    const userList = document.querySelectorAll('#RevenueModal ul li');
+
+    searchInput.addEventListener('input', function () {
+        const filter = searchInput.value.toLowerCase();
+
+        userList.forEach((userItem) => {
+            const username = userItem.querySelector('.game_name').textContent.toLowerCase();
+
+            // Show or hide the user based on the search input
+            if (username.includes(filter)) {
+                userItem.style.display = ''; // Show
+            } else {
+                userItem.style.display = 'none'; // Hide
+            }
+        });
+    });
+}   
+  // Function to initialize modal functionality
+  function initializeModal_RevenueModal() {
+    const modal = document.getElementById('RevenueModal');
+    const closeModalButton = modal.querySelector('[data-modal-toggle="RevenueModal"]'); // Fixed selector
+    const openModalButton = document.querySelector('[data-modal-toggle="RevenueModal"]'); // Ensure this exists
+
+    if (openModalButton) {
+        // Open the modal when the button is clicked
+        openModalButton.addEventListener('click', function () {
+            modal.classList.remove('hidden'); // Show the modal
+            document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+        });
+    } else {
+        console.error("Open modal button not found!");
+    }
+
+    if (closeModalButton) {
+        // Close the modal when the close button (X) is clicked
+        closeModalButton.addEventListener('click', function () {
+            modal.classList.add('hidden'); // Hide the modal
+            document.body.style.overflow = ''; // Re-enable body scrolling
+        });
+    } else {
+        console.error("Close modal button not found!");
+    }
+
+    // Close the modal if the user clicks outside of the modal content (overlay click)
+    modal.addEventListener('click', function (event) {
+        // Check if the clicked element is the modal itself (not its content)
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = ''; // Re-enable body scrolling
+        }
+    });
+}
+
+///////////////
+
+
     // Initialize the modal functionality
     window.addEventListener('DOMContentLoaded', function() {
+     
         initializeModal_SendPubReqModal();
         initializeModal_statusRequest() ;
         initializeSearch_games();
         initializeModal_games();
+        initializeSearch_revenue();
+        initializeModal_RevenueModal();
 
     });
 
@@ -654,7 +767,7 @@ function switchToOuterModal() {
     if (selectedValue === "logout") {
         logout(); // Call the logout function
     } else if (selectedValue === "view_revenue") {
-        showDeveloperRevenueModal(); // Call the function to open the Developer Revenue modal
+        showRevenueModal(); // Call the function to open the Developer Revenue modal
     } else if (selectedValue === "update_pass") {
         showUpdatePasswordModal(); // Redirect to update password page
     }

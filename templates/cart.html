@@ -431,13 +431,21 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.success && !data.empty_check) {
                 alert(data.message);
                 // Redirect to the homepage after a delay
     
             setTimeout(() => {
                 window.location.href = '/ViewCart';
-            }, 1000);
+            }, 600);}
+            else if (data.success && data.empty_check){
+                alert(data.message);
+                // Redirect to the homepage after a delay
+    
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 600);  
+            
         } else {
             alert(data.message);
         }
@@ -462,6 +470,35 @@
     })
 
     }
+    function AddtoCart(button){
+        const game_name=button.getAttribute('data-game_name_cart') 
+        const was_it_on_sale=button.getAttribute('data-game_sale_status')
+    
+        fetch('/AddtoCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ game_name: game_name,was_it_on_sale:was_it_on_sale})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Display success message
+                
+                
+            } else {
+                alert(data.error); // Display error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong!');
+        });
+    
+    }
+    
+    
 </script>
 
 </html>

@@ -58,48 +58,61 @@
 
 
 
-  <!-- Update Password Modal -->
-  <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+    <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
     <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
         <!-- Modal content -->
         <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
             <!-- Modal header -->
             <div class="flex justify-between mb-4 rounded-t sm:mb-5">
                 <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                    <h3 class="font-semibold">
-                        Update Password
-                    </h3>
+                    <h3 class="font-semibold">Update Password</h3>
                 </div>
                 <div>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="UpdatePasswordModal">
-                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-toggle="UpdatePasswordModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
             </div>
-
+    
             <!-- Modal body: Update password form -->
             <form id="updatePasswordForm" action="/update_password" method="POST" class="space-y-4">
                 <div>
-                    <label for="current-password" class="block text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
-                    <input type="password" id="current-password" name="current_password" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label for="current-password"
+                        class="block text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
+                    <input type="password" id="current-password" name="current_password" required
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
-                    <label for="new-password" class="block text-sm font-medium text-gray-900 dark:text-white">New Password</label>
-                    <input type="password" id="new-password" name="new_password" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label for="new-password" class="block text-sm font-medium text-gray-900 dark:text-white">New
+                        Password</label>
+                    <input type="password" id="new-password" name="new_password" required
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
-                    <label for="confirm-password" class="block text-sm font-medium text-gray-900 dark:text-white">Confirm New Password</label>
-                    <input type="password" id="confirm-password" name="confirm_password" required class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label for="confirm-password"
+                        class="block text-sm font-medium text-gray-900 dark:text-white">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirm_password" required
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
-
+    
                 <!-- Error and Success Messages -->
                 <div id="password-error" class="text-red-600 hidden">Passwords do not match.</div>
                 <div id="password-success" class="text-green-600 hidden">Password updated successfully!</div>
-
+    
                 <div class="mt-4 flex justify-end space-x-2">
-                    <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-lg" data-modal-toggle="UpdatePasswordModal">Cancel</button>
-                    <button type="submit" id="submit-password" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
+                    <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-lg"
+                        data-modal-toggle="UpdatePasswordModal">Cancel</button>
+                    <button type="submit" id="submit-password"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
                 </div>
             </form>
         </div>

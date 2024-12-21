@@ -63,6 +63,7 @@
             <!-- Modal header -->
             <div class="flex justify-between mb-4 rounded-t sm:mb-5">
                 <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                    <h1 class="font-bold">Total Cashflow: {{total_cash_flow  | round(2)}} $</h1>
                     <h3 class="font-semibold">
                         Developer Revenue
                     </h3>
@@ -81,9 +82,11 @@
                     {% for developer in developer_earnings %}
                         <li class="flex items-center justify-between mb-4">
                             <span>{{ developer[0] }}</span> <!-- Display the developer username -->
-                            <span>{{ developer[1] }} $</span> <!-- Display the balance -->
+                            <span>{{ developer[1] | round(2) }} $</span> <!-- Display the balance -->
                         </li>
                     {% endfor %}
+                    <span class="font-bold text-sm">Top earning game: {{highest_game[0]}} ({{highest_game[1] | round(2)}} $)</span> <br>
+                    <span class="font-bold text-sm">Dev with the highest earning (cumulative): {{highest_dev[0]}} ({{highest_dev[1]| round(2)}} $)</span> 
                 </ul>
             </div>
         </div>

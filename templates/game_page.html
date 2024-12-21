@@ -505,11 +505,14 @@
             .then(data => {
                 if (data.message) {
                     alert(data.message); // Display success message
-                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 100);
                     
                 } else {
                     alert(data.error); // Display error message
                 }
+
             })
             .catch(error => {
                 console.error('Error:', error);
