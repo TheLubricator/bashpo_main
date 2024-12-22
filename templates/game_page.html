@@ -239,11 +239,17 @@
         </div>
 
         <!-- Add to Cart Button -->
-        <a href="">
-            <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"data-game_name_cart="{{game_info[0]}}" 
-            data-game_sale_status="{{game_info[14]}}" onclick="AddtoCart(this)">
-                Add To Cart
-            </button>
+        {% if bought_check=='1' %}
+        <button class="bg-orange-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md" data-game_name_cart="{{game_info[0]}}" 
+        data-game_sale_status="{{game_info[14]}}" disabled>
+            Not Available
+        </button>
+        {% else %}
+        <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md" data-game_name_cart="{{game_info[0]}}" 
+        data-game_sale_status="{{game_info[14]}}"  onclick="AddtoCart(this)">
+            Add To Cart
+        </button>
+   {% endif %}
         </a>
     </div>
 </div>
