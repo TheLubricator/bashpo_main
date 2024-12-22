@@ -188,6 +188,27 @@ def connect_db():
               )
 
         """)
+    c.execute("""
+            CREATE TABLE IF NOT EXISTS WALLET_CODE(
+                wallet_key TEXT NOT NULL,
+                amount INT NOT NULL,
+                status TEXT CHECK (status in('ACTIVE','USED'))
+            )          
+              """
+        
+        
+    )
+    c.execute("""
+            CREATE TABLE IF NOT EXISTS GAME_KEY(
+                game_key TEXT NOT NULL,
+                game_name INT NOT NULL,
+                status TEXT CHECK (status in('ACTIVE','USED')),
+                FOREIGN KEY (game_name) REFERENCES game_list(game_name)
+            )          
+              """
+        
+        
+    )
 
     
 
@@ -498,6 +519,19 @@ def developer_dashboard():
                            publisher_name=publisher_name.upper(),dev_email=dev_email,game_req_data=game_req_data,game_list_data=game_list_data,
                            no_of_total__games_sold=no_of_total__games_sold, no_of_total_games= no_of_total_games,no_of_games_active=no_of_games_active,
                            delisted_games_count=delisted_games_count,revenue_data=revenue_data)
+@app.route('/GenerateGameKey', methods=['GET','POST'])
+
+def generate_game_key():
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+        req_json = request.json
+        game_name = req_json.get('game_name')
+        no_of_keys = req_json.get('numberofkeys')
+        for i in range(no_of_keys):
+            game_key = uuid.uuid4().hex
+            c.execute("INSERT INTO game_key values (?, ?, ?)", (game_key, game_name, "ACTIVE"))
+            db.commit()
+        return jsonify({'ok':True})
 
 @app.route('/buyer_dashboard', methods=['GET', 'POST'])
 @login_required('buyer')
@@ -1172,6 +1206,7 @@ def buyer_profile():
 @app.route('/admin_dashboard')
 @login_required('admin')
 def admin_dashboard():
+    connect_db()
     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
         c = db.cursor()
         c.execute("SELECT COUNT(*) FROM USERS WHERE user_type ='buyer' and account_status = 'active'")
@@ -1214,6 +1249,20 @@ def admin_dashboard():
                            balance=balance,all_users=all_users,
                            developer_earnings=developer_earnings,all_devs=all_devs,all_requests=all_requests,
                            total_cash_flow=total_cash_flow, highest_game=highest_game,highest_dev=highest_dev)
+
+@app.route('/generatewallet', methods=['GET','POST'])
+@login_required('admin')
+def generate_wallet():
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+        req_json = request.json
+        value = req_json.get('amount')
+        no_of_cards = req_json.get('numberOfCards')
+        for i in range(no_of_cards):
+            wallet_code = uuid.uuid4().hex
+            c.execute("INSERT INTO WALLET_CODE values (?, ?, ?)", (wallet_code, value, "ACTIVE"))
+            db.commit()
+        return jsonify({'ok':True})
 
 @app.route('/get_active_buyers', methods=['GET'])
 def get_active_buyers():
