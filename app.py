@@ -201,7 +201,7 @@ def connect_db():
     c.execute("""
             CREATE TABLE IF NOT EXISTS GAME_KEY(
                 game_key TEXT NOT NULL,
-                game_name INT NOT NULL,
+                game_name TEXT NOT NULL,
                 status TEXT CHECK (status in('ACTIVE','USED')),
                 FOREIGN KEY (game_name) REFERENCES game_list(game_name)
             )          
@@ -209,6 +209,19 @@ def connect_db():
         
         
     )
+    c.execute("""
+            CREATE TABLE IF NOT EXISTS Reviews(
+                game_name TEXT NOT NULL,
+                username TEXT NOT NULL,
+                review TEXT NOT NULL,
+                FOREIGN KEY (username) REFERENCES USERS(username),
+                FOREIGN KEY (game_name) REFERENCES game_list(game_name)
+            )          
+              """
+        
+        
+    )
+    
 
     
 
