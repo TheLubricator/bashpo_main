@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Layout</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+  <!-- Header -->
+  <header class="bg-gray-800 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Game Store</h1>
+      <nav>
+        <ul class="flex space-x-4">
+          <li><a href="#" class="hover:text-gray-300">Home</a></li>
+          <li><a href="#" class="hover:text-gray-300">Games</a></li>
+          <li><a href="#" class="hover:text-gray-300">Wishlist</a></li>
+          <li><a href="#" class="hover:text-gray-300">Cart</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Section -->
+  <section class="mt-5">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Side: Carousel -->
+        <div class="bg-gray-800 p-6 rounded-lg relative h-[400px]">
+          <h2 class="text-2xl font-bold mb-4">Game Title</h2>
+          <div class="relative overflow-hidden rounded-lg">
+            <div class="carousel w-full">
+              <!-- Slide 1 -->
+              <div id="slide1" class="carousel-item relative w-full">
+                <img src="https://via.placeholder.com/600x400" alt="Image 1" class="w-full h-[300px] object-cover">
+              </div>
+              <!-- Slide 2 -->
+              <div id="slide2" class="carousel-item relative w-full">
+                <img src="https://via.placeholder.com/600x400/666" alt="Image 2" class="w-full h-[300px] object-cover">
+              </div>
+            </div>
+            <p class="absolute bottom-4 left-4 text-gray-300">Carousel rotates 2 images automatically.</p>
+          </div>
+          <!-- Buttons -->
+          <div class="mt-4 flex gap-4">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Wishlist</button>
+            <button class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600">Read Reviews</button>
+          </div>
+        </div>
+
+        <!-- Right Side: 3 Boxes -->
+        <div class="grid grid-rows-3 gap-4">
+          <!-- Box 1: Logo -->
+          <div class="bg-gray-300 text-gray-800 p-6 rounded-lg flex items-center justify-center h-[130px]">
+            <span class="text-2xl font-bold">LOGO</span>
+          </div>
+          <!-- Box 2: Game Info -->
+          <div class="bg-gradient-to-r from-blue-500 to-blue-900 p-6 rounded-lg">
+            <p class="font-semibold">
+              THE CRITICALLY ACCLAIMED FANTASY ACTION RPG.<br>
+              Rise, Tarnished, and be guided by grace to brandish the power.
+            </p>
+          </div>
+          <!-- Box 3: Metadata -->
+          <div class="bg-blue-950 p-6 rounded-lg">
+            <p class="mb-2">Genre: <span class="font-semibold">Action RPG</span></p>
+            <p class="mb-2">Rating: <span class="font-semibold">9.5/10</span></p>
+            <p class="mb-2">Release Date: <span class="font-semibold">March 2024</span></p>
+            <p class="mb-2">Developer: <span class="font-semibold">Studio XYZ</span></p>
+            <p>Publisher: <span class="font-semibold">Publisher Name</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom: Buy Section -->
+      <div class="mt-8 flex items-center bg-gray-700 rounded-lg p-6 justify-between">
+        <div>
+          <h3 class="text-2xl font-bold">Buy Game Title</h3>
+          <p class="text-sm text-gray-300">Special Offer: active for <span class="font-semibold">70 hrs</span></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="bg-black text-white px-3 py-1 rounded">$0.005</span>
+          <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

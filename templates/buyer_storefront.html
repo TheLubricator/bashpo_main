@@ -30,7 +30,7 @@
         <div class="flex navbar bg-base-100 justify-start rounded-lg">
             <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
                 <div
-                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-[2px]">
+                    class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-2">
                 </div>
                 <a href="/">
                     <img alt="Tailwind CSS Navbar component" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo" class="rounded-lg relative z-10">
@@ -106,37 +106,22 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <section class="px-2 mt-5">
+    <section class="mt-5">
         <div class="grid relative min-h-screen bg-blue-950 opacity-100">
             <div class="absolute right-0 top-0 flex flex-col gap-4 p-2 items-end">
-                <div class="flex flex-row gap-4">
+                <div class="flex flex-row gap-4 mt-5">
                     <a href="publication_req.html">
                         <button type="button"
                             class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#2B983F] to-[#115C1E] text-white rounded-lg">
                             View Cart
                         </button>
                     </a>
-                    <a href="act_buyer_lst.html">
-                        <button type="button"
+                   
+                        <button type="button" id="ViewWishlistedGamesButton" data-modal-target="ViewWishlistedGamesModal" data-modal-toggle="ViewWishlistedGamesModal"
                             class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#3E7C9B] to-[#4E6C9F] text-white rounded-lg">
-                            WishList(n)
+                            WishList({{wishlist_value}})
                         </button>
-                    </a>
+                 
                 </div>
                 <!-- Search Bar -->
                 <form class="w-full max-w-md">
@@ -164,26 +149,26 @@
             <div>
 
             </div>
-            <div id="controls-carousel" class="relative mx-auto w-[80%] lg:w-[60%]" data-carousel="static">
+            <div id="controls-carousel" class="mt-[10rem] relative mx-auto w-[80%] lg:w-[60%]" data-carousel="static">
                 <h1 class="text-3xl font-bold font-istok tracking-widest">Featured & Recommended</h1>
                 <div class="mt-5 relative h-[500px] overflow-hidden rounded-lg">
                     <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
-                        <a href="">
+                        <a href="/ViewGamePage/{{featured_games[0][0]}}">
                             <img src="{{ url_for('static', filename=featured_games[0][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 1">
                         </a>
                     </div>
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <a href="">
-                            <img   src="{{ url_for('static', filename=featured_games[1][2]) }}"
+                        <a href="/ViewGamePage/{{featured_games[1][0]}}">
+                            <img src="{{ url_for('static', filename=featured_games[1][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 2">
                         </a>
                     </div>
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <a href="">
-                            <img src="{{ url_for('static', filename='img/3rd-carou.jpg') }}"
+                        <a href="/ViewGamePage/{{featured_games[2][0]}}">
+                            <img src="{{ url_for('static', filename=featured_games[2][2]) }}"
                                 class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                 alt="Slide 3">
                         </a>
@@ -214,6 +199,162 @@
             </div>
         </div>
     </section>
+
+    <section class="bg-blue-950 opacity-100">
+
+        <div class="mx-[25rem] flex flex-col justify-start items-start min-h-screen">
+            <div>
+                <h1 class="text-2xl font-bold">Sort By: {Filter}</h1>
+            </div>
+
+            <div class="flex flex-wrap justify-center items-center gap-4 mt-4">
+                <div class="relative">
+                    <select id="genre" name="genre"
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
+                        onchange="handleDropdownChangeGenre(this)" required>
+                        <option value="" disabled selected>Genre</option>
+                        <option value="Action" id="Action">Action</option>
+                        <option value="Racing" id="Racing">Racing</option>
+                        <option value="Strategy" id="Strategy">Strategy</option>
+                        <option value="Adventure" id="Adventure">Adventure</option>
+                        <option value="Souls" id="Souls">Souls</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <select id="year" name="year"
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" onchange="handleDropDownChangeYOR(this)"
+                        required>
+                        <option value="" disabled selected>Year of Release</option>
+                        <option value="ascending">Ascending</option>
+                        <option value="descending">Descending</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <select id="price" name="price" 
+                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" onchange="handleDropDownChangePrice(this)"
+                        required>
+                        <option value="" disabled selected>Price</option>
+                        <option value="low-to-high">Low to High</option>
+                        <option value="high-to-low">High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-center items-center flex-1 w-full mt-5">
+                <div class="h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
+                    {% for games in game_list %}
+                    <a href="/ViewGamePage/{{games[0]}}" class="block">
+                        <div
+                            class="px-2 flex justify-between items-center mx-[10rem] my-[3rem] lg:h-[120px] lg:w-[820px] bg-gradient-to-r from-[#57565C] to-[#B6B5C2] rounded-xl">
+                            <div class="flex items-center mx-5">
+                                <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo" 
+                                     class="mx-1 my-4 w-1/3 rounded-xl">
+                                <div class="ml-5">
+                                    <h1 class="text-xl font-bold text-white">{{games[0]}}</h1>
+                                    <h1 class="text-xl text-slate-300 font-semibold mt-5 italic">{{games[1]}}</h1>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center justify-center">
+
+                                {% if games[5] == '1' %}
+                                <h1 class="flex items-center text-xl font-bold">
+                                    <!-- games[6]% in light green -->
+                                    <span class="bg-[#335c1b] text-[#3ae310] text-sm font-bold py-1 px-2 rounded-lg shadow-md mr-2">
+                                        {{games[6]}}%
+                                    </span>
+                                    <!-- games[4] with line-through -->
+                                    <span class="text-black line-through mr-2">{{games[4]}}$</span>
+                                    <!-- games[2] in normal text -->
+                                    <span class="text-black">{{games[2]}}$</span>
+                                  </h1>
+                                  >
+                                {% else %}
+                                <h1 class="text-black text-xl font-bold"> {{games[2]}}$</h1>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <div id="ViewWishlistedGamesModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/2 lg:w-1/3">
+            <!-- Modal content -->
+            <div class="relative">
+                <!-- Modal header -->
+                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                        <h3 class="font-semibold">
+                            {{buyer_username}}'s Wishlist:
+                        </h3>
+                    </div>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="ViewWishlistedGamesModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+    
+                <!-- Search Bar -->
+                <div class="mb-4">
+                    <input type="text" id="searchInput_wishlistedgames" placeholder="Search games..." class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+                </div>
+    
+                <!-- Game List -->
+                <div class="mt-4">
+                    <div class="flex justify-between font-semibold mb-4">
+                        <div class="w-1/4 text-left">Game Name</div>
+                        <div class="w-1/4 text-left">Current Price</div>
+                        <div class="w-1/4 text-left">Action</div>
+                    </div>
+                    <ul id="buyerList" class="list-none">
+                        {% for wishlist in wishlist_user %}
+                            <li class="flex justify-between items-center mb-4">
+                                <span class="w-1/4">{{ wishlist[1] }}</span>
+                                 <!-- Game Name -->
+                                <!-- Status -->
+                                {% if wishlist[4]=='1' %}
+                             <div class="flex items-center gap-x-1">
+                                <span class="line-through">{{ wishlist[2] }}$</span>
+                                <span>{{ wishlist[3] }}$</span>
+                            </div>
+                     
+                            {% else %}
+                            <span class="w-1/4 ">{{ wishlist[3] }}$</span>
+                            {% endif %} <!-- Base Price -->
+                                <div class="w-1/4 text-left">
+                                  
+                                        <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                            data-username="{{wishlist[0]}}" data-game_name="{{ wishlist[1] }}" onclick="RemoveFromWishList(this)">
+                                            Remove
+                                        </button>
+                                    <!--end of unused feature(for now)-->
+    
+                                    
+                                    
+                                        <button type="button"
+                                                class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
+                                                data-username="{{wishlist[0]}}" data-game_name="{{ wishlist[1] }}"   data-game_name_cart="{{ wishlist[1] }}" 
+                                                data-game_sale_status="{{wishlist[4]}}"
+                                                                                onclick="AddtoCart(this)">
+                                               
+                                            Add to Cart
+                                        </button>
+                                 
+                                </div> <!-- Action -->
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
 
@@ -309,6 +450,176 @@
         window.location.href = '/ViewMyProfile'; // Redirect to update password page
     }
 }
+
+function handleDropdownChangeGenre(selectElement) {
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; 
+    
+    if (selectedValue === "Action") {
+        search_filter('game_genre',selectedValue);
+    } else if (selectedValue === "Racing") {
+
+       search_filter('game_genre',selectedValue)
+
+
+    } else if (selectedValue === "Strategy") {
+        search_filter('game_genre',selectedValue);
+    }
+    else if (selectedValue === "Adventure") {
+        search_filter('game_genre',selectedValue); 
+    }
+    else if (selectedValue === "Souls") {
+        search_filter('game_genre',selectedValue); 
+    }
+}
+function handleDropDownChangeYOR(selectElement){
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    console.log(selectedValue)
+    if (selectedValue === "ascending") {
+        search_filter('release_year',selectedValue);
+    } else if (selectedValue === "descending") {
+
+       search_filter('release_year',selectedValue)
+
+
+    } 
+
+}
+
+function handleDropDownChangePrice(selectElement){
+    const selectedValue = selectElement.value;
+    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    console.log(selectedValue)
+    if (selectedValue === "low-to-high") {
+        search_filter('actual_price',selectedValue);
+    } else if (selectedValue === "high-to-low") {
+
+       search_filter('actual_price',selectedValue)
+
+
+    } 
+
+}
+
+
+
+function search_filter(orderbytype,secondcondition){
+    const ordertype=orderbytype
+    const query_filter=secondcondition
+    const SortingTest=document.getElementById('SortingTest')
+    console.log(ordertype,query_filter)
+    if (ordertype){
+        fetch('/SearchFilterApi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ordertype:ordertype, query_filter:query_filter})
+            })
+            .then(response=>{
+
+            })
+            .then (()=> {
+               
+                fetch("/SearchFilterReturner",{
+                    method: "GET"
+                })
+                .then(response=>{
+                    return response.text();
+                })
+                .then(html=>{
+                    SortingTest.innerHTML=html
+                })
+                
+            }
+        )
+    }
+    
+
+}
+function initializeSearch_wishlistedgames() {
+    const searchInput = document.getElementById('searchInput_wishlistedgames');
+    const userList = document.querySelectorAll('#ViewWishlistedGamesModal ul li');
+
+    searchInput.addEventListener('input', function () {
+        const filter = searchInput.value.toLowerCase();
+
+        userList.forEach((userItem) => {
+            const username = userItem.querySelector('span').textContent.toLowerCase();
+
+            // Show or hide the user based on the search input
+            if (username.includes(filter)) {
+                userItem.style.display = ''; // Show
+            } else {
+                userItem.style.display = 'none'; // Hide
+            }
+        });
+    });
+}   
+  // Function to initialize modal functionality
+  function initializeModal_wishlistedgames() {
+    const openModalButton = document.getElementById('ViewWishlistedGamesButton');
+    const modal = document.getElementById('ViewWishlistedGamesModal');
+    const closeModalButton = modal.querySelector('[data-modal-toggle="ViewWishlistedGamesModal"]');
+    
+    // Open the modal when the button is clicked
+    openModalButton.addEventListener('click', function () {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex'); // Ensure flex is added when shown
+        document.body.style.overflow = 'hidden';
+    });
+    
+    closeModalButton.addEventListener('click', function () {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex'); // Remove flex when hidden
+        document.body.style.overflow = '';
+    });
+
+    // Close the modal if the user clicks outside of the modal content (overlay click)
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+  window.addEventListener('DOMContentLoaded', function() {
+    initializeSearch_wishlistedgames();
+    initializeModal_wishlistedgames();
+
+
+});
+
+function AddtoCart(button){
+    const game_name=button.getAttribute('data-game_name_cart') 
+    const was_it_on_sale=button.getAttribute('data-game_sale_status')
+
+    fetch('/AddtoCart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ game_name: game_name,was_it_on_sale:was_it_on_sale})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message); // Display success message
+            
+            
+        } else {
+            alert(data.error); // Display error message
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong!');
+    });
+
+}
+
+
 
 
 
