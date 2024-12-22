@@ -537,7 +537,8 @@ class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-
                                     
                                         <button type="button"
                                                 class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
-                                                data-username="{{wishlist[0]}}" data-game_name="{{ wishlist[1] }}"
+                                                data-username="{{wishlist[0]}}" data-game_name_wishlist="{{ wishlist[1] }}"
+                                                data-was_it_on_sale="'{{wishlist[4]}}"
                                                 onclick="AddtoCart(this)">
                                             Add to Cart
                                         </button>
@@ -962,7 +963,7 @@ function updateFriendRequest(button) {
     }
 
     function AddtoCart(button){
-        const game_name=button.getAttribute('data-game_name_cart') 
+        const game_name=button.getAttribute('data-game_name_wishlist') 
         const was_it_on_sale=button.getAttribute('data-game_sale_status')
     
         fetch('/AddtoCart', {
@@ -976,7 +977,34 @@ function updateFriendRequest(button) {
         .then(data => {
             if (data.message) {
                 alert(data.message); // Display success message
+                location.reload()
                 
+            } else {
+                alert(data.error); // Display error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong!');
+        });
+    
+    }
+    function RemoveFromWishList(button){
+        const game_name=button.getAttribute('data-game_name_wishlist') 
+        const listItem = button.closest('li');
+    
+        fetch('/RemoveFromWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ game_name: game_name})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Display success message
+                listItem.remove();
                 
             } else {
                 alert(data.error); // Display error message

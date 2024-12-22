@@ -767,6 +767,18 @@ def RemoveFromCart():
         else:
             return jsonify({"success": True,"empty_check":True, "message": "Game removed from cart"})
 
+@app.route('/RemoveFromWishlist',methods=['GET','POST'])
+def RemoveFromWishlist():
+    if request.method=='POST':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor() 
+            req_json=request.json
+            username=session['username']
+            game_name=req_json.get('game_name')
+            c.execute("DELETE FROM WISHLIST WHERE game_name=? and username=?",(game_name,username))
+            db.commit()
+            return jsonify({"success": True, "message": "Game removed from wishlist"})
+
 @app.route('/PayUsingWallet',methods=['GET','POST'])
 def Pay_Using_Wallet():
      buyer_username=session['username']
