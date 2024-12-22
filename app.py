@@ -589,6 +589,26 @@ def buyer_dashboard():
         featured_games=featured_games, 
         game_list = game_list, wishlist_value=wishlist_value,wishlist_user=wishlist_user )
 
+
+@app.route('/search_games', methods=['GET'])
+def search_games():
+    search_query = request.args.get('query', '').lower()  # Get the query from the frontend
+    db = sqlite3.connect('bashpos_--definitely--_secured_database.db')  # Connect to the database
+    cursor = db.cursor()
+
+    # Search for games with names matching the query
+    cursor.execute("""
+        SELECT game_name, game_genre, base_price 
+        FROM GAME_LIST 
+        WHERE LOWER(game_name) LIKE ?
+    """, ('%' + search_query + '%',))
+    games = cursor.fetchall()
+    db.close()
+
+    return jsonify(games)  # Return the results as JSON
+
+
+
 @app.route('/AddtoWishlist',methods=['GET','POST'])
 def Add_to_Wishlist():
     if request.method=='POST':
