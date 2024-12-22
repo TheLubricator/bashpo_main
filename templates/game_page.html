@@ -222,7 +222,9 @@
         (Game already in your library)
         {% endif %}
     </h1>
-    <h1 class="text-lg lg:text-m font-regular text-white italic">Special Offer: offer active for {{game_info[16]}}</h1>
+    <h1 class="text-lg lg:text-m font-regular text-white italic">Special Offer: offer active for <span id="countdown" class="text-lg lg:text-m font-regular italic" style="color: skyblue;"></span>
+    
+    </h1>
 
     <!-- Black Box -->
     <div
@@ -578,6 +580,41 @@
             initializeModal_wishlistedgames();
 
     
+        });document.addEventListener("DOMContentLoaded", function () {
+            // Get the deadline dynamically from the backend via Jinja
+            const deadline = new Date("{{ game_info[16] }}"); // Dynamically passed from backend
+        
+            // Function to update the countdown
+            function updateCountdown() {
+                const now = new Date();
+                const timeRemaining = deadline - now;
+        
+                if (timeRemaining >= 0) {
+                    // Calculate hours, minutes, and seconds
+                    const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        
+                    // Display the countdown
+                    document.getElementById("countdown").textContent =
+                        `${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    // If the countdown is over
+                    clearInterval(countdownInterval); // Stop the countdown
+                    
+        
+                    // Wait for 10 seconds before reloading the page
+                    setTimeout(function () {
+                        location.reload();
+                    }, 10000); // 10 seconds
+                }
+            }
+        
+            // Update the countdown every second
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        
+            // Initial call to display the countdown immediately
+            updateCountdown();
         });
 
 
