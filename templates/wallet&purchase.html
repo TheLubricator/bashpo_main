@@ -118,7 +118,8 @@
 
 
     <section class="flex justify-items-center">
-        <div class="mx-auto justify-items-center relative my-5 bg-[url('bg-1.jpg')] bg-cover bg-center w-full h-[auto]">
+        <div
+            class="mx-auto justify-items-center relative my-5 bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full sm:h-[auto] lg:h-[800px]">
             <h1 class="mt-20 font-bold text-3xl lg:text-5xl font-istok tracking-widest text-center">
                 Wallet Balance and Purchase History
             </h1>
@@ -180,7 +181,7 @@
                     </div>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
                         onclick="closeModal('creditCardModal')">Close</button>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Submit</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded" onclick = "addtowalletusingcard(this)" >Submit</button>
                 </form>
             </div>
         </div>
