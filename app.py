@@ -836,6 +836,64 @@ def Pay_Using_Wallet():
                 db.commit()
             return jsonify({"success": True, "message": "All games  bought successfully"})
 
+@app.route('/PayUsingCard' , methods=['GET','POST'])
+def Pay_With_Card():
+    buyer_username=session['username']
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+        c.execute("SELECT c.game_name, g.actual_price FROM CART_SYSTEM c INNER JOIN GAME_LIST g on g.game_name=c.game_name where c.username=? and g.game_status='Active'",(buyer_username,))
+        
+        game_list=c.fetchall()
+        for i in range(len(game_list)):
+                game_list[i] = list(game_list[i])
+        if session['store_region'] == 'ASI':
+            for i in range(len(game_list)):
+               game_list[i] [1] = round(game_list[i] [1]*.8,2)
+             
+            print(game_list)
+            
+        elif session['store_region'] == 'NA':
+            for i in range(len(game_list)):
+                game_list[i] [1] = round(game_list[i] [1]*1,2)
+             
+            print(game_list)
+            
+        elif session['store_region'] == 'LA':
+            for i in range(len(game_list)):
+                game_list[i] [1] =round(game_list[i] [1]*.9,2)
+            
+            print(game_list)
+            
+        elif session['store_region'] == 'EU':
+            for i in range(len(game_list)):
+                game_list[i] [1] = round(game_list[i] [1]*1.1,2)
+ 
+        total_price=0
+        for i in game_list:
+            total_price+=i[1]
+        req_json=request.json
+        card_info=req_json.get('card_info')
+        c.execute("SELECT CARD_INFO from USERS WHERE username=?",(buyer_username,))
+        card_fetched=c.fetchone()[0]
+        
+        if int(card_info)!=card_fetched:
+            return jsonify({'success': False})
+        else:
+            for i in game_list:
+                game_name=i[0]
+                paying_amount=round(i[1],2)
+                c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
+                dev_username=c.fetchone()[0]
+                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?)",(buyer_username,game_name,paying_amount))
+                dev_cut=round(paying_amount*0.9,2)
+                admin_cut=round(paying_amount*0.1,2)
+                c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
+                c.execute("UPDATE WALLET_BALANCE SET balance=balance+? where username=?",(dev_cut,dev_username))
+                c.execute("UPDATE WALLET_BALANCE SET balance=balance+? where username=?",(admin_cut,'LordGaben'))
+                c.execute("DELETE FROM CART_SYSTEM WHERE game_name=? and username=?",(game_name,buyer_username))
+                c.execute("DELETE FROM WISHLIST WHERE game_name=? and username=?",(game_name,buyer_username))
+                db.commit()
+            return jsonify({"success": True, "message": "All games  bought successfully"})
 
 
 
