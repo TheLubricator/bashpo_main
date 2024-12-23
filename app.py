@@ -538,6 +538,8 @@ def developer_dashboard():
                            publisher_name=publisher_name.upper(),dev_email=dev_email,game_req_data=game_req_data,game_list_data=game_list_data,
                            no_of_total__games_sold=no_of_total__games_sold, no_of_total_games= no_of_total_games,no_of_games_active=no_of_games_active,
                            delisted_games_count=delisted_games_count,revenue_data=revenue_data)
+
+
 @app.route('/GenerateGameKey', methods=['GET','POST'])
 
 def generate_game_key():
