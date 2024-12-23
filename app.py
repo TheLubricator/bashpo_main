@@ -183,6 +183,8 @@ def connect_db():
               username TEXT NOT NULL,
               game_name TEXT NOT NULL,
               amount_paid INT NOT NULL,
+              purchase_type TEXT NOT NULL CHECK (purchase_type in ('Digital','Product_key')),
+              posted_review TEXT NOT NULL CHECK (posted_review in ('yes','no')),
               FOREIGN KEY (username) REFERENCES USERS(username),
               FOREIGN KEY (game_name) REFERENCES game_list(game_name)
               )
@@ -871,7 +873,7 @@ def Pay_Using_Wallet():
                 paying_amount=round(i[1],2)
                 c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
                 dev_username=c.fetchone()[0]
-                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?)",(buyer_username,game_name,paying_amount))
+                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(buyer_username,game_name,paying_amount,'Digital','no'))
                 dev_cut=round(paying_amount*0.9,2)
                 admin_cut=round(paying_amount*0.1,2)
                 c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
@@ -1203,7 +1205,7 @@ def buyer_profile():
         else:
             cart_status='1'  
           
-        c.execute("SELECT o.game_name, o.username, g.game_file_path from OWNED_GAMES o INNER JOIN GAME_LIST g on g.game_name=o.game_name where o.username=?",(buyer_username,))
+        c.execute("SELECT o.game_name, o.username, g.game_file_path,o.posted_review from OWNED_GAMES o INNER JOIN GAME_LIST g on g.game_name=o.game_name where o.username=?",(buyer_username,))
         owned_games=c.fetchall()
         print(owned_games)
     return render_template('Buyer_profile.html',balance=balance,buyer_username=buyer_username,buyer_data=buyer_details,account_status=status,
