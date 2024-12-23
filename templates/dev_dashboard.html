@@ -137,7 +137,7 @@
                         <li class="flex justify-between items-center mb-4">
                             <span class="w-1/4 game_name">{{ revenue_data_per_game[0] }}</span> <!-- Game Name -->
                             <span class="w-1/4">{{ revenue_data_per_game[1] }}</span> <!-- Status -->
-                            <span class="w-1/4">{{ revenue_data_per_game[2] }}</span> <!-- Base Price -->
+                            <span class="w-1/4">{{ revenue_data_per_game[2] | round(2) }}</span> <!-- Base Price -->
                            
                         </li>
                     {% endfor %}

@@ -19,6 +19,8 @@ class GlobalVar:
         self.value=value
 global_var=GlobalVar('First')
 
+review_filter_global=GlobalVar('ReviewSQL')
+
 class User:
     def __init__(self,username,email,password,user_type):
         self.username=username
@@ -215,8 +217,9 @@ def connect_db():
             CREATE TABLE IF NOT EXISTS Reviews(
                 game_name TEXT NOT NULL,
                 username TEXT NOT NULL,
+              
                 review TEXT NOT NULL,
-                recommended TEXT NOT NULL CHECK(recommended in ('yes','no')),
+              rating TEXT NOT NULL CHECK(rating IN('yes','no')),
                 FOREIGN KEY (username) REFERENCES USERS(username),
                 FOREIGN KEY (game_name) REFERENCES game_list(game_name)
             )          
@@ -535,6 +538,8 @@ def developer_dashboard():
                            publisher_name=publisher_name.upper(),dev_email=dev_email,game_req_data=game_req_data,game_list_data=game_list_data,
                            no_of_total__games_sold=no_of_total__games_sold, no_of_total_games= no_of_total_games,no_of_games_active=no_of_games_active,
                            delisted_games_count=delisted_games_count,revenue_data=revenue_data)
+
+
 @app.route('/GenerateGameKey', methods=['GET','POST'])
 
 def generate_game_key():
@@ -662,7 +667,9 @@ def wallet_purchase():
         # Fetch wallet balance
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?", (buyer_username,))
         balance = c.fetchone()[0]
-        return render_template('wallet&purchase.html', buyer_username = buyer_username, balance = balance)
+        c.execute("SELECT game_name,amount_paid,purchase_type from OWNED_GAMES where username=?",(buyer_username,))
+        game_info=c.fetchall()
+        return render_template('wallet&purchase.html', buyer_username = buyer_username, balance = balance,game_info=game_info)
 
 @app.route('/AddtoWishlist',methods=['GET','POST'])
 def Add_to_Wishlist():
@@ -886,7 +893,10 @@ def Pay_Using_Wallet():
                 paying_amount=round(i[1],2)
                 c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
                 dev_username=c.fetchone()[0]
-                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(buyer_username,game_name,paying_amount,'Digital','no'))
+                if len(c.execute("select * from reviews WHERE game_name=? and username=?",(game_name,session['username'])).fetchall())==0:
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','no'))
+                else:
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','yes'))
                 dev_cut=round(paying_amount*0.9,2)
                 admin_cut=round(paying_amount*0.1,2)
                 c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
@@ -946,7 +956,10 @@ def Pay_With_Card():
                 paying_amount=round(i[1],2)
                 c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
                 dev_username=c.fetchone()[0]
-                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?)",(buyer_username,game_name,paying_amount))
+                if len(c.execute("select * from reviews WHERE game_name=? and username=?",(game_name,session['username'])).fetchall())==0:
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','no'))
+                else:
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','yes'))
                 dev_cut=round(paying_amount*0.9,2)
                 admin_cut=round(paying_amount*0.1,2)
                 c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
@@ -1041,7 +1054,40 @@ def ReturnFilter():
             return render_template('game_list_jinga.html',game_list_sort=game_list)
 
 
+@app.route('/ReviewFilterApi',methods=['GET','POST'])
+def ReviewFilter():
+    if request.method=='POST':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
 
+            req_json=request.json
+            
+           
+            query_type=req_json.get('query_filter')
+            game_name=req_json.get('game_name')
+            print(query_type)
+            if query_type=='positive':
+                review_filter_global.value="SELECT username,review, rating FROM REVIEWS where game_name="+"'"+ game_name+"'"+"and rating='yes'"
+            elif query_type=='negative':
+                review_filter_global.value="SELECT username,review, rating FROM REVIEWS where game_name="+"'"+ game_name+"'"+"and rating='no'"
+            elif query_type=='all':
+                review_filter_global.value="SELECT username,review, rating FROM REVIEWS where game_name="+"'"+ game_name+"'"
+
+            
+            
+        return ""
+@app.route('/ReviewFilterReturner',methods=['GET','POST'])
+def ReturnReviewFilter():
+   
+    sqlcommand=review_filter_global.value
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            c.execute(sqlcommand)
+            print('sqlll',sqlcommand)
+            reviews_sorted=c.fetchall()
+            
+                    
+            return render_template('review_list_jinja.html',reviews_sorted=reviews_sorted)
 
 
 @app.route('/ViewGamePage/<game_name>',methods=['GET','POST'])
@@ -1132,10 +1178,11 @@ def View_Game_Page(game_name):
                 cart_status='0'
             else:
                 cart_status='1'   
-
+            c.execute("SELECT username,review, rating from Reviews where game_name=?",(game_name,))
+            reviews=c.fetchall()
             return render_template('game_page.html', game_info = game_info, publisher_name = publisher_name,rating=rating,
                                    buyer_username=buyer_username,balance=balance,wishlist_value=wishlist_value,
-                                   wishlist_user=wishlist_user,bought_check=bought_check,cart_status=cart_status,cart_value=cart_value)
+                                   wishlist_user=wishlist_user,bought_check=bought_check,cart_status=cart_status,cart_value=cart_value,reviews=reviews)
 def RatingCalculator(ratings_yes,ratings_no):
     if ratings_no==0 and ratings_yes==0:
         return 'Not enough ratings'
@@ -1247,6 +1294,27 @@ def Post_Review():
             db.commit()
             return jsonify({'success': True, 'message':'Review for '+game_name+' posted successfully'})
 
+@app.route('/PostReview', methods=['POST','GET'])
+def Post_Review():
+    if request.method=='POST':
+        buyer_username = session['username']
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            req_json=request.json
+            game_name=req_json.get('game_name')
+            rating=req_json.get('rating')
+            review=req_json.get('review')
+            if rating=='yes':
+                c.execute("UPDATE GAME_LIST SET rating_yes=rating_yes+1 WHERE game_name=?",(game_name,))
+            elif rating=='no':
+                c.execute("UPDATE GAME_LIST SET rating_no=rating_no+1 WHERE game_name=?",(game_name,))
+            c.execute("INSERT INTO REVIEWS VALUES (?,?,?,?)",(game_name,buyer_username,review,rating))
+            c.execute("UPDATE OWNED_GAMES SET posted_review='yes' where game_name=? and username=?", (game_name,buyer_username))
+            db.commit()
+        return jsonify({'success':True, 'message':'Review for '+game_name+' posted successfully!' })
+
+
+
 
 
 
@@ -1312,6 +1380,81 @@ def generate_wallet():
             db.commit()
         return jsonify({'ok':True})
 
+@app.route('/RedeemGiftCard', methods=['GET','POST'])
+def redeem_wallet():
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+        req_json=request.json
+        gift_card=req_json.get('gift_code')
+        c.execute("SELECT * FROM WALLET_CODE WHERE wallet_key=?",(gift_card,))
+        check_card=c.fetchall()
+        if len(check_card)==0:
+            return jsonify({'success':False, 'message':'Please enter a valid card key'})
+        else:
+            c.execute("SELECT * FROM WALLET_CODE WHERE wallet_key=?",(gift_card,))
+            check_card=c.fetchall()[0]
+            print(check_card)
+            if check_card[2]=='USED':
+                return jsonify({'success':False, 'message':'This card key has been used'})
+            else:
+                denomination=check_card[1]
+               
+                c.execute("UPDATE WALLET_BALANCE SET balance=balance+? WHERE username=?",(denomination,session['username'])) 
+                c.execute("UPDATE WALLET_CODE SET status='USED' where wallet_key=?", (gift_card,))
+                db.commit()
+            return jsonify({'success':True, 'message':str(denomination)+' $ added to account successfully'})
+
+@app.route('/ActivateProductKey', methods=['GET','POST'])
+def activate_game_key():
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+        req_json=request.json
+        product_key=req_json.get('product_key')
+        c.execute("SELECT * FROM GAME_KEY WHERE game_key=?",(product_key,))
+        check_product_key=c.fetchall()
+        if len(check_product_key)==0:
+            return jsonify({'success':False, 'message':'Please enter a valid game key'})
+        else:
+            c.execute("SELECT * FROM GAME_KEY WHERE game_key=?",(product_key,))
+            check_product_key=c.fetchall()[0]
+            if check_product_key[2]=='USED':
+                return jsonify({'success':False, 'message':'This game key has been used already'})
+            else:
+                
+                game_name=check_product_key[1]
+                print(game_name)
+                c.execute("SELECT * FROM OWNED_GAMES WHERE game_name=? and username=?",(game_name,session['username']))
+                
+                game_already_owned=c.fetchall()
+                print(game_already_owned)
+                if len(game_already_owned)>0:
+                    return jsonify({'success':False, 'message':'You already own this game'})
+                else:
+                    
+                    c.execute("SELECT dev_username,base_price FROM GAME_LIST WHERE game_name=?",(game_name,))
+                    data=c.fetchone()
+                    dev_username=data[0]
+                    price=data[1]*0.85
+                    if len(c.execute("select * from reviews WHERE game_name=? and username=?",(game_name,session['username'])).fetchall())==0:
+                        c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,price,'Product_key','no'))
+                    else:
+                        c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,price,'Product_key','yes'))
+                    dev_cut=round(price*0.9,2)
+                    admin_cut=round(price*0.1,2)
+                    c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
+                    c.execute("UPDATE WALLET_BALANCE SET balance=balance+? where username=?",(dev_cut,dev_username))
+                    c.execute("UPDATE WALLET_BALANCE SET balance=balance+? where username=?",(admin_cut,'LordGaben'))
+                    c.execute("DELETE FROM CART_SYSTEM WHERE game_name=? and username=?",(game_name,session['username']))
+                    c.execute("DELETE FROM WISHLIST WHERE game_name=? and username=?",(game_name,session['username']))
+                    c.execute("UPDATE GAME_KEY SET status='USED' where GAME_key=?", (product_key,))
+                    
+                    db.commit()
+                return jsonify({'success':True, 'message':str(game_name)+' added to account successfully'})
+        
+
+
+
+
 @app.route('/get_active_buyers', methods=['GET'])
 def get_active_buyers():
     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
@@ -1345,6 +1488,32 @@ def Delist_game():
             c.execute("UPDATE GAME_LIST SET game_status = 'Delisted' WHERE game_name = ?", (game_name,))
             db.commit()
         return jsonify({"message": f"{game_name} delisted successfully."})
+    else:
+        return jsonify({"error": "Invalid request"}), 400
+@app.route('/RefundGame', methods=['POST'])
+def Refund_game():
+    buyer_username=session['username']
+    data = request.json  
+    game_name = data.get('game_name')
+    game_price=int(data.get('price'))
+   
+    if game_name:
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            c.execute("UPDATE WALLET_BALANCE SET balance = balance+? WHERE username= ?", (game_price,buyer_username))
+            c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
+            dev_username=c.fetchone()[0]
+           
+            dev_cut=round(game_price*0.9,2)
+            admin_cut=round(game_price*0.1,2)
+            c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold-1, revenue_generated=revenue_generated-? where game_name=?",(dev_cut,game_name))
+           
+            c.execute("UPDATE WALLET_BALANCE SET balance=balance-? where username=?",(dev_cut,dev_username))
+            c.execute("UPDATE WALLET_BALANCE SET balance=balance-? where username=?",(admin_cut,'LordGaben'))
+            c.execute("DELETE FROM OWNED_GAMES where game_name=? and username=?",(game_name,buyer_username))
+
+            db.commit()
+        return jsonify({"message": f"{game_name} refunded successfully."})
     else:
         return jsonify({"error": "Invalid request"}), 400
 

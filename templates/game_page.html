@@ -117,13 +117,13 @@
                     <div class="relative lg:h-[430px] overflow-hidden rounded-lg">
                         <div class="hidden duration-1000 ease-in-out" data-carousel-item>
                             <a href="">
-                                <img src="{{ url_for('static', filename=game_info[11]) }}" class="absolute block w-[100%] h-[100%] object-fit" alt="Slide 1">
+                                <img src="{{ url_for('static', filename=game_info[11]) }}" class="absolute block w-[100%] h-[100%] object-cover" alt="Slide 1">
                             </a>
                         </div>
                         <div class="hidden duration-1000 ease-in-out" data-carousel-item>
                             <a href="">
                                 <img src="{{ url_for('static', filename=game_info[12]) }}"
-                                    class="absolute block w-[100%] h-[100%] object-fit" alt="Slide 2">
+                                    class="absolute block w-[100%] h-[100%] object-cover" alt="Slide 2">
                             </a>
                         </div>
                         
@@ -133,7 +133,7 @@
                 <div class="w-[20%] flex flex-col justify-between gap-5">
                     <div>
                         <a href="">
-                            <img src="{{ url_for('static', filename=game_info[10]) }}"alt="" class="w-full h-[130px] rounded-lg object-fit">
+                            <img src="{{ url_for('static', filename=game_info[10]) }}"alt="" class="w-full h-[130px] rounded-lg object-cover">
                         </a>
                     </div>
                     <div>
@@ -177,12 +177,94 @@
                     Add to WishList
                 </button>
             </a>
-            <a href="">
-                <button type="button"
+            
+                <button type="button"  id="ViewReviewButton" data-modal-target="ViewReviewModal" data-modal-toggle="ViewReviewModal"
                     class="w-full lg:w-[200px] h-[45px] font-bold bg-gradient-to-r from-[#4C7BE1] to-[#4C7BE5] text-white rounded-lg">
                     Read Reviews
+            
                 </button>
-            </a>
+
+                <div id="ViewReviewModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
+                    <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+                        <!-- Modal content -->
+                        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                            <!-- Modal header -->
+                            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                                    <h3 class="font-semibold">
+                                        Reviews for {{game_info[0]}}
+                                    </h3>
+                                </div>
+                                
+                                <div>
+                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="ViewReviewModal">
+                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                        <span class="sr-only">Close modal</span>
+                                    </button>
+                                </div>
+                            </div>
+                
+                            <!-- Search Bar -->
+                            
+                
+                            <!-- Display list of active buyers -->
+                            <div class="mt-4">
+                                <div class="relative">
+                                    <div class="mb-4">
+                                    <select id="price" name="price" 
+                                        class="block rounded-lg w-full lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center" data-game_name_review="{{game_info[0]}}" onchange="handleDropDownChangeReview(this)" required>
+                                        <option value="" disabled selected>Review type</option>
+                                        <option value="positive">Positive only</option>
+                                        <option value="negative">Negative only</option>
+                                        <option value="all">All</option>
+                                    </select>
+                                </div>
+                                </div>
+                                <div id="SortingTest">
+                                <ul id="buyerList" class="list-disc pl-5 space-y-4"> <!-- Added spacing between list items -->
+                                    {% for review in reviews %}
+                                        <li class="flex items-center justify-between mb-4 p-4 border border-gray-300 rounded-lg bg-transparent"> <!-- Removed white background -->
+                                            <!-- Request details -->
+                                            <div class="flex flex-col space-y-1">
+                                                <span class="text-gray-700 font-medium text-bold text-white">{{ review[0] }} 
+                                                    {% if review[2]=='yes' %}
+                                                    recommends this game
+
+                                                    {% elif review[2]=='no'%}
+                                                    doesn't recommend this game 
+                                                    {% endif %}
+                                                </span>
+                
+                                                <span class="text-gray-700 font-small text-white">"{{ review[1] }}"</span>
+                                              
+                                               
+                                            </div>
+                            
+                                         
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
         </div>
        {% if game_info[14]=='0' %}
         <div
@@ -335,7 +417,7 @@
 
     </section>
       <!-- Update Password Modal -->
-      <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+      <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
         <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
             <!-- Modal content -->
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
@@ -555,7 +637,7 @@
             const closeModalButton = modal.querySelector('[data-modal-toggle="ViewWishlistedGamesModal"]');
           
             
-            console.log(test)
+            
             
             // Open the modal when the button is clicked
             openModalButton.addEventListener('click', function () {
@@ -608,7 +690,7 @@
         
                     // Wait for 10 seconds before reloading the page
                     setTimeout(function () {
-                        location.reload();
+                        
                     }, 10000); // 10 seconds
                 }
             }
@@ -619,6 +701,100 @@
             // Initial call to display the countdown immediately
             updateCountdown();
         });
+
+
+        function showViewReviewModal() {
+            const modal = document.getElementById('ViewReviewModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+        }
+    
+      // Function to initialize modal functionality
+      function initializeModal_ViewReview() {
+        const openModalButton = document.getElementById('ViewReviewButton');
+        const modal = document.getElementById('ViewReviewModal');
+        const closeModalButton = modal.querySelector('[data-modal-toggle="ViewReviewModal"]');
+        
+        // Open the modal when the button is clicked
+        openModalButton.addEventListener('click', function() {
+          modal.classList.remove('hidden'); // Show the modal
+          document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+        });
+    
+        // Close the modal when the close button (X) is clicked
+        closeModalButton.addEventListener('click', function() {
+          modal.classList.add('hidden'); // Hide the modal
+          document.body.style.overflow = ''; // Re-enable body scrolling
+        });
+    
+        // Close the modal if the user clicks outside of the modal content (overlay click)
+        modal.addEventListener('click', function(event) {
+          if (event.target === modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+          }
+        });
+      }
+      window.addEventListener('DOMContentLoaded', function() {
+        initializeModal_ViewReview();
+        
+    
+    
+      });
+      
+      function handleDropDownChangeReview(selectElement) {
+        const selectedValue = selectElement.value;
+       const game_name=selectElement.getAttribute('data-game_name_review')
+       console.log(selectedValue,game_name)
+        
+        if (selectedValue === "positive") {
+            review_filter(game_name,selectedValue);
+        } else if (selectedValue === "negative") {
+    
+           review_filter(game_name,selectedValue);
+    
+    
+        }
+        else if (selectedValue === "all") {
+    
+            review_filter(game_name,selectedValue);
+     
+     
+         }
+    }
+    function review_filter(game_name,condition){
+        const game_name_filter = game_name
+        const query_filter=condition
+        const SortingTest=document.getElementById('SortingTest')
+        console.log(query_filter)
+        if (game_name){
+            fetch('/ReviewFilterApi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({game_name: game_name_filter, query_filter:query_filter})
+                })
+                .then(response=>{
+    
+                })
+                .then (()=> {
+                   
+                    fetch("/ReviewFilterReturner",{
+                        method: "GET"
+                    })
+                    .then(response=>{
+                        return response.text();
+                    })
+                    .then(html=>{
+                        SortingTest.innerHTML=html
+                    })
+                    
+                }
+            )
+        }
+    }
+
 
 
         function logout() {

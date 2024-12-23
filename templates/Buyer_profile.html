@@ -273,12 +273,7 @@ class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-
                                                     </button>
                                                 </a>
                                                                                                        
-                                                    <button type="button" 
-                                                        class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-4 py-2 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900" 
-                        
-                                                        onclick="">
-                                                        Refund
-                                                    </button>
+                                                    
                                                 </div>
                                             </li>
                                         {% endfor %}
@@ -1105,7 +1100,7 @@ function updateFriendRequest(button) {
                 // Redirect to the homepage after a delay
     
             setTimeout(() => {
-                location.reload();
+                window.location.href = '/ViewMyProfile';
             }, 2000);
         } else {
             alert(data.message);
