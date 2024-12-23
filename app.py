@@ -946,7 +946,7 @@ def Pay_With_Card():
                 paying_amount=round(i[1],2)
                 c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
                 dev_username=c.fetchone()[0]
-                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?)",(buyer_username,game_name,paying_amount))
+                c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(buyer_username,game_name,paying_amount,'Digital','no'))
                 dev_cut=round(paying_amount*0.9,2)
                 admin_cut=round(paying_amount*0.1,2)
                 c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
