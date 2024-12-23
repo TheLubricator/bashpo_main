@@ -1105,7 +1105,7 @@ function updateFriendRequest(button) {
                 // Redirect to the homepage after a delay
     
             setTimeout(() => {
-                window.location.href = '/';
+                location.reload();
             }, 2000);
         } else {
             alert(data.message);

@@ -216,6 +216,7 @@ def connect_db():
                 game_name TEXT NOT NULL,
                 username TEXT NOT NULL,
                 review TEXT NOT NULL,
+                recommended TEXT NOT NULL CHECK(recommended in ('yes','no')),
                 FOREIGN KEY (username) REFERENCES USERS(username),
                 FOREIGN KEY (game_name) REFERENCES game_list(game_name)
             )          
@@ -1225,6 +1226,26 @@ def buyer_profile():
                            wishlist_value=wishlist_value,wishlist_user=wishlist_user,cart_status=cart_status,cart_value=cart_value,owned_games=owned_games)
 
 
+@app.route('/PostReview', methods=['GET','POST'])
+def Post_Review():
+    buyer_username = session['username']
+    if request.method=='POST':
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            req_json=request.json
+            game_name=req_json.get('game_name')
+            rating=req_json.get('rating')
+            review=req_json.get('review')
+
+            print('test',game_name,rating,review)
+            c.execute("INSERT INTO REVIEWS values (?,?,?,?)",(game_name,buyer_username,review,rating))
+            if rating=='yes':
+                c.execute("UPDATE GAME_LIST SET rating_yes=rating_yes+1 where game_name=?", (game_name,))
+            elif rating=='no':
+                c.execute("UPDATE GAME_LIST SET rating_no=rating_no+1 where game_name=?", (game_name,))
+            c.execute("UPDATE OWNED_GAMES SET posted_review='yes' where game_name=? and username=?",(game_name,buyer_username))
+            db.commit()
+            return jsonify({'success': True, 'message':'Review for '+game_name+' posted successfully'})
 
 
 
