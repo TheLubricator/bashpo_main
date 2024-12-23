@@ -221,7 +221,7 @@
                                 <div id="PayUsingCardModal" class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
                                     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                                         <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Send Friend Request</h3>
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Enter Card Info</h3>
                                             <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
                                                 data-modal-toggle="PayUsingCardModal">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -664,6 +664,9 @@
             alert('Something went wrong!');
         });
     
+    }
+    function logout() {
+        window.location.href = '/logout'; // Redirect to logout route
     }
     
     
