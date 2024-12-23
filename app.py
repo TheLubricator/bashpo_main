@@ -650,6 +650,18 @@ def buyer_dashboard():
         balance=balance,
         featured_games=featured_games, 
         game_list = game_list, wishlist_value=wishlist_value,wishlist_user=wishlist_user,cart_value=cart_value,cart_status=cart_status )
+@app.route('/AddMonitorWallet', methods=['GET', 'POST'])
+@login_required('buyer')
+def wallet_purchase():
+    connect_db()
+    buyer_username = session['username']
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        c = db.cursor()
+
+        # Fetch wallet balance
+        c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?", (buyer_username,))
+        balance = c.fetchone()[0]
+        return render_template('wallet&purchase.html', buyer_username = buyer_username, balance = balance)
 
 @app.route('/AddtoWishlist',methods=['GET','POST'])
 def Add_to_Wishlist():

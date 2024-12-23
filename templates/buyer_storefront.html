@@ -460,7 +460,7 @@
         logout(); // Call the logout function
     } else if (selectedValue === "AddMonitorWallet") {
 
-        pass; // changes will be made
+        window.location.href='/AddMonitorWallet'; // changes will be made
 
 
     } else if (selectedValue === "update_pass") {
@@ -473,7 +473,7 @@
 
 function handleDropdownChangeGenre(selectElement) {
     const selectedValue = selectElement.value;
-    selectElement.value = ""; 
+   
     
     if (selectedValue === "Action") {
         search_filter('game_genre',selectedValue);
@@ -494,7 +494,7 @@ function handleDropdownChangeGenre(selectElement) {
 }
 function handleDropDownChangeYOR(selectElement){
     const selectedValue = selectElement.value;
-    selectElement.value = ""; // This resets the dropdown to the placeholder option
+     // This resets the dropdown to the placeholder option
     console.log(selectedValue)
     if (selectedValue === "ascending") {
         search_filter('release_year',selectedValue);
@@ -509,7 +509,7 @@ function handleDropDownChangeYOR(selectElement){
 
 function handleDropDownChangePrice(selectElement){
     const selectedValue = selectElement.value;
-    selectElement.value = ""; // This resets the dropdown to the placeholder option
+    // This resets the dropdown to the placeholder option
     console.log(selectedValue)
     if (selectedValue === "low-to-high") {
         search_filter('actual_price',selectedValue);
