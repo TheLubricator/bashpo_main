@@ -26,10 +26,10 @@ review_filter_global=GlobalVar('ReviewSQL')
 
 # Original database path (read-only location)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ORIGINAL_DB_PATH = os.path.join(BASE_DIR, "bashpos_--definitely--_secured_database.db")
+ORIGINAL_DB_PATH = os.path.join(BASE_DIR, TMP_DB_PATH)
 
 # Writable database path in /tmp (runtime-only storage)
-TMP_DB_PATH = os.path.join("/tmp", "bashpos_--definitely--_secured_database.db")
+TMP_DB_PATH = os.path.join("/tmp", TMP_DB_PATH)
 
 # Check if the database exists in /tmp, if not, copy it there
 if not os.path.exists(TMP_DB_PATH):
@@ -496,7 +496,7 @@ def checkUser():
     data = request.json
     username = data.get('user_name')
     email = data.get('email')
-    c = sqlite3.connect("bashpos_--definitely--_secured_database.db").cursor()
+    c = sqlite3.connect(TMP_DB_PATH).cursor()
     c.execute("SELECT * FROM USERS WHERE username = ? OR email = ?", (username, email))
     data=c.fetchall()
     return data
@@ -1563,7 +1563,7 @@ def Refund_game():
 @login_required('buyer')
 def Send_Friend_Request():
      if request.method == 'POST':
-        db=sqlite3.connect("bashpos_--definitely--_secured_database.db")
+        db=sqlite3.connect(TMP_DB_PATH)
         c=db.cursor()
         req_json = request.json
         friend_email=req_json.get('email')
@@ -1658,7 +1658,7 @@ def view_buyer_profile(buyer_username):
 
 def Send_Publishing_Request():
     if request.method == 'POST':
-        db=sqlite3.connect("bashpos_--definitely--_secured_database.db")
+        db=sqlite3.connect(TMP_DB_PATH)
         c=db.cursor()
         req_json = request.json
         Pub_request=Game_publish_request(req_json["game_name"],req_json["game_genre"],req_json["estimated_release_year"],req_json["basic_description"])
@@ -1681,7 +1681,7 @@ def Send_Publishing_Request():
 
 def Send_Sale_Request():
     if request.method == 'POST':
-        db=sqlite3.connect("bashpos_--definitely--_secured_database.db")
+        db=sqlite3.connect(TMP_DB_PATH)
         c=db.cursor()
         req_json = request.json
         print(req_json)
@@ -1706,7 +1706,7 @@ def Send_Sale_Request():
 @app.route('/uploadgamedata', methods=['GET','POST'])
 def uploadgamedata():
      if request.method == 'POST':
-        db=sqlite3.connect("bashpos_--definitely--_secured_database.db")
+        db=sqlite3.connect(TMP_DB_PATH)
         c=db.cursor()
         req_json = request.json
         game_name=req_json.get('game_name')
@@ -1780,7 +1780,7 @@ def uploadgamedata():
 @app.route('/getPubReq', methods=['GET'])
 def getPub_Req_Avail(game_name):
     game_name=game_name
-    c = sqlite3.connect("bashpos_--definitely--_secured_database.db").cursor()
+    c = sqlite3.connect(TMP_DB_PATH).cursor()
     c.execute("SELECT * FROM GAME_PUBLISH_REQUEST where game_name=? and status!='Rejected'",(game_name,))
     data=c.fetchall()
     return data
@@ -1788,7 +1788,7 @@ def getPub_Req_Avail(game_name):
 
 @app.route('/getRequests', methods=['GET'])
 def getRequests_admin():
-    c = sqlite3.connect("bashpos_--definitely--_secured_database.db").cursor()
+    c = sqlite3.connect(TMP_DB_PATH).cursor()
     c.execute("SELECT * FROM GAME_PUBLISH_REQUEST where status='Pending'")
     data=c.fetchall()
     return data
@@ -1858,7 +1858,7 @@ def check_session():
 def reset_expired_sales():
     current_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
     
-    db = sqlite3.connect("bashpos_--definitely--_secured_database.db")
+    db = sqlite3.connect(TMP_DB_PATH)
     c = db.cursor()
   
     
