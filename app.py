@@ -1393,6 +1393,13 @@ def admin_dashboard():
         print(highest_game,highest_dev)
         c.execute("SELECT wallet_key, amount FROM WALLET_CODE WHERE STATUS='ACTIVE'")
         wallet_codes_active=c.fetchall()
+        if highest_dev==None:
+            highest_dev=['none',0]
+        if highest_game==None:
+            highest_game=['None',0]
+        c.execute("SELECT wallet_key, amount FROM WALLET_CODE WHERE STATUS='ACTIVE'")
+        wallet_codes_active=c.fetchall()
+        print(highest_game,highest_dev)
        
 
     return render_template('admin_dashboard.html', username=session['username'], active_users=active_users, developers=developers, terminated_users=terminated_users, 
