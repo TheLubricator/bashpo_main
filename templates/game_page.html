@@ -85,7 +85,7 @@
                         </button>
                 
                 </div>
-                <form class="w-full max-w-md">
+                <form class="w-full max-w-md relative">
                     <label for="default-search"
                         class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                     <div class="relative">
@@ -98,11 +98,18 @@
                         </div>
                         <input type="search" id="default-search"
                             class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search for Games" required />
+                            placeholder="Search for Games" autocomplete="off" required />
                         <button type="submit"
                             class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Search
                         </button>
+                    </div>
+                
+                    <!-- Dropdown container for autocomplete -->
+                    <div id="autocomplete-dropdown"
+                        class="absolute bg-[#3d4450] shadow-lg rounded-lg max-h-80 overflow-y-auto w-96 mt-2 border border-gray-200 hidden"
+                        style="z-index: 50;">
+                        <!-- Results will be dynamically added here -->
                     </div>
                 </form>
             </div>
@@ -223,7 +230,7 @@
                                 <div id="SortingTest">
                                 <ul id="buyerList" class="list-disc pl-5 space-y-4"> <!-- Added spacing between list items -->
                                     {% for review in reviews %}
-                                        <li class="flex items-center justify-between mb-4 p-4 border border-gray-300 rounded-lg bg-transparent"> <!-- Removed white background -->
+                                        <li class="flex items-center justify-between mb-4 p-3 border border-gray-300 rounded-lg bg-transparent"> <!-- Removed white background -->
                                             <!-- Request details -->
                                             <div class="flex flex-col space-y-1">
                                                 <span class="text-gray-700 font-medium text-bold text-white">{{ review[0] }} 
@@ -795,6 +802,79 @@
         }
     }
 
+    const searchInput = document.getElementById('default-search');
+    const dropdown = document.getElementById('autocomplete-dropdown');
+
+    // Event listener for search input
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim();
+        console.log(query)
+        if (query.length > 2) { // Only search after 2 characters
+            // Send query to Flask backend
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    dropdown.innerHTML = ''; // Clear previous results
+                    if (data.results.length > 0) {
+                        dropdown.classList.remove('hidden');
+                        data.results.forEach((game) => {
+                            const item = document.createElement('div');
+                            item.classList.add(
+        'p-4', // Increase padding for more space
+        'flex', 
+        'items-center', 
+        'hover:bg-gray-100', 
+        'cursor-pointer', 
+        'rounded-lg' // Rounded corners for better aesthetics
+    );
+                        
+                            // Add game logo
+                            const logo = document.createElement('img');
+                            logo.src = game.logo; // Backend now sends the correct full URL for logos
+                            logo.alt = game.name;
+                            logo.classList.add('!w-20', '!h-10', 'rounded-md', 'mr-1');
+                        
+                            // Add game name
+                            const name = document.createElement('span');
+                            name.textContent = game.name;
+                        
+                            // Append logo and name to item
+                            item.appendChild(logo);
+                            item.appendChild(name);
+
+                            // Make item clickable
+                            item.addEventListener('click', () => {
+                                window.location.href = `/ViewGamePage/${encodeURIComponent(game.name)}`;
+                            });
+
+                            // Append item to dropdown
+                            dropdown.appendChild(item);
+                        });
+                    } else {
+                        dropdown.classList.add('hidden'); // Hide dropdown if no results
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching search results:', error);
+                    dropdown.classList.add('hidden');
+                });
+        } else {
+            dropdown.classList.add('hidden'); // Hide dropdown if input is too short
+        }
+    });
+
+    // Close dropdown if clicked outside
+    document.addEventListener('click', function (event) {
+        if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
 
 
         function logout() {

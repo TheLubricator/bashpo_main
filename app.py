@@ -7,6 +7,7 @@ import os
 from flask_apscheduler import APScheduler
 from datetime import datetime
 import logging
+from datetime import timedelta
 app = Flask(__name__)
 scheduler = APScheduler()
 app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
@@ -14,6 +15,7 @@ UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the folder if it doesn't exist
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #gamelord
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 class GlobalVar:
     def __init__(self,value):
         self.value=value
@@ -273,6 +275,7 @@ def login():
 
         if user:
             if user_active_check:
+                session.permanent = True
         
                 session['username'] = user[0]
                 session['user_type'] = user[1]
@@ -532,12 +535,14 @@ def developer_dashboard():
         delisted_games_count=no_of_total_games-no_of_games_active
         c.execute("SELECT game_name, copies_sold, revenue_generated FROM GAME_LIST WHERE dev_username=?",(dev_username,))
         revenue_data=c.fetchall()
+        c.execute("SELECT game_key, game_name FROM GAME_KEY WHERE STATUS='ACTIVE'")
+        game_key_active=c.fetchall()
 
        
     return render_template('dev_dashboard.html',dev_username=dev_username, balance=balance,company_name=company_name,
                            publisher_name=publisher_name.upper(),dev_email=dev_email,game_req_data=game_req_data,game_list_data=game_list_data,
                            no_of_total__games_sold=no_of_total__games_sold, no_of_total_games= no_of_total_games,no_of_games_active=no_of_games_active,
-                           delisted_games_count=delisted_games_count,revenue_data=revenue_data)
+                           delisted_games_count=delisted_games_count,revenue_data=revenue_data,game_key_active=game_key_active)
 
 
 @app.route('/GenerateGameKey', methods=['GET','POST'])
@@ -788,7 +793,10 @@ def View_Cart():
             for i in range(len(wishlist_user)):
                 wishlist_user[i] [2] = round(wishlist_user[i] [2]*1.1,2)
                 wishlist_user[i] [3] = round(wishlist_user[i] [3]*1.1,2) 
-        return render_template('cart.html',buyer_username=buyer_username,balance=balance,game_list=game_list,total_price=total_price,store_region=session['store_region'],wishlist_user=wishlist_user,wishlist_value=wishlist_value)
+        c.execute("SELECT COUNT(*) FROM CART_SYSTEM w INNER JOIN GAME_LIST g ON g.game_name=w.game_name WHERE w.username=? and g.game_status='Active'",(buyer_username,))
+        cart_value=c.fetchone()[0]
+        return render_template('cart.html',buyer_username=buyer_username,balance=balance,game_list=game_list,total_price=total_price,store_region=session['store_region'],
+                               wishlist_user=wishlist_user,wishlist_value=wishlist_value,cart_value=cart_value)
 
 @app.route('/RemoveFromCart',methods=['GET','POST'])
 def RemoveFromCart():
@@ -1227,7 +1235,7 @@ def buyer_profile():
         c.execute("SELECT username_from FROM SENT_FRIEND_REQUEST where username_to=? and request_status='Pending'",(session['username'],))
         pending_requests=c.fetchall()
         c.execute("SELECT username_friendswith FROM FRIENDS where username_me=?",(session['username'],))
-        my_friends=c.fetchall()
+        my_friends=c.fetchall() 
         c.execute("SELECT COUNT(*) FROM WISHLIST w INNER JOIN GAME_LIST g ON g.game_name=w.game_name WHERE w.username=? and g.game_status='Active'",(buyer_username,))
         wishlist_value=c.fetchone()[0]
         c.execute("SELECT w.username, w.game_name, g.base_price,g.actual_price,g.sale_status FROM WISHLIST w INNER JOIN game_list g ON g.game_name=w.game_name WHERE username=?",(buyer_username,))
@@ -1294,27 +1302,39 @@ def Post_Review():
             db.commit()
             return jsonify({'success': True, 'message':'Review for '+game_name+' posted successfully'})
 
-@app.route('/PostReview', methods=['POST','GET'])
-def Post_Review():
+@app.route('/UpdateCreditCard', methods=['POST','GET'])
+def Update_card():
     if request.method=='POST':
         buyer_username = session['username']
         with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
             c = db.cursor()
             req_json=request.json
-            game_name=req_json.get('game_name')
-            rating=req_json.get('rating')
-            review=req_json.get('review')
-            if rating=='yes':
-                c.execute("UPDATE GAME_LIST SET rating_yes=rating_yes+1 WHERE game_name=?",(game_name,))
-            elif rating=='no':
-                c.execute("UPDATE GAME_LIST SET rating_no=rating_no+1 WHERE game_name=?",(game_name,))
-            c.execute("INSERT INTO REVIEWS VALUES (?,?,?,?)",(game_name,buyer_username,review,rating))
-            c.execute("UPDATE OWNED_GAMES SET posted_review='yes' where game_name=? and username=?", (game_name,buyer_username))
+            card_number=req_json.get('card_number')
+            c.execute("UPDATE USERS SET card_info=? where username=?", (card_number,buyer_username))
             db.commit()
-        return jsonify({'success':True, 'message':'Review for '+game_name+' posted successfully!' })
+            return jsonify({'success': True  })
+
+@app.route('/search', methods=['POST'])
+def search():
+    query = request.json.get('query', '').lower()
+
+    # Query the database for matching games
+    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT game_name, img_path_logo FROM game_list WHERE LOWER(game_name) LIKE ?", (f"%{query}%",))
+        results = cursor.fetchall()
 
 
-
+    
+    return jsonify({
+        'results': [
+            {
+                'name': row[0],
+                'logo': url_for('static', filename=row[1])  # Converts to a full URL (e.g., "/static/uploads/elden_ring_logo.png")
+            }
+            for row in results
+        ]
+    })
 
 
 
@@ -1360,11 +1380,14 @@ def admin_dashboard():
         c.execute("SELECT w.username, w.balance FROM wallet_balance w INNER JOIN USERS U on u.username=w.username where user_type='developer' order by balance desc")
         highest_dev=c.fetchone()
         print(highest_game,highest_dev)
+        c.execute("SELECT wallet_key, amount FROM WALLET_CODE WHERE STATUS='ACTIVE'")
+        wallet_codes_active=c.fetchall()
+       
 
     return render_template('admin_dashboard.html', username=session['username'], active_users=active_users, developers=developers, terminated_users=terminated_users, 
                            balance=balance,all_users=all_users,
                            developer_earnings=developer_earnings,all_devs=all_devs,all_requests=all_requests,
-                           total_cash_flow=total_cash_flow, highest_game=highest_game,highest_dev=highest_dev)
+                           total_cash_flow=total_cash_flow, highest_game=highest_game,highest_dev=highest_dev,wallet_codes_active=wallet_codes_active)
 
 @app.route('/generatewallet', methods=['GET','POST'])
 @login_required('admin')
@@ -1606,8 +1629,11 @@ def view_buyer_profile(buyer_username):
         balance = round(c.fetchone()[0],2)
         c.execute("SELECT email,account_status FROM USERS WHERE username=?",(buyer_username,))
         buyer_data=c.fetchone()
+        c.execute("SELECT game_name, username from OWNED_GAMES  where username=?",(buyer_username,))
+        friends_games=c.fetchall()
         # Pass the friend's username to the template
-        return render_template('ViewBuyerProfile.html', friendusername=buyer_username,username=session['username'],balance=balance,friend_email=buyer_data[0],friend_account_status=buyer_data[1].upper())
+        return render_template('ViewBuyerProfile.html', friendusername=buyer_username,username=session['username'],balance=balance,friend_email=buyer_data[0],
+                               friend_account_status=buyer_data[1].upper(),friends_games=friends_games)
 
 
 @app.route('/SendPublishingRequest', methods=['GET','POST'])
@@ -1803,6 +1829,12 @@ def update_password():
 
     return redirect(url_for('logout'))
 
+@app.route('/check_session')
+def check_session():
+    if 'user' in session:
+        return f"User: {session['username']}"
+    else:
+        return "Session has expired."
 
 
 def reset_expired_sales():
