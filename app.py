@@ -23,13 +23,13 @@ class GlobalVar:
 global_var=GlobalVar('First')
 
 review_filter_global=GlobalVar('ReviewSQL')
-TMP_DB_PATH = os.path.join("/tmp", "bashpos_--definitely--_secured_database.db")
+
 # Original database path (read-only location)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ORIGINAL_DB_PATH = os.path.join(BASE_DIR, TMP_DB_PATH)
+ORIGINAL_DB_PATH = os.path.join(BASE_DIR, "bashpos_--definitely--_secured_database.db")
 
 # Writable database path in /tmp (runtime-only storage)
-TMP_DB_PATH = os.path.join("/tmp", TMP_DB_PATH)
+TMP_DB_PATH = os.path.join("/tmp", "bashpos_--definitely--_secured_database.db")
 
 # Check if the database exists in /tmp, if not, copy it there
 if not os.path.exists(TMP_DB_PATH):
