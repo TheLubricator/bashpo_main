@@ -1379,10 +1379,14 @@ def admin_dashboard():
         highest_game=c.fetchone()
         c.execute("SELECT w.username, w.balance FROM wallet_balance w INNER JOIN USERS U on u.username=w.username where user_type='developer' order by balance desc")
         highest_dev=c.fetchone()
-        print(highest_game,highest_dev)
+        
+        if highest_dev==None:
+            highest_dev=['none',0]
+        if highest_game==None:
+            highest_game=['None',0]
         c.execute("SELECT wallet_key, amount FROM WALLET_CODE WHERE STATUS='ACTIVE'")
         wallet_codes_active=c.fetchall()
-       
+        print(highest_game,highest_dev)
 
     return render_template('admin_dashboard.html', username=session['username'], active_users=active_users, developers=developers, terminated_users=terminated_users, 
                            balance=balance,all_users=all_users,
