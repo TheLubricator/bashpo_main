@@ -137,7 +137,7 @@
                         <li class="flex justify-between items-center mb-4">
                             <span class="w-1/4 game_name">{{ revenue_data_per_game[0] }}</span> <!-- Game Name -->
                             <span class="w-1/4">{{ revenue_data_per_game[1] }}</span> <!-- Status -->
-                            <span class="w-1/4">{{ revenue_data_per_game[2] | round(2) }}</span> <!-- Base Price -->
+                            <span class="w-1/4">{{ revenue_data_per_game[2] | round(2) }} $</span> <!-- Base Price -->
                            
                         </li>
                     {% endfor %}
@@ -486,6 +486,55 @@ class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-cente
 </div>
 
 
+
+<button type="button" id="SeeGameKeyButton" data-modal-target="SeeGameKeyModal" data-modal-toggle="SeeGameKeyModal"
+class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+Active Game keys
+</button>
+<!-- Main modal -->
+<div id="SeeGameKeyModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
+<div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+<!-- Modal content -->
+<div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+<!-- Modal header -->
+<div class="flex justify-between mb-4 rounded-t sm:mb-5">
+    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+        <h3 class="font-semibold">
+            Active Game Keys
+        </h3>
+    </div>
+    <div>
+        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="SeeGameKeyModal">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <span class="sr-only">Close modal</span>
+        </button>
+    </div>
+</div>
+
+
+<!-- Display list of active buyers -->
+<div class="mt-4">
+    <ul id="devList" class="list-disc pl-5">
+        
+        <div class="flex justify-between items-center w-full">
+            <span class="dev-username text-left text-white font-bold">Game Keys</span> <!-- Left-aligned -->
+            <span class="dev-company_name text-right text-white font-bold">Game Name</span> <!-- Right-aligned -->
+        </div>
+        <br>
+        {% for game_key in game_key_active %}
+            <li class="flex items-center justify-between mb-4">
+                <span class="dev-username">{{ game_key[0] }}</span> <!-- Display the username -->
+                <span class="dev-company_name">{{ game_key[1] }} </span> 
+               
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+</div>
+</div>
+</div>
+
+
 </div>
 
 
@@ -824,6 +873,33 @@ function initializeModal_generate_wallet_list() {
     });
 }
 
+
+// Function to initialize modal functionality
+function initializeModal_SeeGameKey() {
+    const openModalButton = document.getElementById('SeeGameKeyButton');
+    const modal = document.getElementById('SeeGameKeyModal');
+    const closeModalButton = modal.querySelector('[data-modal-toggle="SeeGameKeyModal"]');
+    
+    // Open the modal when the button is clicked
+    openModalButton.addEventListener('click', function() {
+      modal.classList.remove('hidden'); // Show the modal
+      document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+    });
+
+    // Close the modal when the close button (X) is clicked
+    closeModalButton.addEventListener('click', function() {
+      modal.classList.add('hidden'); // Hide the modal
+      document.body.style.overflow = ''; // Re-enable body scrolling
+    });
+
+    // Close the modal if the user clicks outside of the modal content (overlay click)
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
 ///////////////
 
 
@@ -837,6 +913,7 @@ function initializeModal_generate_wallet_list() {
         initializeSearch_revenue();
         initializeModal_RevenueModal();
         initializeModal_generate_wallet_list();
+        initializeModal_SeeGameKey();
 
     });
 

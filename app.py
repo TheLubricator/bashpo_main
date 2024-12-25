@@ -535,12 +535,14 @@ def developer_dashboard():
         delisted_games_count=no_of_total_games-no_of_games_active
         c.execute("SELECT game_name, copies_sold, revenue_generated FROM GAME_LIST WHERE dev_username=?",(dev_username,))
         revenue_data=c.fetchall()
+        c.execute("SELECT game_key, game_name FROM GAME_KEY WHERE STATUS='ACTIVE'")
+        game_key_active=c.fetchall()
 
        
     return render_template('dev_dashboard.html',dev_username=dev_username, balance=balance,company_name=company_name,
                            publisher_name=publisher_name.upper(),dev_email=dev_email,game_req_data=game_req_data,game_list_data=game_list_data,
                            no_of_total__games_sold=no_of_total__games_sold, no_of_total_games= no_of_total_games,no_of_games_active=no_of_games_active,
-                           delisted_games_count=delisted_games_count,revenue_data=revenue_data)
+                           delisted_games_count=delisted_games_count,revenue_data=revenue_data,game_key_active=game_key_active)
 
 
 @app.route('/GenerateGameKey', methods=['GET','POST'])
@@ -1378,11 +1380,14 @@ def admin_dashboard():
         c.execute("SELECT w.username, w.balance FROM wallet_balance w INNER JOIN USERS U on u.username=w.username where user_type='developer' order by balance desc")
         highest_dev=c.fetchone()
         print(highest_game,highest_dev)
+        c.execute("SELECT wallet_key, amount FROM WALLET_CODE WHERE STATUS='ACTIVE'")
+        wallet_codes_active=c.fetchall()
+       
 
     return render_template('admin_dashboard.html', username=session['username'], active_users=active_users, developers=developers, terminated_users=terminated_users, 
                            balance=balance,all_users=all_users,
                            developer_earnings=developer_earnings,all_devs=all_devs,all_requests=all_requests,
-                           total_cash_flow=total_cash_flow, highest_game=highest_game,highest_dev=highest_dev)
+                           total_cash_flow=total_cash_flow, highest_game=highest_game,highest_dev=highest_dev,wallet_codes_active=wallet_codes_active)
 
 @app.route('/generatewallet', methods=['GET','POST'])
 @login_required('admin')
@@ -1624,8 +1629,11 @@ def view_buyer_profile(buyer_username):
         balance = round(c.fetchone()[0],2)
         c.execute("SELECT email,account_status FROM USERS WHERE username=?",(buyer_username,))
         buyer_data=c.fetchone()
+        c.execute("SELECT game_name, username from OWNED_GAMES  where username=?",(buyer_username,))
+        friends_games=c.fetchall()
         # Pass the friend's username to the template
-        return render_template('ViewBuyerProfile.html', friendusername=buyer_username,username=session['username'],balance=balance,friend_email=buyer_data[0],friend_account_status=buyer_data[1].upper())
+        return render_template('ViewBuyerProfile.html', friendusername=buyer_username,username=session['username'],balance=balance,friend_email=buyer_data[0],
+                               friend_account_status=buyer_data[1].upper(),friends_games=friends_games)
 
 
 @app.route('/SendPublishingRequest', methods=['GET','POST'])
