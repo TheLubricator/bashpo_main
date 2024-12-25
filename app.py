@@ -8,6 +8,7 @@ from flask_apscheduler import APScheduler
 from datetime import datetime
 import logging
 from datetime import timedelta
+import shutil
 app = Flask(__name__)
 scheduler = APScheduler()
 app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
@@ -23,6 +24,16 @@ global_var=GlobalVar('First')
 
 review_filter_global=GlobalVar('ReviewSQL')
 
+# Original database path (read-only location)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ORIGINAL_DB_PATH = os.path.join(BASE_DIR, "bashpos_--definitely--_secured_database.db")
+
+# Writable database path in /tmp (runtime-only storage)
+TMP_DB_PATH = os.path.join("/tmp", "bashpos_--definitely--_secured_database.db")
+
+# Check if the database exists in /tmp, if not, copy it there
+if not os.path.exists(TMP_DB_PATH):
+    shutil.copy(ORIGINAL_DB_PATH, TMP_DB_PATH)
 class User:
     def __init__(self,username,email,password,user_type):
         self.username=username
@@ -59,7 +70,7 @@ class Games_List:
           
 
 def connect_db():
-    db=sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db=sqlite3.connect(TMP_DB_PATH)
     c=db.cursor()
     c.execute("""
     CREATE TABLE IF NOT EXISTS USERS(
@@ -253,7 +264,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    db = sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db = sqlite3.connect(TMP_DB_PATH)
     c = db.cursor()
     
     if request.method == 'GET':
@@ -305,7 +316,7 @@ def current_user():
         username = session['username']
         
 
-        db = sqlite3.connect('bashpos_--definitely--_secured_database.db')
+        db = sqlite3.connect(TMP_DB_PATH)
         c = db.cursor()
         
 
@@ -346,7 +357,7 @@ def forgot_password():
         return jsonify({"error": "Passwords do not match."}), 400  
 
    
-    db = sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db = sqlite3.connect(TMP_DB_PATH)
     c = db.cursor()
     c.execute("SELECT email FROM USERS WHERE email = ?", (email,))
     user = c.fetchone()
@@ -376,7 +387,7 @@ def new_account_developer():
 
 @app.route('/create_buyer', methods=['POST'])
 def create_buyer():
-    db=sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db=sqlite3.connect(TMP_DB_PATH)
     c=db.cursor()
    
     if not request.is_json:
@@ -428,7 +439,7 @@ def create_buyer():
 
 @app.route('/create_developer', methods=['POST'])
 def create_developer():
-    db=sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db=sqlite3.connect(TMP_DB_PATH)
     c=db.cursor()
 
     if not request.is_json:
@@ -510,7 +521,7 @@ def login_required(role):
 @login_required('developer')
 def developer_dashboard():
     connect_db()
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT username,company_name,publisher_name,email FROM USERS WHERE user_type ='developer' and username=?",(session['username'],))
         dev_data = c.fetchone()
@@ -548,7 +559,7 @@ def developer_dashboard():
 @app.route('/GenerateGameKey', methods=['GET','POST'])
 
 def generate_game_key():
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         req_json = request.json
         game_name = req_json.get('game_name')
@@ -564,7 +575,7 @@ def generate_game_key():
 def buyer_dashboard():
     connect_db()
     buyer_username = session['username']
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
 
         # Fetch wallet balance
@@ -666,7 +677,7 @@ def buyer_dashboard():
 def wallet_purchase():
     connect_db()
     buyer_username = session['username']
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
 
         # Fetch wallet balance
@@ -679,7 +690,7 @@ def wallet_purchase():
 @app.route('/AddtoWishlist',methods=['GET','POST'])
 def Add_to_Wishlist():
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             req_json=request.json
             game_name=req_json.get('game_name')
@@ -708,7 +719,7 @@ def Add_to_Wishlist():
 @app.route('/AddtoCart',methods=['GET','POST'])
 def Add_to_Cart():
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             req_json=request.json
             game_name=req_json.get('game_name')
@@ -730,7 +741,7 @@ def Add_to_Cart():
 @app.route('/ViewCart',methods=['GET','POST'])
 def View_Cart():
     buyer_username = session['username']
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
         balance = round(c.fetchone()[0],2)
@@ -801,7 +812,7 @@ def View_Cart():
 @app.route('/RemoveFromCart',methods=['GET','POST'])
 def RemoveFromCart():
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor() 
             req_json=request.json
             username=req_json.get('username')
@@ -847,7 +858,7 @@ def RemoveFromCart():
 @app.route('/RemoveFromWishlist',methods=['GET','POST'])
 def RemoveFromWishlist():
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor() 
             req_json=request.json
             username=session['username']
@@ -859,7 +870,7 @@ def RemoveFromWishlist():
 @app.route('/PayUsingWallet',methods=['GET','POST'])
 def Pay_Using_Wallet():
      buyer_username=session['username']
-     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+     with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT c.game_name, g.actual_price FROM CART_SYSTEM c INNER JOIN GAME_LIST g on g.game_name=c.game_name where c.username=? and g.game_status='Active'",(buyer_username,))
         
@@ -919,7 +930,7 @@ def Pay_Using_Wallet():
 @app.route('/PayUsingCard' , methods=['GET','POST'])
 def Pay_With_Card():
     buyer_username=session['username']
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT c.game_name, g.actual_price FROM CART_SYSTEM c INNER JOIN GAME_LIST g on g.game_name=c.game_name where c.username=? and g.game_status='Active'",(buyer_username,))
         
@@ -990,7 +1001,7 @@ def Pay_With_Card():
 @app.route('/SearchFilterApi',methods=['GET','POST'])
 def SearchFilter():
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
 
             req_json=request.json
@@ -1028,7 +1039,7 @@ def SearchQueryMaker(ordertype,query_filter):
 def ReturnFilter():
    
     sqlcommand=global_var.value
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             c.execute(sqlcommand)
             game_list=c.fetchall()
@@ -1065,7 +1076,7 @@ def ReturnFilter():
 @app.route('/ReviewFilterApi',methods=['GET','POST'])
 def ReviewFilter():
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
 
             req_json=request.json
@@ -1088,7 +1099,7 @@ def ReviewFilter():
 def ReturnReviewFilter():
    
     sqlcommand=review_filter_global.value
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             c.execute(sqlcommand)
             print('sqlll',sqlcommand)
@@ -1101,7 +1112,7 @@ def ReturnReviewFilter():
 @app.route('/ViewGamePage/<game_name>',methods=['GET','POST'])
 def View_Game_Page(game_name):
      if request.method=='GET':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             c.execute("SELECT * from game_list where game_name = ?", (game_name,))
             
@@ -1224,7 +1235,7 @@ def RatingCalculator(ratings_yes,ratings_no):
 @login_required('buyer')
 def buyer_profile():
     buyer_username = session['username']
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
         balance = round(c.fetchone()[0],2)
@@ -1285,7 +1296,7 @@ def buyer_profile():
 def Post_Review():
     buyer_username = session['username']
     if request.method=='POST':
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             req_json=request.json
             game_name=req_json.get('game_name')
@@ -1306,7 +1317,7 @@ def Post_Review():
 def Update_card():
     if request.method=='POST':
         buyer_username = session['username']
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             req_json=request.json
             card_number=req_json.get('card_number')
@@ -1319,7 +1330,7 @@ def search():
     query = request.json.get('query', '').lower()
 
     # Query the database for matching games
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as conn:
+    with sqlite3.connect(TMP_DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT game_name, img_path_logo FROM game_list WHERE LOWER(game_name) LIKE ?", (f"%{query}%",))
         results = cursor.fetchall()
@@ -1343,7 +1354,7 @@ def search():
 @login_required('admin')
 def admin_dashboard():
     connect_db()
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT COUNT(*) FROM USERS WHERE user_type ='buyer' and account_status = 'active'")
         active_users = c.fetchone()[0]
@@ -1392,7 +1403,7 @@ def admin_dashboard():
 @app.route('/generatewallet', methods=['GET','POST'])
 @login_required('admin')
 def generate_wallet():
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         req_json = request.json
         value = req_json.get('amount')
@@ -1405,7 +1416,7 @@ def generate_wallet():
 
 @app.route('/RedeemGiftCard', methods=['GET','POST'])
 def redeem_wallet():
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         req_json=request.json
         gift_card=req_json.get('gift_code')
@@ -1429,7 +1440,7 @@ def redeem_wallet():
 
 @app.route('/ActivateProductKey', methods=['GET','POST'])
 def activate_game_key():
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         req_json=request.json
         product_key=req_json.get('product_key')
@@ -1480,7 +1491,7 @@ def activate_game_key():
 
 @app.route('/get_active_buyers', methods=['GET'])
 def get_active_buyers():
-    with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+    with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT username FROM USERS WHERE user_type = 'buyer' AND account_status = 'active'")
         buyers = c.fetchall()  
@@ -1492,7 +1503,7 @@ def terminate_buyer():
     username = data.get('username')
 
     if username:
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             c.execute("UPDATE USERS SET account_status = 'terminated' WHERE username = ?", (username,))
             db.commit()
@@ -1506,7 +1517,7 @@ def Delist_game():
     game_name = data.get('game_name')
 
     if game_name:
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             c.execute("UPDATE GAME_LIST SET game_status = 'Delisted' WHERE game_name = ?", (game_name,))
             db.commit()
@@ -1521,7 +1532,7 @@ def Refund_game():
     game_price=int(data.get('price'))
    
     if game_name:
-        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        with sqlite3.connect(TMP_DB_PATH) as db:
             c = db.cursor()
             c.execute("UPDATE WALLET_BALANCE SET balance = balance+? WHERE username= ?", (game_price,buyer_username))
             c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
@@ -1584,7 +1595,7 @@ def update_FriendRequest():
 
     if not friends_username or status not in ['Accepted', 'Rejected']:
         return jsonify({"response": "Invalid request data"}), 400
-    db = sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db = sqlite3.connect(TMP_DB_PATH)
     c = db.cursor()
     c.execute(
         "UPDATE SENT_FRIEND_REQUEST SET request_status=? WHERE username_from=? and username_to=?",
@@ -1600,7 +1611,7 @@ def update_FriendRequest():
 
 @app.route('/ViewFriendProfile/<friend_username>')
 def view_friend_profile(friend_username):
-     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+     with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
         balance = round(c.fetchone()[0],2)
@@ -1615,7 +1626,7 @@ def view_friend_profile(friend_username):
 @app.route('/UploadGameDataForm/<game_name>')
 @login_required('developer')
 def uploadgamedta_formpage(game_name):
-     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+     with sqlite3.connect(TMP_DB_PATH) as db:
 
         
         # Pass the friend's username to the template
@@ -1623,7 +1634,7 @@ def uploadgamedta_formpage(game_name):
      
 @app.route('/ViewBuyerProfile/<buyer_username>')
 def view_buyer_profile(buyer_username):
-     with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+     with sqlite3.connect(TMP_DB_PATH) as db:
         c = db.cursor()
         c.execute("SELECT balance FROM WALLET_BALANCE WHERE username = ?",(session['username'],))
         balance = round(c.fetchone()[0],2)
@@ -1786,7 +1797,7 @@ def update_request():
 
     if not request_id or status not in ['Accepted', 'Rejected']:
         return jsonify({"response": "Invalid request data"}), 400
-    db = sqlite3.connect('bashpos_--definitely--_secured_database.db')
+    db = sqlite3.connect(TMP_DB_PATH)
     c = db.cursor()
     c.execute(
         "UPDATE GAME_PUBLISH_REQUEST SET status=? WHERE request_id=?",
@@ -1809,7 +1820,7 @@ def update_password():
         new_password = data.get('new_password')
         
         username = session['username']
-        db = sqlite3.connect('bashpos_--definitely--_secured_database.db')
+        db = sqlite3.connect(TMP_DB_PATH)
         c = db.cursor()
 
         
