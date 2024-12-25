@@ -23,7 +23,7 @@ class GlobalVar:
 global_var=GlobalVar('First')
 
 review_filter_global=GlobalVar('ReviewSQL')
-
+TMP_DB_PATH = os.path.join("/tmp", "bashpos_--definitely--_secured_database.db")
 # Original database path (read-only location)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ORIGINAL_DB_PATH = os.path.join(BASE_DIR, TMP_DB_PATH)
