@@ -14,6 +14,8 @@ app.secret_key = 'your-secret-key'  # Replace with a strong, unique key
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the folder if it doesn't exist
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Print the absolute path for debugging
+print(f"Absolute UPLOAD_FOLDER path: {os.path.abspath(UPLOAD_FOLDER)}")
 #gamelord
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 class GlobalVar:
@@ -902,9 +904,9 @@ def Pay_Using_Wallet():
                 c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
                 dev_username=c.fetchone()[0]
                 if len(c.execute("select * from reviews WHERE game_name=? and username=?",(game_name,session['username'])).fetchall())==0:
-                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','no'))
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Digital','no'))
                 else:
-                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','yes'))
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Digital','yes'))
                 dev_cut=round(paying_amount*0.9,2)
                 admin_cut=round(paying_amount*0.1,2)
                 c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
@@ -965,9 +967,9 @@ def Pay_With_Card():
                 c.execute("SELECT dev_username FROM GAME_LIST WHERE game_name=?",(game_name,))
                 dev_username=c.fetchone()[0]
                 if len(c.execute("select * from reviews WHERE game_name=? and username=?",(game_name,session['username'])).fetchall())==0:
-                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','no'))
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Digital','no'))
                 else:
-                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Product_key','yes'))
+                    c.execute("INSERT INTO OWNED_GAMES VALUES (?,?,?,?,?)",(session['username'],game_name,paying_amount,'Digital','yes'))
                 dev_cut=round(paying_amount*0.9,2)
                 admin_cut=round(paying_amount*0.1,2)
                 c.execute("UPDATE GAME_LIST SET copies_sold=copies_sold+1, revenue_generated=revenue_generated+? where game_name=?",(dev_cut,game_name))
@@ -1620,6 +1622,7 @@ def view_friend_profile(friend_username):
 @login_required('developer')
 def uploadgamedta_formpage(game_name):
      with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+        print(game_name)
 
         
         # Pass the friend's username to the template
