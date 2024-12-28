@@ -1542,7 +1542,7 @@ def Refund_game():
     buyer_username=session['username']
     data = request.json  
     game_name = data.get('game_name')
-    game_price=int(data.get('price'))
+    game_price=round(float(data.get('price')),2)
    
     if game_name:
         with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
