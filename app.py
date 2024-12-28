@@ -1315,6 +1315,24 @@ def Update_card():
             c.execute("UPDATE USERS SET card_info=? where username=?", (card_number,buyer_username))
             db.commit()
             return jsonify({'success': True  })
+        
+@app.route('/WallettoCreditCard', methods=['GET','POST'])
+def Wallet2Credit():
+     if request.method=='POST':
+        buyer_username = session['username']
+        with sqlite3.connect('bashpos_--definitely--_secured_database.db') as db:
+            c = db.cursor()
+            req_json=request.json
+            card_number=req_json.get('card_number')
+            amount=req_json.get('wallet')
+            c.execute("SELECT * from USERS WHERE username=? and card_info=?",(buyer_username,card_number))
+            credit_card_avail=c.fetchall()
+            if len(credit_card_avail)==0:
+                return jsonify({'success': True  , 'message':'Invalid or wrong credit card number'})
+            else:
+                c.execute("UPDATE WALLET_BALANCE SET balance=balance+? where username=?", (amount,buyer_username))
+                db.commit()
+                return jsonify({'success': True  , "message":"Amound of "+str(amount)+"$ successfully added to"})
 
 @app.route('/search', methods=['POST'])
 def search():
