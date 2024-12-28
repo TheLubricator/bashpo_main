@@ -125,7 +125,7 @@
             </h1>
             <div class="flex flex-col my-5 mx-3 lg:mx-auto h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl p-5">
                 <div>
-                    <h1 class="my-5 text-center text-xl lg:text-4xl font-bold">Current Balance {{ balance }} $</h1>
+                    <h1 class="my-5 text-center text-xl lg:text-4xl font-bold">Current Balance {{ balance | round(2) }} $</h1>
                 </div>
                 <div class="my-5 mx-auto lg:flex lg:flex-col justify-center items-center gap-5">
                     <div class="flex gap-5">
