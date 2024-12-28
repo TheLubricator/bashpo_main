@@ -1132,8 +1132,8 @@ def View_Game_Page(game_name):
                 
             elif session['store_region'] == 'NA':
                 
-                    game_info [3] = round(game_info[i] [3]*1,2)
-                    game_info[15] =round(game_info[i] [15]*1,2)
+                    game_info [3] = round(game_info [3]*1,2)
+                    game_info[15] =round(game_info [15]*1,2)
           
                 
             elif session['store_region'] == 'LA':
