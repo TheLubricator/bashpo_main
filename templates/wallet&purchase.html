@@ -19,7 +19,7 @@
             },
         };
     </script>
-
+    <script src="https://kit.fontawesome.com/8584240c12.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap"
@@ -127,7 +127,8 @@
             </h1>
             <div class="flex flex-col my-5 mx-3 lg:mx-auto h-[auto] lg:w-[1200px] bg-[#0A0221] rounded-xl p-5">
                 <div>
-                    <h1 class="my-5 text-center text-xl lg:text-4xl font-bold">Current Balance {{ balance | round(2) }} $</h1>
+                    <h1 class="my-5 text-center text-xl lg:text-4xl font-bold">Current Balance {{ balance | round(2) }}
+                        $</h1>
                 </div>
                 <div class="my-5 mx-auto lg:flex lg:flex-col justify-center items-center gap-5">
                     <div class="flex gap-5">
@@ -172,7 +173,7 @@
             class="hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
             <div class="bg-white p-5 rounded-lg shadow-lg">
                 <h2 class="text-lg font-bold mb-4">Add to Wallet via Credit Card</h2>
-                <form  id="WalletCreditCardForm" action="/WallettoCreditCard" method="POST" class="space-y-4"  >
+                <form id="WalletCreditCardForm" action="/WallettoCreditCard" method="POST" class="space-y-4">
                     <div class="mb-4">
                         <label for="card-number" class="block text-sm font-semibold">Card Number</label>
                         <input type="text" id="card-number" class="w-full px-4 py-2 border rounded-lg"
@@ -183,7 +184,8 @@
                     </div>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
                         onclick="closeModal('creditCardModal')">Close</button>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"  id="submitCreditCard">Submit</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"
+                        id="submitCreditCard">Submit</button>
                 </form>
             </div>
         </div>
@@ -192,7 +194,7 @@
             class="hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
             <div class="bg-white p-5 rounded-lg shadow-lg">
                 <h2 class="text-lg font-bold mb-4">Add to Wallet via Gift Card</h2>
-                <form id="RedeemGiftCardForm" action="/RedeemGiftCard" method="POST" class="space-y-4"  >
+                <form id="RedeemGiftCardForm" action="/RedeemGiftCard" method="POST" class="space-y-4">
                     <div class="mb-4">
                         <label for="gift-code" class="block text-sm font-semibold">Gift Card Code</label>
                         <input type="text" id="gift-code" class="w-full px-4 py-2 border rounded-lg"
@@ -200,7 +202,8 @@
                     </div>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
                         onclick="closeModal('giftCardModal')">Close</button>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"    id="submitWalletCode" >Submit</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"
+                        id="submitWalletCode">Submit</button>
                 </form>
             </div>
         </div>
@@ -209,15 +212,16 @@
             class="hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
             <div class="bg-white p-5 rounded-lg shadow-lg">
                 <h2 class="text-lg font-bold mb-4">Activate a Product</h2>
-                <form id="ActivateProductKeyForm" action="/ActivateProductKey" method="POST" class="space-y-4" >
+                <form id="ActivateProductKeyForm" action="/ActivateProductKey" method="POST" class="space-y-4">
                     <div class="mb-4">
                         <label for="product-key" class="block text-sm font-semibold">Product Key</label>
-                        <input type="text" id="product-key" name="product_key" class="w-full px-4 py-2 border rounded-lg"
-                            placeholder="Enter activation key" required />
+                        <input type="text" id="product-key" name="product_key"
+                            class="w-full px-4 py-2 border rounded-lg" placeholder="Enter activation key" required />
                     </div>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
                         onclick="closeModal('activateProductModal')">Close</button>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"   id="submitProductKey" >Submit</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"
+                        id="submitProductKey">Submit</button>
                 </form>
             </div>
         </div>
@@ -229,7 +233,7 @@
             <div class="bg-white p-5 rounded-lg shadow-lg">
                 <h2 class="text-lg font-bold mb-4">Update Credit Card Info</h2>
 
-                <form id="UpdateCreditCardForm" action="/UpdateCreditCard" method="POST" class="space-y-4"  >
+                <form id="UpdateCreditCardForm" action="/UpdateCreditCard" method="POST" class="space-y-4">
                     <div class="mb-4">
                         <label for="new-card-number" class="block text-sm font-semibold">New Card Number</label>
                         <input type="text" id="new-card-number" class="w-full px-4 py-2 border rounded-lg"
@@ -264,40 +268,39 @@
                     </div>
                     <ul id="buyerList" class="list-none">
                         {% for game in game_info %}
-                            <li class="flex justify-between items-center mb-4">
-                                <span class="w-1/4">{{ game[0] }}</span> <!-- Game Name -->
-                                <span class="w-1/4">
-                                    {% if game[2]=='Digital' %}
-                                    <span>{{ game[1] }} $</span>
-                                    {% elif game[2]=='Product_key' %}
-                                    <span>Product Key</span>
-                                    {% endif %}
-                                </span> <!-- Status -->
-                                 <!-- Base Price -->
-                                <div class="w-1/4 text-left">
-                                    
-    
-                                    <!--end of unused feature(for now)-->
-    
-    
-                                    {% if game[2]=='Digital' %}
-                                        <button type="button"
-                                                class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
-                                                data-game_name_refund="{{ game[0] }}" data-price="{{game[1]}}"
-                                                onclick="RefundGame(this)">
-                                            Refund Game
-                                        </button>
-                                        {% elif game[2]=='Product_key' %}
-                                        <button type="button"
-                                                class="text-white bg-orange-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-orange-500 dark:hover:bg-orange-600 dark:focus:ring-orange-900"
-                                                data-game_name_refund="{{ game[0] }}"
-                                                >
-                                            Refund unavailable
-                                        </button>
-                                        {% endif %}
-                                    
-                                </div> <!-- Action -->
-                            </li>
+                        <li class="flex justify-between items-center mb-4">
+                            <span class="w-1/4">{{ game[0] }}</span> <!-- Game Name -->
+                            <span class="w-1/4">
+                                {% if game[2]=='Digital' %}
+                                <span>{{ game[1] }} $</span>
+                                {% elif game[2]=='Product_key' %}
+                                <span>Product Key</span>
+                                {% endif %}
+                            </span> <!-- Status -->
+                            <!-- Base Price -->
+                            <div class="w-1/4 text-left">
+
+
+                                <!--end of unused feature(for now)-->
+
+
+                                {% if game[2]=='Digital' %}
+                                <button type="button"
+                                    class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                    data-game_name_refund="{{ game[0] }}" data-price="{{game[1]}}"
+                                    onclick="RefundGame(this)">
+                                    Refund Game
+                                </button>
+                                {% elif game[2]=='Product_key' %}
+                                <button type="button"
+                                    class="text-white bg-orange-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-orange-500 dark:hover:bg-orange-600 dark:focus:ring-orange-900"
+                                    data-game_name_refund="{{ game[0] }}">
+                                    Refund unavailable
+                                </button>
+                                {% endif %}
+
+                            </div> <!-- Action -->
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -307,22 +310,30 @@
             </div>
 
         </div>
-        <div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
+        <div id="popup-modal" tabindex="-1"
+            class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
             <div class="relative p-4 w-full max-w-md max-h-full">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    <button type="button"
+                        class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="popup-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                         </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
                     <div class="p-4 md:p-5 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Modal Title</h3>
                         <div class="modal-body"></div>
-                        <button data-modal-hide="popup-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        <button data-modal-hide="popup-modal" type="button"
+                            class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                             Close
                         </button>
                     </div>
@@ -331,7 +342,66 @@
         </div>
 
     </section>
+    <footer
+        class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center  text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
+        <!-- Logo and Description -->
+        <aside class="flex flex-col items-center text-center lg:text-left lg:items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80" class="mb-4">
+                <defs>
+                    <linearGradient id="colorful-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color: blue; stop-opacity: 1" />
+                        <stop offset="33%" style="stop-color: pink; stop-opacity: 1" />
+                        <stop offset="66%" style="stop-color: purple; stop-opacity: 1" />
+                        <stop offset="100%" style="stop-color: violet; stop-opacity: 1" />
+                    </linearGradient>
+                </defs>
+                <path d="M30 20 h20 a15 15 0 0 1 0 30 h-20 z 
+                     M30 50 h20 a15 15 0 0 1 0 30 h-20 z" fill="url(#colorful-gradient)" />
+            </svg>
 
+            <p class="text-sm lg:text-base">
+            <h1 class="font-bold text-lg lg:text-xl">
+                <i class="fa-regular fa-copyright"></i> Bashpo
+            </h1>
+            Find everything you love, in one place.
+            </p>
+        </aside>
+
+        <!-- Social Links -->
+        <nav class="text-center lg:text-left">
+            <h6 class="footer-title text-sm lg:text-base font-bold mb-4">Find Us on Socials</h6>
+            <div class="flex justify-center lg:justify-start gap-4">
+                <a href="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        class="fill-current">
+                        <path
+                            d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z">
+                        </path>
+                    </svg>
+                </a>
+                <a href="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        class="fill-current">
+                        <path
+                            d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z">
+                        </path>
+                    </svg>
+                </a>
+                <a href="">
+                    <i class="fa-brands fa-instagram text-xl"></i>
+                </a>
+                <a href="">
+                    <i class="fa-brands fa-x-twitter text-xl"></i>
+                </a>
+                <a href="">
+                    <i class="fa-brands fa-tiktok text-xl"></i>
+                </a>
+                <a href="">
+                    <i class="fa-brands fa-discord text-xl"></i>
+                </a>
+            </div>
+        </nav>
+    </footer>
 
     <script>
 
@@ -402,13 +472,13 @@
             }
         }
 
-        document.getElementById('updatePasswordForm').addEventListener('submit', function(event) {
+        document.getElementById('updatePasswordForm').addEventListener('submit', function (event) {
             event.preventDefault();
-    
+
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
-    
+
             // Check if new passwords match
             if (newPassword !== confirmPassword) {
                 document.getElementById('password-error').classList.remove('hidden');
@@ -422,28 +492,28 @@
                     },
                     body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('password-success').classList.remove('hidden');
-                        document.getElementById('password-error').classList.add('hidden');
-                        // Redirect to the homepage after a delay
-                        setTimeout(() => {
-                            window.location.href = '/logout';
-                        }, 2000);
-                    } else {
-                        alert(data.error || 'Something went wrong!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Something went wrong!');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('password-success').classList.remove('hidden');
+                            document.getElementById('password-error').classList.add('hidden');
+                            // Redirect to the homepage after a delay
+                            setTimeout(() => {
+                                window.location.href = '/logout';
+                            }, 2000);
+                        } else {
+                            alert(data.error || 'Something went wrong!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Something went wrong!');
+                    });
             }
         });
-    
+
         // Initialize the modal functionality
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             initializeModal_update_password();
         });
 
@@ -496,65 +566,65 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('RedeemGiftCardForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-        
-            const gift_code = document.getElementById('gift-code').value;
-        
-        
-            console.log(gift_code);
-        
-            // Send the request
-            fetch('/RedeemGiftCard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    gift_code: gift_code
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('RedeemGiftCardForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const gift_code = document.getElementById('gift-code').value;
+
+
+                console.log(gift_code);
+
+                // Send the request
+                fetch('/RedeemGiftCard', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        gift_code: gift_code
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const modalTitle = document.querySelector('#popup-modal h3');
-                    const modalBody = document.querySelector('#popup-modal .modal-body');
-    
-                    modalTitle.innerHTML = data.message;
-                 
-    
-                    // Show the modal
-                    const modal = document.getElementById('popup-modal');
-                    modal.classList.remove('hidden');
-                    // Redirect to the homepage after a delay
-        
-                setTimeout(() => {
-                   location.reload();
-                }, 2000);
-            } else {
-                const modalTitle = document.querySelector('#popup-modal h3');
-                const modalBody = document.querySelector('#popup-modal .modal-body');
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const modalTitle = document.querySelector('#popup-modal h3');
+                            const modalBody = document.querySelector('#popup-modal .modal-body');
 
-                modalTitle.innerHTML = data.message;
-             
+                            modalTitle.innerHTML = data.message;
 
-                // Show the modal
-                const modal = document.getElementById('popup-modal');
-                modal.classList.remove('hidden');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong!');
-        });
-                
+
+                            // Show the modal
+                            const modal = document.getElementById('popup-modal');
+                            modal.classList.remove('hidden');
+                            // Redirect to the homepage after a delay
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            const modalTitle = document.querySelector('#popup-modal h3');
+                            const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                            modalTitle.innerHTML = data.message;
+
+
+                            // Show the modal
+                            const modal = document.getElementById('popup-modal');
+                            modal.classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Something went wrong!');
+                    });
+
             });
         });
 
-        document.addEventListener('DOMContentLoaded', function() { 
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('ActivateProductKeyForm');
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 event.preventDefault();
                 const product_key_input = document.getElementById('product-key');
                 if (!product_key_input) {
@@ -573,77 +643,77 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ product_key: product_key })
                 })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const modalTitle = document.querySelector('#popup-modal h3');
+                            const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                            modalTitle.innerHTML = data.message;
+
+
+                            // Show the modal
+                            const modal = document.getElementById('popup-modal');
+                            modal.classList.remove('hidden');
+                            setTimeout(() => location.reload(), 2000);
+                        } else {
+                            const modalTitle = document.querySelector('#popup-modal h3');
+                            const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                            modalTitle.innerHTML = data.message;
+
+
+                            // Show the modal
+                            const modal = document.getElementById('popup-modal');
+                            modal.classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Something went wrong!');
+                    });
+            });
+        });
+        function RefundGame(button) {
+            const game_name = button.getAttribute('data-game_name_refund');
+            const price = button.getAttribute('data-price');
+
+            fetch('/RefundGame', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ game_name: game_name, price: price })
+            })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.message) {
                         const modalTitle = document.querySelector('#popup-modal h3');
                         const modalBody = document.querySelector('#popup-modal .modal-body');
-        
+
                         modalTitle.innerHTML = data.message;
-                     
-        
+
+
                         // Show the modal
                         const modal = document.getElementById('popup-modal');
                         modal.classList.remove('hidden');
+                        button.closest('li').remove(); // Remove the user from the list
                         setTimeout(() => location.reload(), 2000);
                     } else {
-                        const modalTitle = document.querySelector('#popup-modal h3');
-                        const modalBody = document.querySelector('#popup-modal .modal-body');
-        
-                        modalTitle.innerHTML = data.message;
-                     
-        
-                        // Show the modal
-                        const modal = document.getElementById('popup-modal');
-                        modal.classList.remove('hidden');
+                        alert(data.error); // Display error message
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Something went wrong!');
                 });
-            });
-        });
-        function RefundGame(button) {
-            const game_name = button.getAttribute('data-game_name_refund');
-            const price=button.getAttribute('data-price');
-    
-            fetch('/RefundGame', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ game_name: game_name, price:price })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    const modalTitle = document.querySelector('#popup-modal h3');
-                const modalBody = document.querySelector('#popup-modal .modal-body');
 
-                modalTitle.innerHTML = data.message;
-             
-
-                // Show the modal
-                const modal = document.getElementById('popup-modal');
-                modal.classList.remove('hidden');
-                    button.closest('li').remove(); // Remove the user from the list
-                    setTimeout(() => location.reload(), 2000);
-                } else {
-                    alert(data.error); // Display error message
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Something went wrong!');
-            });
-            
         }
-        document.getElementById('UpdateCreditCardForm').addEventListener('submit', function(event) {
+        document.getElementById('UpdateCreditCardForm').addEventListener('submit', function (event) {
             event.preventDefault();
-        
+
             const card_number = document.getElementById('new-card-number').value;
-        
+
             fetch('/UpdateCreditCard', {
                 method: 'POST',
                 headers: {
@@ -657,7 +727,7 @@
                 })
                 .then(data => {
                     console.log("Response data:", data); // Debug response data
-        
+
                     if (data.success) {
                         console.log("Update successful"); // Log successful updates
                         document.getElementById('card-success').classList.remove('hidden');
@@ -675,39 +745,39 @@
                 });
         });
 
-        document.getElementById('WalletCreditCardForm').addEventListener('submit', function(event) {
+        document.getElementById('WalletCreditCardForm').addEventListener('submit', function (event) {
             event.preventDefault();
-        
+
             const card_number = document.getElementById('card-number').value;
-            const wallet=document.getElementById('wallet').value;
-        
+            const wallet = document.getElementById('wallet').value;
+
             fetch('/WallettoCreditCard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', // Ensure this matches the backend expectations
                 },
-                body: JSON.stringify({ card_number: card_number, wallet:wallet }) // Send the card_number in the body
+                body: JSON.stringify({ card_number: card_number, wallet: wallet }) // Send the card_number in the body
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    const modalTitle = document.querySelector('#popup-modal h3');
-                    const modalBody = document.querySelector('#popup-modal .modal-body');
-    
-                    modalTitle.innerHTML = data.message;
-                 
-    
-                    // Show the modal
-                    const modal = document.getElementById('popup-modal');
-                    modal.classList.remove('hidden');
-                // Remove the user from the list
-                setTimeout(() => {
-                    location.reload();
-                 }, 2000);
-                } else {
-                    alert(data.error); // Display error message
-                }
-            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        const modalTitle = document.querySelector('#popup-modal h3');
+                        const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                        modalTitle.innerHTML = data.message;
+
+
+                        // Show the modal
+                        const modal = document.getElementById('popup-modal');
+                        modal.classList.remove('hidden');
+                        // Remove the user from the list
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        alert(data.error); // Display error message
+                    }
+                })
                 .catch(error => {
                     console.error("Fetch error:", error); // Catch and log fetch errors
                     alert('Something went wrong!');
@@ -726,7 +796,7 @@
                     modal.classList.remove('hidden');
                 }
             };
-        
+
             // Function to hide modal
             const hideModal = (modal) => {
                 if (modal) {
@@ -734,7 +804,7 @@
                     location.reload();
                 }
             };
-        
+
             // Event listener for toggle buttons
             document.querySelectorAll('[data-modal-toggle]').forEach(button => {
                 button.addEventListener('click', () => {
@@ -742,7 +812,7 @@
                     showModal(modalId);
                 });
             });
-        
+
             // Event listener for close buttons
             document.querySelectorAll('[data-modal-hide]').forEach(button => {
                 button.addEventListener('click', () => {
@@ -751,7 +821,7 @@
                     location.reload();
                 });
             });
-        
+
             // Optional: Close the modal when clicking outside of it
             document.querySelectorAll('.fixed').forEach(modal => {
                 modal.addEventListener('click', (event) => {
@@ -761,9 +831,9 @@
                 });
             });
         });
-        
 
-                
+
+
         function logout() {
             window.location.href = '/logout'; // Redirect to logout route
         }  
