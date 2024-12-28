@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{buyer_username}}'s Profile</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script>
         tailwind.config = {
@@ -21,6 +22,14 @@
             }
         }
     </script>
+    <style>
+        footer {
+            position: relative;
+            /* Ensures it doesn't overlap content */
+            z-index: 1;
+        }
+    </style>
+
     <script src="https://kit.fontawesome.com/8584240c12.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -63,76 +72,74 @@
 
 
 
-
-
-
-    <!-- Update Password Modal -->
-    <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true"
-        class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
-        <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
-            <!-- Modal content -->
-            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                <!-- Modal header -->
-                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                        <h3 class="font-semibold">Update Password</h3>
+    <main>
+        <!-- Update Password Modal -->
+        <div id="UpdatePasswordModal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
+            <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+                <!-- Modal content -->
+                <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                    <!-- Modal header -->
+                    <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                        <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                            <h3 class="font-semibold">Update Password</h3>
+                        </div>
+                        <div>
+                            <button type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                                data-modal-toggle="UpdatePasswordModal">
+                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <button type="button"
-                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-toggle="UpdatePasswordModal">
-                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
+
+                    <!-- Modal body: Update password form -->
+                    <form id="updatePasswordForm" action="/update_password" method="POST" class="space-y-4">
+                        <div>
+                            <label for="current-password"
+                                class="block text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
+                            <input type="password" id="current-password" name="current_password" required
+                                class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label for="new-password"
+                                class="block text-sm font-medium text-gray-900 dark:text-white">New
+                                Password</label>
+                            <input type="password" id="new-password" name="new_password" required
+                                class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label for="confirm-password"
+                                class="block text-sm font-medium text-gray-900 dark:text-white">Confirm New
+                                Password</label>
+                            <input type="password" id="confirm-password" name="confirm_password" required
+                                class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+
+                        <!-- Error and Success Messages -->
+                        <div id="password-error" class="text-red-600 hidden">Passwords do not match.</div>
+                        <div id="password-success" class="text-green-600 hidden">Password updated successfully!</div>
+
+                        <div class="mt-4 flex justify-end space-x-2">
+                            <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-lg"
+                                data-modal-toggle="UpdatePasswordModal">Cancel</button>
+                            <button type="submit" id="submit-password"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
+                        </div>
+                    </form>
                 </div>
-
-                <!-- Modal body: Update password form -->
-                <form id="updatePasswordForm" action="/update_password" method="POST" class="space-y-4">
-                    <div>
-                        <label for="current-password"
-                            class="block text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
-                        <input type="password" id="current-password" name="current_password" required
-                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </div>
-                    <div>
-                        <label for="new-password" class="block text-sm font-medium text-gray-900 dark:text-white">New
-                            Password</label>
-                        <input type="password" id="new-password" name="new_password" required
-                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </div>
-                    <div>
-                        <label for="confirm-password"
-                            class="block text-sm font-medium text-gray-900 dark:text-white">Confirm New Password</label>
-                        <input type="password" id="confirm-password" name="confirm_password" required
-                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </div>
-
-                    <!-- Error and Success Messages -->
-                    <div id="password-error" class="text-red-600 hidden">Passwords do not match.</div>
-                    <div id="password-success" class="text-green-600 hidden">Password updated successfully!</div>
-
-                    <div class="mt-4 flex justify-end space-x-2">
-                        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-lg"
-                            data-modal-toggle="UpdatePasswordModal">Cancel</button>
-                        <button type="submit" id="submit-password"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
-
-
-    <main>
         <section class="mt-5">
             <div
-                class="gap-5 absolute bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80 z-0">
+                class="gap-5 relative bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80">
+
                 <div class="mt-5">
                     <h1
                         class="w-auto px-4 lg:w-[600px] mx-auto lg:mx-20 text-xl sm:text-2xl lg:text-4xl font-bold my-5 text-white text-center font-istok tracking-10pct">
@@ -653,22 +660,30 @@
             </div>
         </section>
 
-        <div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
+        <div id="popup-modal" tabindex="-1"
+            class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
             <div class="relative p-4 w-full max-w-md max-h-full">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    <button type="button"
+                        class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="popup-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                         </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
                     <div class="p-4 md:p-5 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Modal Title</h3>
                         <div class="modal-body"></div>
-                        <button data-modal-hide="popup-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        <button data-modal-hide="popup-modal" type="button"
+                            class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                             Close
                         </button>
                     </div>
@@ -893,10 +908,10 @@
                 if (data.success) {
                     const modalTitle = document.querySelector('#popup-modal h3');
                     const modalBody = document.querySelector('#popup-modal .modal-body');
-    
+
                     modalTitle.innerHTML = data.message;
-                 
-    
+
+
                     // Show the modal
                     const modal = document.getElementById('popup-modal');
                     modal.classList.remove('hidden');
@@ -907,14 +922,14 @@
                     }, 2000);
                 } else {
                     const modalTitle = document.querySelector('#popup-modal h3');
-                const modalBody = document.querySelector('#popup-modal .modal-body');
+                    const modalBody = document.querySelector('#popup-modal .modal-body');
 
-                modalTitle.innerHTML = data.message;
-             
+                    modalTitle.innerHTML = data.message;
 
-                // Show the modal
-                const modal = document.getElementById('popup-modal');
-                modal.classList.remove('hidden');
+
+                    // Show the modal
+                    const modal = document.getElementById('popup-modal');
+                    modal.classList.remove('hidden');
                 }
             })
             .catch(error => {
@@ -1148,16 +1163,16 @@
             .then(data => {
                 if (data.message) {
                     const modalTitle = document.querySelector('#popup-modal h3');
-                const modalBody = document.querySelector('#popup-modal .modal-body');
+                    const modalBody = document.querySelector('#popup-modal .modal-body');
 
-                modalTitle.innerHTML = data.message;
-             
+                    modalTitle.innerHTML = data.message;
 
-                // Show the modal
-                const modal = document.getElementById('popup-modal');
-                modal.classList.remove('hidden');
+
+                    // Show the modal
+                    const modal = document.getElementById('popup-modal');
+                    modal.classList.remove('hidden');
                     button.closest('li').remove(); // Remove the user from the list
-                   
+
                     setTimeout(() => {
                         window.location.href = '/ViewMyProfile';
                     }, 2000);
@@ -1191,14 +1206,14 @@
             .then(data => {
                 if (data.message) {
                     const modalTitle = document.querySelector('#popup-modal h3');
-                const modalBody = document.querySelector('#popup-modal .modal-body');
+                    const modalBody = document.querySelector('#popup-modal .modal-body');
 
-                modalTitle.innerHTML = data.message;
-             
+                    modalTitle.innerHTML = data.message;
 
-                // Show the modal
-                const modal = document.getElementById('popup-modal');
-                modal.classList.remove('hidden');
+
+                    // Show the modal
+                    const modal = document.getElementById('popup-modal');
+                    modal.classList.remove('hidden');
 
                 } else {
                     alert(data.error); // Display error message
@@ -1226,10 +1241,10 @@
                 if (data.message) {
                     const modalTitle = document.querySelector('#popup-modal h3');
                     const modalBody = document.querySelector('#popup-modal .modal-body');
-    
+
                     modalTitle.innerHTML = data.message;
-                 
-    
+
+
                     // Show the modal
                     const modal = document.getElementById('popup-modal');
                     modal.classList.remove('hidden');
@@ -1290,10 +1305,10 @@
                     if (data.success) {
                         const modalTitle = document.querySelector('#popup-modal h3');
                         const modalBody = document.querySelector('#popup-modal .modal-body');
-        
+
                         modalTitle.innerHTML = data.message;
-                     
-        
+
+
                         // Show the modal
                         const modal = document.getElementById('popup-modal');
                         modal.classList.remove('hidden');
@@ -1304,14 +1319,14 @@
                         }, 2000);
                     } else {
                         const modalTitle = document.querySelector('#popup-modal h3');
-                const modalBody = document.querySelector('#popup-modal .modal-body');
+                        const modalBody = document.querySelector('#popup-modal .modal-body');
 
-                modalTitle.innerHTML = data.message;
-             
+                        modalTitle.innerHTML = data.message;
 
-                // Show the modal
-                const modal = document.getElementById('popup-modal');
-                modal.classList.remove('hidden');
+
+                        // Show the modal
+                        const modal = document.getElementById('popup-modal');
+                        modal.classList.remove('hidden');
                     }
                 })
                 .catch(error => {
@@ -1337,7 +1352,7 @@
                 modal.classList.remove('hidden');
             }
         };
-    
+
         // Function to hide modal
         const hideModal = (modal) => {
             if (modal) {
@@ -1345,7 +1360,7 @@
                 location.reload();
             }
         };
-    
+
         // Event listener for toggle buttons
         document.querySelectorAll('[data-modal-toggle]').forEach(button => {
             button.addEventListener('click', () => {
@@ -1353,7 +1368,7 @@
                 showModal(modalId);
             });
         });
-    
+
         // Event listener for close buttons
         document.querySelectorAll('[data-modal-hide]').forEach(button => {
             button.addEventListener('click', () => {
@@ -1362,7 +1377,7 @@
                 location.reload();
             });
         });
-    
+
         // Optional: Close the modal when clicking outside of it
         document.querySelectorAll('.fixed').forEach(modal => {
             modal.addEventListener('click', (event) => {

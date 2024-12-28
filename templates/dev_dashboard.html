@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Developer Dashboard</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.png') }}">
+
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script>
         tailwind.config = {
@@ -161,503 +163,516 @@
         </div>
 
 
-
-
-
-
-
-
     </header>
 
-    <section class="mt-5">
-        <div
-            class="gap-5 absolute bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80 z-0">
-            <div class="mt-5">
-                <h1
-                    class="w-auto px-4 lg:w-[450px] mx-auto lg:mx-20 text-xl sm:text-2xl lg:text-4xl font-bold my-5 text-white text-center">
-                    {{dev_username}}'s General Info
-                </h1>
-            </div>
+    <main>
+        <section class="mt-5">
             <div
-                class="flex flex-col lg:flex-row justify-between items-start lg:items-center mx-4 lg:mx-20 space-y-6 lg:space-y-0">
-                <div
-                    class="box-border h-auto lg:h-[320px] w-full lg:w-[450px] p-4 border rounded-xl bg-[rgba(30,29,55,1)]">
-                    <p class="text-base mb-5 font-bold text-white">Developer Name: <span class="text-blue-500 ">{{
-                            company_name }}</span></p>
-                    <p class="text-base mb-5 font-bold text-white">Publisher Name: <span
-                            class="text-blue-500 ">{{publisher_name}}</span></p>
-                    <p class="text-base mb-5 font-bold text-white">Email: <span
-                            class="text-blue-500 ">{{dev_email}}</span></p>
-                    <p class="text-base mb-5 font-bold text-white">Total Games Released: <span class="text-blue-500 ">{{
-                            no_of_total_games}}</span></p>
-                    <p class="text-base mb-5 font-bold text-white">Total Games Active: <span class="text-blue-500 ">{{
-                            no_of_games_active}}</span></p>
-                    <p class="text-base mb-5 font-bold text-white">Total Games Delisted: <span class="text-blue-500 ">{{
-                            delisted_games_count}}</span></p>
-                    <p class="text-base mb-5 font-bold text-white">Total Copies Sold:<span class="text-blue-500 ">
-                            {{no_of_total__games_sold}}</span></p>
-                </div>
-                <div class="flex flex-col space-y-4">
+                class="gap-5 relative bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80">
 
-                    <!--################View published games##########################################-->
-                    <!-- Right side: Buttons -->
-                    <button type="button" id="ViewPublishedGamesButton" data-modal-target="ViewPublishedGamesModal"
-                        data-modal-toggle="ViewPublishedGamesModal"
-                        class="w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
-                        View Published Games
-                    </button>
-                    <!-- Main modal -->
-                    <!-- Main modal -->
-                    <div id="ViewPublishedGamesModal" tabindex="-1" aria-hidden="true"
-                        class="hidden backdrop-blur-sm bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
-                        <div
-                            class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/2 lg:w-1/3">
-                            <!-- Modal content -->
-                            <div class="relative">
-                                <!-- Modal header -->
-                                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                                        <h3 class="font-semibold">
-                                            Published Games:
-                                        </h3>
+                <div class="mt-5">
+                    <h1
+                        class="w-auto px-4 lg:w-[450px] mx-auto lg:mx-20 text-xl sm:text-2xl lg:text-4xl font-bold my-5 text-white text-center">
+                        {{dev_username}}'s General Info
+                    </h1>
+                </div>
+                <div
+                    class="flex flex-col lg:flex-row justify-between items-start lg:items-center mx-4 lg:mx-20 space-y-6 lg:space-y-0">
+                    <div
+                        class="box-border h-auto lg:h-[320px] w-full lg:w-[450px] p-4 border rounded-xl bg-[rgba(30,29,55,1)]">
+                        <p class="text-base mb-5 font-bold text-white">Developer Name: <span class="text-blue-500 ">{{
+                                company_name }}</span></p>
+                        <p class="text-base mb-5 font-bold text-white">Publisher Name: <span
+                                class="text-blue-500 ">{{publisher_name}}</span></p>
+                        <p class="text-base mb-5 font-bold text-white">Email: <span
+                                class="text-blue-500 ">{{dev_email}}</span></p>
+                        <p class="text-base mb-5 font-bold text-white">Total Games Released: <span
+                                class="text-blue-500 ">{{
+                                no_of_total_games}}</span></p>
+                        <p class="text-base mb-5 font-bold text-white">Total Games Active: <span
+                                class="text-blue-500 ">{{
+                                no_of_games_active}}</span></p>
+                        <p class="text-base mb-5 font-bold text-white">Total Games Delisted: <span
+                                class="text-blue-500 ">{{
+                                delisted_games_count}}</span></p>
+                        <p class="text-base mb-5 font-bold text-white">Total Copies Sold:<span class="text-blue-500 ">
+                                {{no_of_total__games_sold}}</span></p>
+                    </div>
+                    <div class="flex flex-col space-y-4">
+
+                        <!--################View published games##########################################-->
+                        <!-- Right side: Buttons -->
+                        <button type="button" id="ViewPublishedGamesButton" data-modal-target="ViewPublishedGamesModal"
+                            data-modal-toggle="ViewPublishedGamesModal"
+                            class="w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            View Published Games
+                        </button>
+                        <!-- Main modal -->
+                        <!-- Main modal -->
+                        <div id="ViewPublishedGamesModal" tabindex="-1" aria-hidden="true"
+                            class="hidden backdrop-blur-sm bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+                            <div
+                                class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/2 lg:w-1/3">
+                                <!-- Modal content -->
+                                <div class="relative">
+                                    <!-- Modal header -->
+                                    <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                        <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                                            <h3 class="font-semibold">
+                                                Published Games:
+                                            </h3>
+                                        </div>
+                                        <button type="button"
+                                            class="text-gray-400 backdrop-blur-sm bg-black bg-opacity-40 backdrop-blur-md hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                                            data-modal-toggle="ViewPublishedGamesModal">
+                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
+                                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd"
+                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="sr-only">Close modal</span>
+                                        </button>
+
+
                                     </div>
+
+                                    <!-- Search Bar -->
+                                    <div class="mb-4">
+                                        <input type="text" id="searchInput_games" placeholder="Search games..."
+                                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+                                    </div>
+
+                                    <!-- Game List -->
+                                    <div class="mt-4">
+                                        <div class="flex justify-between font-semibold mb-4">
+                                            <div class="w-1/4 text-left">Game Name</div>
+                                            <div class="w-1/4 text-left">Status</div>
+                                            <div class="w-1/4 text-left">Base Price</div>
+                                            <div class="w-1/4 text-left">Action</div>
+                                        </div>
+                                        <ul id="buyerList" class="list-none">
+                                            {% for game_data in game_list_data %}
+                                            <li class="flex justify-between items-center mb-4">
+                                                <span class="w-1/4">{{ game_data[0] }}</span> <!-- Game Name -->
+                                                <span class="w-1/4">{{ game_data[1] }}</span> <!-- Status -->
+                                                <span class="w-1/4">{{ game_data[2] }}</span> <!-- Base Price -->
+                                                <div class="w-1/4 text-left">
+                                                    {% if game_data[4] == '0' and game_data == 'Active' %}
+                                                    <button type="button"
+                                                        class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
+                                                        data-game_name_sale="{{ game_data[0] }}"
+                                                        onclick="switchToInnerModal('{{ game_data[0] }}')">
+                                                        Start Sale
+                                                    </button>
+                                                    {% endif %}
+
+                                                    <!--end of unused feature(for now)-->
+
+
+                                                    {% if game_data[1] == 'Active' %}
+                                                    <button type="button"
+                                                        class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                                        data-game_name_delist="{{ game_data[0] }}"
+                                                        onclick="DelistGame(this)">
+                                                        Delist
+                                                    </button>
+                                                    {% endif %}
+                                                </div> <!-- Action -->
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--start sale innermodal-->
+                        <div id="StartSaleModal"
+                            class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                            <div
+                                class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/3">
+                                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Start Sale</h3>
                                     <button type="button"
-                                        class="text-gray-400 backdrop-blur-sm bg-black bg-opacity-40 backdrop-blur-md hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
-                                        data-modal-toggle="ViewPublishedGamesModal">
-                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        onclick="switchToOuterModal()">
+                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd"
                                                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                                                 clip-rule="evenodd"></path>
                                         </svg>
                                         <span class="sr-only">Close modal</span>
                                     </button>
-
-
                                 </div>
-
-                                <!-- Search Bar -->
-                                <div class="mb-4">
-                                    <input type="text" id="searchInput_games" placeholder="Search games..."
-                                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
-                                </div>
-
-                                <!-- Game List -->
-                                <div class="mt-4">
-                                    <div class="flex justify-between font-semibold mb-4">
-                                        <div class="w-1/4 text-left">Game Name</div>
-                                        <div class="w-1/4 text-left">Status</div>
-                                        <div class="w-1/4 text-left">Base Price</div>
-                                        <div class="w-1/4 text-left">Action</div>
+                                <form id="StartSaleForm" action="/StartSaleRequest" method="POST" class="space-y-4">
+                                    <input type="hidden" id="game_name_hidden" name="game_name">
+                                    <!-- Numeric Input -->
+                                    <div>
+                                        <label for="sale_percentage"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">Sale
+                                            Percentage
+                                            (10-90):</label>
+                                        <input type="number" id="sale_percentage" name="sale_percentage" min="10"
+                                            max="90" required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Enter percentage">
                                     </div>
-                                    <ul id="buyerList" class="list-none">
-                                        {% for game_data in game_list_data %}
-                                        <li class="flex justify-between items-center mb-4">
-                                            <span class="w-1/4">{{ game_data[0] }}</span> <!-- Game Name -->
-                                            <span class="w-1/4">{{ game_data[1] }}</span> <!-- Status -->
-                                            <span class="w-1/4">{{ game_data[2] }}</span> <!-- Base Price -->
-                                            <div class="w-1/4 text-left">
-                                                {% if game_data[4] == '0' and game_data == 'Active' %}
-                                                <button type="button"
-                                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
-                                                    data-game_name_sale="{{ game_data[0] }}"
-                                                    onclick="switchToInnerModal('{{ game_data[0] }}')">
-                                                    Start Sale
-                                                </button>
-                                                {% endif %}
-
-                                                <!--end of unused feature(for now)-->
-
-
-                                                {% if game_data[1] == 'Active' %}
-                                                <button type="button"
-                                                    class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
-                                                    data-game_name_delist="{{ game_data[0] }}"
-                                                    onclick="DelistGame(this)">
-                                                    Delist
-                                                </button>
-                                                {% endif %}
-                                            </div> <!-- Action -->
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
+                                    <!-- Date-Time Picker -->
+                                    <div>
+                                        <label for="sale_end_date"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">End Date &
+                                            Time:</label>
+                                        <input type="datetime-local" id="sale_end_date" name="sale_end_date" required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div class="mt-4 flex justify-end space-x-2">
+                                        <button type="submit"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">Submit</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </div>
+                        <!---inner modal end-->
 
-                    <!--start sale innermodal-->
-                    <div id="StartSaleModal"
-                        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/3">
-                            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Start Sale</h3>
-                                <button type="button"
-                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    onclick="switchToOuterModal()">
-                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-                            <form id="StartSaleForm" action="/StartSaleRequest" method="POST" class="space-y-4">
-                                <input type="hidden" id="game_name_hidden" name="game_name">
-                                <!-- Numeric Input -->
-                                <div>
-                                    <label for="sale_percentage"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">Sale Percentage
-                                        (10-90):</label>
-                                    <input type="number" id="sale_percentage" name="sale_percentage" min="10" max="90"
-                                        required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Enter percentage">
-                                </div>
-                                <!-- Date-Time Picker -->
-                                <div>
-                                    <label for="sale_end_date"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">End Date &
-                                        Time:</label>
-                                    <input type="datetime-local" id="sale_end_date" name="sale_end_date" required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div class="mt-4 flex justify-end space-x-2">
-                                    <button type="submit"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg">Submit</button>
-                                </div>
-                            </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <!-- Modal trigger button (Send Publication Request) -->
+                        <div class="flex justify-end">
+                            <button type="button" id="SendPubReqButton" data-modal-target="#SendPubReqModal"
+                                data-modal-toggle="SendPubReqModal"
+                                class="w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                                Send Publication Request
+                            </button>
                         </div>
-                    </div>
-                    <!---inner modal end-->
+
+                        <!-- Modal for sending publication request -->
+                        <div id="SendPubReqModal"
+                            class="hidden backdrop-blur-sm bg-black bg-opacity-50 fixed top-0 left-0 w-full h-full bg-black-800 flex items-center justify-center z-50">
+                            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Send Publication
+                                        Request
+                                    </h3>
+                                    <button type="button"
+                                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        data-modal-toggle="SendPubReqModal">
+                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="sr-only">Close modal</span>
+                                    </button>
+                                </div>
+
+                                <!-- Modal body: send request form -->
+                                <form id="SendPubReqForm" action="/SendPublishingRequest" method="POST"
+                                    class="space-y-4">
+                                    <!-- Form fields for game name, genre, etc. -->
+                                    <div>
+                                        <label for="game_name"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">Enter Game
+                                            Name:</label>
+                                        <input type="text" id="game_name" name="game_name" required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Enter Game Name.." />
+                                    </div>
+                                    <div>
+                                        <label for="game_genre"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            Genre:</label>
+                                        <input type="text" id="game_genre" name="game_genre" required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Enter Genre.." />
+                                    </div>
+                                    <div>
+                                        <label for="estimated_release_year"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">Estimated
+                                            Release Year</label>
+                                        <input type="number" id="estimated_release_year" name="estimated_release_year"
+                                            required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div>
+                                        <label for="basic_description"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">Enter Basic
+                                            Description</label>
+                                        <input type="text" id="basic_description" name="basic_description" required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div>
+                                        <label for="card_number"
+                                            class="block text-sm font-medium text-gray-900 dark:text-white">Enter Card
+                                            Number</label>
+                                        <input type="number" id="card_number" name="card_number" required
+                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div class="mt-4 flex justify-end space-x-2">
+                                        <button type="submit" id="submitSendPubReq"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Status of Sent Requests button -->
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-                    <!-- Modal trigger button (Send Publication Request) -->
-                    <div class="flex justify-end">
-                        <button type="button" id="SendPubReqButton" data-modal-target="#SendPubReqModal"
-                            data-modal-toggle="SendPubReqModal"
-                            class="w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
-                            Send Publication Request
+                        <button type="button" id="RequestStatusButton" data-modal-target="RequestStatusModal"
+                            data-modal-toggle="RequestStatusModal"
+                            class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            Status of Requests
                         </button>
-                    </div>
-
-                    <!-- Modal for sending publication request -->
-                    <div id="SendPubReqModal"
-                        class="hidden backdrop-blur-sm bg-black bg-opacity-50 fixed top-0 left-0 w-full h-full bg-black-800 flex items-center justify-center z-50">
-                        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Send Publication Request
-                                </h3>
-                                <button type="button"
-                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    data-modal-toggle="SendPubReqModal">
-                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-
-                            <!-- Modal body: send request form -->
-                            <form id="SendPubReqForm" action="/SendPublishingRequest" method="POST" class="space-y-4">
-                                <!-- Form fields for game name, genre, etc. -->
-                                <div>
-                                    <label for="game_name"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">Enter Game
-                                        Name:</label>
-                                    <input type="text" id="game_name" name="game_name" required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Enter Game Name.." />
-                                </div>
-                                <div>
-                                    <label for="game_genre"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">Enter
-                                        Genre:</label>
-                                    <input type="text" id="game_genre" name="game_genre" required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Enter Genre.." />
-                                </div>
-                                <div>
-                                    <label for="estimated_release_year"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">Estimated
-                                        Release Year</label>
-                                    <input type="number" id="estimated_release_year" name="estimated_release_year"
-                                        required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-                                <div>
-                                    <label for="basic_description"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">Enter Basic
-                                        Description</label>
-                                    <input type="text" id="basic_description" name="basic_description" required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-                                <div>
-                                    <label for="card_number"
-                                        class="block text-sm font-medium text-gray-900 dark:text-white">Enter Card
-                                        Number</label>
-                                    <input type="number" id="card_number" name="card_number" required
-                                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-                                <div class="mt-4 flex justify-end space-x-2">
-                                    <button type="submit" id="submitSendPubReq"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg">Submit</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Status of Sent Requests button -->
-
-
-
-
-
-                    <button type="button" id="RequestStatusButton" data-modal-target="RequestStatusModal"
-                        data-modal-toggle="RequestStatusModal"
-                        class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
-                        Status of Requests
-                    </button>
-                    <!-- Main modal -->
-                    <!-- Main modal -->
-                    <div id="RequestStatusModal" tabindex="-1" aria-hidden="true"
-                        class="hidden backdrop-blur-sm bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
-                        <div
-                            class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/2 lg:w-1/3">
-                            <!-- Modal content -->
-                            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                                <!-- Modal header -->
-                                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                                        <h3 class="font-semibold">
-                                            Status of Requests
-                                        </h3>
-                                    </div>
-                                    <div>
-                                        <button type="button"
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
-                                            data-modal-toggle="RequestStatusModal">
-                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
-                                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Search Bar -->
-
-
-                                <div class="mt-4">
-                                    <!-- Header Row -->
-                                    <div class="flex items-center justify-between mb-2 text-white font-bold">
-                                        <span class="buyer-header">Game Name</span>
-                                        <span class="buyer-header">Status</span>
-                                    </div>
-
-                                    <!-- Data Rows -->
-                                    <ul id="statusReq" class="list-disc pl-5">
-                                        {% for game_request in game_req_data %}
-                                        <li class="flex items-center justify-between mb-9 text-white">
-                                            <!-- Left Column: Game Name -->
-                                            <span class="buyer-username">{{ game_request[0] }}</span>
-                                            {% if game_request[1] == 'Accepted' %}
-                                            <!-- Show button only if status is 'Accepted' -->
-                                            <div class="mt-4"> <!-- Increased margin to move the button down -->
-                                                <button type="button"
-                                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
-                                                    data-game_name="{{ game_request[0] }}"
-                                                    onclick="UploadGameData(this)">
-                                                    Upload Data
-                                                </button>
-                                            </div>
-                                            {% endif %}
-
-                                            <!-- Right Column: Status -->
-                                            <span class="buyer-status">{{ game_request[1] }}</span>
-
-
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="button" id="GenerateWalletButton" data-modal-target="GenerateWalletModal"
-                        data-modal-toggle="GenerateWalletModal"
-                        class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
-                        Generate Game Activation Keys
-                    </button>
-                    <!-- Main modal -->
-                    <div id="GenerateWalletModal" tabindex="-1" aria-hidden="true"
-                        class="hidden backdrop-blur-sm bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
-                        <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
-                            <!-- Modal content -->
-                            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                                <!-- Modal header -->
-                                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                                        <h3 class="font-semibold">
-                                            Generate Game Keys
-                                        </h3>
-                                    </div>
-                                    <div>
-                                        <button type="button"
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
-                                            data-modal-toggle="GenerateWalletModal">
-                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
-                                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="gap-3 flex justify-between">
-                                    <div class="bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
-                                        <h1>Select Game</h1>
-                                        <select id="GameNameDropDown" class="text-sm w-full rounded-lg">
-                                            <option value="" disabled selected>Select the game</option>
-                                            {% for game_data in game_list_data %}
-                                            <option value="{{game_data[0]}}">{{game_data[0]}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
-                                    <div class="bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
-                                        <h1>Enter No. of game keys to generate</h1>
-                                        <input id="GameKeyInput" class="text-sm w-full rounded-lg" type="number" max="5"
-                                            placeholder="Max 5 keys at once">
-                                    </div>
-
-                                    <div>
-                                        <button id="submitButton"
-                                            class="font-bold text-white bg-green-800 rounded-lg z-[1] w-40 p-2 shadow"
-                                            type="button">
-                                            Submit
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <button type="button" id="SeeGameKeyButton" data-modal-target="SeeGameKeyModal"
-                        data-modal-toggle="SeeGameKeyModal"
-                        class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
-                        Active Game keys
-                    </button>
-                    <!-- Main modal -->
-                    <div id="SeeGameKeyModal" tabindex="-1" aria-hidden="true"
-                        class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
-                        <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
-                            <!-- Modal content -->
-                            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                                <!-- Modal header -->
-                                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
-                                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                                        <h3 class="font-semibold">
-                                            Active Game Keys
-                                        </h3>
-                                    </div>
-                                    <div>
-                                        <button type="button"
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
-                                            data-modal-toggle="SeeGameKeyModal">
-                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
-                                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-
-                                <!-- Display list of active buyers -->
-                                <div class="mt-4">
-                                    <ul id="devList" class="list-disc pl-5">
-
-                                        <div class="flex justify-between items-center w-full">
-                                            <span class="dev-username text-left text-white font-bold">Game Keys</span>
-                                            <!-- Left-aligned -->
-                                            <span class="dev-company_name text-right text-white font-bold">Game
-                                                Name</span> <!-- Right-aligned -->
+                        <!-- Main modal -->
+                        <!-- Main modal -->
+                        <div id="RequestStatusModal" tabindex="-1" aria-hidden="true"
+                            class="hidden backdrop-blur-sm bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+                            <div
+                                class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full sm:w-1/2 lg:w-1/3">
+                                <!-- Modal content -->
+                                <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                                    <!-- Modal header -->
+                                    <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                        <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                                            <h3 class="font-semibold">
+                                                Status of Requests
+                                            </h3>
                                         </div>
-                                        <br>
-                                        {% for game_key in game_key_active %}
-                                        <li class="flex items-center justify-between mb-4">
-                                            <span class="dev-username">{{ game_key[0] }}</span>
-                                            <!-- Display the username -->
-                                            <span class="dev-company_name">{{ game_key[1] }} </span>
+                                        <div>
+                                            <button type="button"
+                                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                                                data-modal-toggle="RequestStatusModal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
+                                    <!-- Search Bar -->
+
+
+                                    <div class="mt-4">
+                                        <!-- Header Row -->
+                                        <div class="flex items-center justify-between mb-2 text-white font-bold">
+                                            <span class="buyer-header">Game Name</span>
+                                            <span class="buyer-header">Status</span>
+                                        </div>
+
+                                        <!-- Data Rows -->
+                                        <ul id="statusReq" class="list-disc pl-5">
+                                            {% for game_request in game_req_data %}
+                                            <li class="flex items-center justify-between mb-9 text-white">
+                                                <!-- Left Column: Game Name -->
+                                                <span class="buyer-username">{{ game_request[0] }}</span>
+                                                {% if game_request[1] == 'Accepted' %}
+                                                <!-- Show button only if status is 'Accepted' -->
+                                                <div class="mt-4"> <!-- Increased margin to move the button down -->
+                                                    <button type="button"
+                                                        class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
+                                                        data-game_name="{{ game_request[0] }}"
+                                                        onclick="UploadGameData(this)">
+                                                        Upload Data
+                                                    </button>
+                                                </div>
+                                                {% endif %}
+
+                                                <!-- Right Column: Status -->
+                                                <span class="buyer-status">{{ game_request[1] }}</span>
+
+
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-
-                </div>
-
-
-
-            </div>
-        </div>
-        </div>
-        <div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                    <div class="p-4 md:p-5 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                        </svg>
-                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Modal Title</h3>
-                        <div class="modal-body"></div>
-                        <button data-modal-hide="popup-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                            Close
+                        <button type="button" id="GenerateWalletButton" data-modal-target="GenerateWalletModal"
+                            data-modal-toggle="GenerateWalletModal"
+                            class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            Generate Game Activation Keys
                         </button>
+                        <!-- Main modal -->
+                        <div id="GenerateWalletModal" tabindex="-1" aria-hidden="true"
+                            class="hidden backdrop-blur-sm bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
+                            <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+                                <!-- Modal content -->
+                                <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                                    <!-- Modal header -->
+                                    <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                        <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                                            <h3 class="font-semibold">
+                                                Generate Game Keys
+                                            </h3>
+                                        </div>
+                                        <div>
+                                            <button type="button"
+                                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                                                data-modal-toggle="GenerateWalletModal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="gap-3 flex justify-between">
+                                        <div class="bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                                            <h1>Select Game</h1>
+                                            <select id="GameNameDropDown" class="text-sm w-full rounded-lg">
+                                                <option value="" disabled selected>Select the game</option>
+                                                {% for game_data in game_list_data %}
+                                                <option value="{{game_data[0]}}">{{game_data[0]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                                            <h1>Enter No. of game keys to generate</h1>
+                                            <input id="GameKeyInput" class="text-sm w-full rounded-lg" type="number"
+                                                max="5" placeholder="Max 5 keys at once">
+                                        </div>
+
+                                        <div>
+                                            <button id="submitButton"
+                                                class="font-bold text-white bg-green-800 rounded-lg z-[1] w-40 p-2 shadow"
+                                                type="button">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <button type="button" id="SeeGameKeyButton" data-modal-target="SeeGameKeyModal"
+                            data-modal-toggle="SeeGameKeyModal"
+                            class="w-full lg:w-[300px] h-[45px] font-bold bg-gradient-to-r from-blue-900 to-purple-700 text-white rounded-lg">
+                            Active Game keys
+                        </button>
+                        <!-- Main modal -->
+                        <div id="SeeGameKeyModal" tabindex="-1" aria-hidden="true"
+                            class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
+                            <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+                                <!-- Modal content -->
+                                <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                                    <!-- Modal header -->
+                                    <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                                        <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                                            <h3 class="font-semibold">
+                                                Active Game Keys
+                                            </h3>
+                                        </div>
+                                        <div>
+                                            <button type="button"
+                                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                                                data-modal-toggle="SeeGameKeyModal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Display list of active buyers -->
+                                    <div class="mt-4">
+                                        <ul id="devList" class="list-disc pl-5">
+
+                                            <div class="flex justify-between items-center w-full">
+                                                <span class="dev-username text-left text-white font-bold">Game
+                                                    Keys</span>
+                                                <!-- Left-aligned -->
+                                                <span class="dev-company_name text-right text-white font-bold">Game
+                                                    Name</span> <!-- Right-aligned -->
+                                            </div>
+                                            <br>
+                                            {% for game_key in game_key_active %}
+                                            <li class="flex items-center justify-between mb-4">
+                                                <span class="dev-username">{{ game_key[0] }}</span>
+                                                <!-- Display the username -->
+                                                <span class="dev-company_name">{{ game_key[1] }} </span>
+
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+            </div>
+            <div id="popup-modal" tabindex="-1"
+                class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
+                <div class="relative p-4 w-full max-w-md max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <button type="button"
+                            class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-hide="popup-modal">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                        <div class="p-4 md:p-5 text-center">
+                            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Modal Title</h3>
+                            <div class="modal-body"></div>
+                            <button data-modal-hide="popup-modal" type="button"
+                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <footer
         class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center bg-neutral text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
@@ -855,10 +870,10 @@
                     if (data.success) {
                         const modalTitle = document.querySelector('#popup-modal h3');
                         const modalBody = document.querySelector('#popup-modal .modal-body');
-        
+
                         modalTitle.innerHTML = data.message;
-                     
-        
+
+
                         // Show the modal
                         const modal = document.getElementById('popup-modal');
                         modal.classList.remove('hidden');
@@ -870,10 +885,10 @@
                     } else {
                         const modalTitle = document.querySelector('#popup-modal h3');
                         const modalBody = document.querySelector('#popup-modal .modal-body');
-        
+
                         modalTitle.innerHTML = data.message;
-                     
-        
+
+
                         // Show the modal
                         const modal = document.getElementById('popup-modal');
                         modal.classList.remove('hidden');
@@ -1148,10 +1163,10 @@
                     if (data.message) {
                         const modalTitle = document.querySelector('#popup-modal h3');
                         const modalBody = document.querySelector('#popup-modal .modal-body');
-        
+
                         modalTitle.innerHTML = data.message;
-                     
-        
+
+
                         // Show the modal
                         const modal = document.getElementById('popup-modal');
                         modal.classList.remove('hidden');
@@ -1201,14 +1216,14 @@
                     .then(data => {
                         if (data.success) {
                             const modalTitle = document.querySelector('#popup-modal h3');
-                        const modalBody = document.querySelector('#popup-modal .modal-body');
-        
-                        modalTitle.innerHTML = data.message;
-                     
-        
-                        // Show the modal
-                        const modal = document.getElementById('popup-modal');
-                        modal.classList.remove('hidden');
+                            const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                            modalTitle.innerHTML = data.message;
+
+
+                            // Show the modal
+                            const modal = document.getElementById('popup-modal');
+                            modal.classList.remove('hidden');
                             // Redirect to the homepage after a delay
 
                             setTimeout(() => {
@@ -1216,14 +1231,14 @@
                             }, 2000);
                         } else {
                             const modalTitle = document.querySelector('#popup-modal h3');
-                        const modalBody = document.querySelector('#popup-modal .modal-body');
-        
-                        modalTitle.innerHTML = data.message;
-                     
-        
-                        // Show the modal
-                        const modal = document.getElementById('popup-modal');
-                        modal.classList.remove('hidden');
+                            const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                            modalTitle.innerHTML = data.message;
+
+
+                            // Show the modal
+                            const modal = document.getElementById('popup-modal');
+                            modal.classList.remove('hidden');
                         }
                     })
                     .catch(error => {
@@ -1309,7 +1324,7 @@
                     modal.classList.remove('hidden');
                 }
             };
-        
+
             // Function to hide modal
             const hideModal = (modal) => {
                 if (modal) {
@@ -1317,7 +1332,7 @@
                     location.reload();
                 }
             };
-        
+
             // Event listener for toggle buttons
             document.querySelectorAll('[data-modal-toggle]').forEach(button => {
                 button.addEventListener('click', () => {
@@ -1325,7 +1340,7 @@
                     showModal(modalId);
                 });
             });
-        
+
             // Event listener for close buttons
             document.querySelectorAll('[data-modal-hide]').forEach(button => {
                 button.addEventListener('click', () => {
@@ -1334,7 +1349,7 @@
                     location.reload();
                 });
             });
-        
+
             // Optional: Close the modal when clicking outside of it
             document.querySelectorAll('.fixed').forEach(modal => {
                 modal.addEventListener('click', (event) => {
