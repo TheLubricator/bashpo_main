@@ -45,7 +45,7 @@
                 <!-- Disabled Option (Gradient Background) -->
                 <option value="" disabled selected
                     class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold">
-                    {{ dev_username }} {{ balance }} $
+                    {{ dev_username }} {{ balance | round(2) }} $
                 </option>
                 <!-- Dropdown Menu Items -->
                 <option value="view_revenue" class="bg-[#b3b3b3] text-white">View Revenue</option>

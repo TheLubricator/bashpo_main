@@ -447,7 +447,7 @@
 
                                         <button type="button"
                                             class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-1.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
-                                            data-username="{{wishlist[0]}}" data-game_name="{{ wishlist[1] }}"
+                                            data-username="{{wishlist[0]}}" data-game_name_wishlist="{{ wishlist[1] }}"
                                             onclick="RemoveFromWishList(this)">
                                             Remove
                                         </button>
@@ -1092,6 +1092,41 @@
             });
         });
     });
+    function RemoveFromWishList(button) {
+        const game_name = button.getAttribute('data-game_name_wishlist')
+        const listItem = button.closest('li');
+
+        fetch('/RemoveFromWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ game_name: game_name })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    const modalTitle = document.querySelector('#popup-modal h3');
+                    const modalBody = document.querySelector('#popup-modal .modal-body');
+
+                    modalTitle.innerHTML = data.message;
+
+
+                    // Show the modal
+                    const modal = document.getElementById('popup-modal');
+                    modal.classList.remove('hidden'); // Display success message
+                    listItem.remove();
+
+                } else {
+                    alert(data.error); // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong!');
+            });
+
+    }
 
     function logout() {
         window.location.href = '/logout'; // Redirect to logout route

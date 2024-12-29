@@ -46,7 +46,7 @@
                 onchange="handleDropdownChange(this)" required>
                 <option value="" disabled selected
                     class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold">
-                    {{ buyer_username }} {{ balance }} $
+                    {{ buyer_username }} {{ balance | round(2) }} $
                 </option>
 
                 <option value="view_profile" class="bg-[#b3b3b3] text-white">View My Profile</option>
