@@ -258,7 +258,7 @@
                                                 <span class="w-1/4">{{ game_data[1] }}</span> <!-- Status -->
                                                 <span class="w-1/4">{{ game_data[2] }}</span> <!-- Base Price -->
                                                 <div class="w-1/4 text-left">
-                                                    {% if game_data[4] == '0' and game_data == 'Active' %}
+                                                    {% if game_data[4] == '0' and game_data[1] == 'Active' %}
                                                     <button type="button"
                                                         class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
                                                         data-game_name_sale="{{ game_data[0] }}"
