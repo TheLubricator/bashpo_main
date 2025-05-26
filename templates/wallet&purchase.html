@@ -28,9 +28,9 @@
 
 <body class="font-inter">
 
-    <header
+    <header id="navbar"
         class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
-        <div class="flex navbar bg-base-100 justify-start rounded-lg">
+        <div id="navbar1" class="flex navbar bg-base-100 justify-start rounded-lg">
             <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
                 <div class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-2">
                 </div>
@@ -121,7 +121,7 @@
 
     <section class="flex justify-items-center">
         <div
-            class="mx-auto justify-items-center relative my-5 bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full sm:h-[auto] lg:h-[800px]">
+            class="mx-auto justify-items-center relative bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full sm:h-[auto] lg:h-[800px]">
             <h1 class="mt-20 font-bold text-3xl lg:text-5xl font-istok tracking-widest text-center">
                 Wallet Balance and Purchase History
             </h1>
@@ -152,18 +152,12 @@
                         </button>
 
                         <!-- Update Credit Card Info -->
-                        <button type="button" onclick="openModal('updateCreditCardModal')"
-                            class="px-6 h-[auto] lg:w-[300px] lg:h-[50px] bg-blue-800 text-white rounded-lg font-semibold w-full sm:w-[250px]">
-                            Update Credit Card Info
-                        </button>
-                    </div>
-                    <div class="flex justify-center mt-5">
-                        <!-- View Purchase History -->
                         <button type="button" onclick="openModal('purchaseHistoryModal')"
-                            class="px-6 h-[auto] lg:w-[300px] lg:h-[50px] bg-blue-800 text-white rounded-lg font-semibold w-full sm:w-[250px]">
-                            View Purchase <br> History
-                        </button>
+                        class="px-6 h-[auto] lg:w-[300px] lg:h-[50px] bg-blue-800 text-white rounded-lg font-semibold w-full sm:w-[250px]">
+                        View Purchase History
+                    </button>
                     </div>
+                   
                 </div>
             </div>
         </div>
@@ -175,17 +169,23 @@
                 <h2 class="text-lg font-bold mb-4">Add to Wallet via Credit Card</h2>
                 <form id="WalletCreditCardForm" action="/WallettoCreditCard" method="POST" class="space-y-4">
                     <div class="mb-4">
-                        <label for="card-number" class="block text-sm font-semibold">Card Number</label>
-                        <input type="text" id="card-number" class="w-full px-4 py-2 border rounded-lg"
-                            placeholder="1234 5678 9012 3456" required />
-                        <label for="card-number" class="block text-sm font-semibold">Enter Amount</label>
-                        <input type="integer" id="wallet" class="w-full px-4 py-2 border rounded-lg"
-                            placeholder="Enter amount in $$" required />
+                        <label for="wallet" class="block text-sm font-semibold">Enter Amount</label>
+                <input
+                    type="number"
+                    id="wallet"
+                    name="wallet"
+                    min="1"
+                    step="0.01"
+                    class="w-full px-4 py-2 border rounded-lg"
+                    placeholder="Enter amount in $$"
+                    required/>
+        
                     </div>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
                         onclick="closeModal('creditCardModal')">Close</button>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded"
-                        id="submitCreditCard">Submit</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                        Submit
+                    </button>
                 </form>
             </div>
         </div>
@@ -258,19 +258,19 @@
         <div id="purchaseHistoryModal"
             class="hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
             <div class="bg-white p-5 rounded-lg shadow-lg">
-                <h2 class="text-lg font-bold mb-4">View Purchase History</h2>
-                <p>Here you can see your purchase history.</p>
+                <h2 class="text-lg font-bold text-black mb-4">View Purchase History</h2>
+                <p class="text-black">Here you can see your purchase history.</p>
                 <div class="mt-4">
                     <div class="flex justify-between font-semibold mb-4">
-                        <div class="w-1/4 text-left">Game Name</div>
-                        <div class="w-1/4 text-left">Amount Paid</div>
-                        <div class="w-1/4 text-left">Action</div>
+                        <div class="w-1/4 text-left text-black">Game Name</div>
+                        <div class="w-1/4 text-left text-black">Amount Paid</div>
+                        <div class="w-1/4 text-left text-black">Action</div>
                     </div>
                     <ul id="buyerList" class="list-none">
                         {% for game in game_info %}
                         <li class="flex justify-between items-center mb-4">
-                            <span class="w-1/4">{{ game[0] }}</span> <!-- Game Name -->
-                            <span class="w-1/4">
+                            <span class="w-1/4 text-black">{{ game[0] }}</span> <!-- Game Name -->
+                            <span class="w-1/4 text-black">
                                 {% if game[2]=='Digital' %}
                                 <span>{{ game[1] }} $</span>
                                 {% elif game[2]=='Product_key' %}
@@ -310,6 +310,7 @@
             </div>
 
         </div>
+
         <div id="popup-modal" tabindex="-1"
             class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-40">
             <div class="relative p-4 w-full max-w-md max-h-full">
@@ -342,7 +343,7 @@
         </div>
 
     </section>
-    <footer
+    <footer id="footer"
         class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center  text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
         <!-- Logo and Description -->
         <aside class="flex flex-col items-center text-center lg:text-left lg:items-start">
@@ -745,44 +746,8 @@
                 });
         });
 
-        document.getElementById('WalletCreditCardForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const card_number = document.getElementById('card-number').value;
-            const wallet = document.getElementById('wallet').value;
-
-            fetch('/WallettoCreditCard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // Ensure this matches the backend expectations
-                },
-                body: JSON.stringify({ card_number: card_number, wallet: wallet }) // Send the card_number in the body
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        const modalTitle = document.querySelector('#popup-modal h3');
-                        const modalBody = document.querySelector('#popup-modal .modal-body');
-
-                        modalTitle.innerHTML = data.message;
-
-
-                        // Show the modal
-                        const modal = document.getElementById('popup-modal');
-                        modal.classList.remove('hidden');
-                        // Remove the user from the list
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
-                    } else {
-                        alert(data.error); // Display error message
-                    }
-                })
-                .catch(error => {
-                    console.error("Fetch error:", error); // Catch and log fetch errors
-                    alert('Something went wrong!');
-                });
-        });
+      
+        
 
 
 
@@ -831,7 +796,34 @@
                 });
             });
         });
-
+        function updateNavbarColor() {
+            const navbar = document.getElementById('navbar');
+            const navbar1=document.getElementById('navbar1');
+            const footer=document.getElementById('footer');
+            const currentHour = new Date().getHours();  // Get current hour (0-23)
+    
+            // Apply different background color based on the time
+            if (currentHour >= 6 && currentHour < 18) {
+                // Daytime (6 AM to 6 PM)
+                navbar.classList.remove('bg-[#010321]');
+                navbar.classList.add('bg-base-100');
+                navbar1.classList.remove('bg-[#010321]');
+                navbar1.classList.add('bg-base-100');
+                footer.classList.remove('bg-[#010321]');
+                footer.classList.add('bg-neutral');
+            } else {
+                // Nighttime (6 PM to 6 AM)
+                navbar.classList.remove('bg-base-100');
+                navbar.classList.add('bg-[#010321]');
+                navbar1.classList.remove('bg-base-100');
+                navbar1.classList.add('bg-[#010321]');
+                footer.classList.remove('bg-neutral');
+                footer.classList.add('bg-[#010321]');
+            }
+        }
+    
+        // Call the function to update navbar color when the page loads
+        updateNavbarColor();
 
 
         function logout() {

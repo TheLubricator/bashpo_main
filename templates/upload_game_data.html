@@ -79,6 +79,14 @@
                                 class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
                             placeholder="Enter price in dollars (price can range from 0 to 120 dollars)"
                             min="0" max="120" required>  
+                        <p class="text-l text-bold mt-5">Enter part of youtube trailer</p>
+                        <input type="text" id="yt_embed" name="yt_embed"
+                                    class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
+                                placeholder="Enter link portion after = sign (e.g., mr15Xzb1Ook)"
+                                 required>  
+
+
+
                             <p class="text-l text-bold mt-5">Enter Logo (please make sure it doesn't exceed 500x500)</p>
 
                             <!-- Logo Upload -->
@@ -159,6 +167,7 @@
     const screenshot1 = document.getElementById('img_ss1').files[0];
     const screenshot2 = document.getElementById('img_ss2').files[0];
     const game_file = document.getElementById('game_file').files[0];
+    const yt_embed = document.getElementById('yt_embed').value;
    
 
     // Log files to debug
@@ -183,7 +192,8 @@
         logo: base64Logo,
         screenshot1: base64Screenshot1,
         screenshot2: base64Screenshot2,
-        game_file:base64GameFiles
+        game_file:base64GameFiles,
+        yt_embed: yt_embed
     };
 
     try {

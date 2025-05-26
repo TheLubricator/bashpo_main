@@ -29,9 +29,9 @@
 </head>
 
 <body class="font-inter">
-    <header
+    <header id="navbar"
         class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
-        <div class="flex navbar bg-base-100 justify-start rounded-lg">
+        <div id="navbar1" class="flex navbar bg-base-100 justify-start rounded-lg">
             <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
                 <div
                     class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-[2px]">
@@ -121,10 +121,102 @@
                 </div>
             </div>
         </div>
+        <div id="DeveloperRevenueModal" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
+        <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+            <!-- Modal content -->
+            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                <!-- Modal header -->
+                <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                    <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                        <h1 class="font-bold">Total Cashflow: {{total_cash_flow | round(2)}} $</h1>
+                        <h3 class="font-semibold">
+                            Developer Revenue
+                        </h3>
+                    </div>
+                    <div>
+                        <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-toggle="DeveloperRevenueModal">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Display Developer Revenue -->
+                <div class="mt-4">
+                    <ul class="list-disc pl-5">
+                        {% for developer in developer_earnings %}
+                        <li class="flex items-center justify-between mb-4">
+                            <span>{{ developer[0] }}</span> <!-- Display the developer username -->
+                            <span>{{ developer[1] | round(2) }} $</span> <!-- Display the balance -->
+                        </li>
+                        {% endfor %}
+                        <span class="font-bold text-sm">Top earning game: {{highest_game[0]}} ({{highest_game[1] |
+                            round(2)}} $)</span> <br>
+                        <span class="font-bold text-sm">Dev with the highest earning (cumulative):
+                            {{highest_dev[0]}} ({{highest_dev[1]| round(2)}} $)</span>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="DeveloperRevenueModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-50">
+    <div class="relative p-4 w-full max-w-xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between mb-4 rounded-t sm:mb-5">
+                <div class="text-lg text-gray-900 md:text-xl dark:text-white">
+                    <h1 class="font-bold">Total Cashflow: {{total_cash_flow | round(2)}} $</h1>
+                    <h3 class="font-semibold">
+                        Developer Revenue
+                    </h3>
+                </div>
+                <div>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-toggle="DeveloperRevenueModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Display Developer Revenue -->
+            <div class="mt-4">
+                <ul class="list-disc pl-5">
+                    {% for developer in developer_earnings %}
+                    <li class="flex items-center justify-between mb-4">
+                        <span>{{ developer[0] }}</span> <!-- Display the developer username -->
+                        <span>{{ developer[1] | round(2) }} $</span> <!-- Display the balance -->
+                    </li>
+                    {% endfor %}
+                    <span class="font-bold text-sm">Top earning game: {{highest_game[0]}} ({{highest_game[1] |
+                        round(2)}} $)</span> <br>
+                    <span class="font-bold text-sm">Dev with the highest earning (cumulative):
+                        {{highest_dev[0]}} ({{highest_dev[1]| round(2)}} $)</span>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
     </header>
 
-    <main>
+    <main class="flex-1 p-0 -m-5">
         <section class="mt-5 relative">
             <div
                 class="gap-5 bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80 z-0">
@@ -228,7 +320,7 @@
             </div>
         </section>
     </main>
-    <footer
+    <footer id="footer"
         class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center  text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
         <!-- Logo and Description -->
         <aside class="flex flex-col items-center text-center lg:text-left lg:items-start">
@@ -438,6 +530,69 @@
                 showUpdatePasswordModal(); // Redirect to update password page
             }
         }
+        function showDeveloperRevenueModal() {
+            const modal = document.getElementById('DeveloperRevenueModal');
+            modal.classList.remove('hidden'); // Show the modal
+            document.body.style.overflow = 'hidden'; // Prevent body scrolling when modal is open
+        }
+    
+        function initializeModal_developer_revenue() {
+            const modal = document.getElementById('DeveloperRevenueModal');
+            const closeModalButton = modal.querySelector('[data-modal-toggle="DeveloperRevenueModal"]');
+    
+            // Close the modal when the close button (X) is clicked
+            closeModalButton.addEventListener('click', function () {
+                modal.classList.add('hidden'); // Hide the modal
+                document.body.style.overflow = ''; // Re-enable body scrolling
+            });
+    
+            // Close the modal if the user clicks outside of the modal content (overlay click)
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            
+            initializeModal_developer_revenue();
+           
+    
+    
+        });
+
+
+        function updateNavbarColor() {
+            const navbar = document.getElementById('navbar');
+            const navbar1=document.getElementById('navbar1');
+            const footer=document.getElementById('footer');
+            const currentHour = new Date().getHours();  // Get current hour (0-23)
+    
+            // Apply different background color based on the time
+            if (currentHour >= 6 && currentHour < 18) {
+                // Daytime (6 AM to 6 PM)
+                navbar.classList.remove('bg-[#010321]');
+                navbar.classList.add('bg-base-100');
+                navbar1.classList.remove('bg-[#010321]');
+                navbar1.classList.add('bg-base-100');
+                footer.classList.remove('bg-[#010321]');
+                footer.classList.add('bg-neutral');
+            } else {
+                // Nighttime (6 PM to 6 AM)
+                navbar.classList.remove('bg-base-100');
+                navbar.classList.add('bg-[#010321]');
+                navbar1.classList.remove('bg-base-100');
+                navbar1.classList.add('bg-[#010321]');
+                footer.classList.remove('bg-neutral');
+                footer.classList.add('bg-[#010321]');
+            }
+        }
+    
+        // Call the function to update navbar color when the page loads
+        updateNavbarColor();
+
+
         function logout() {
             window.location.href = '/logout'; // Redirect to logout route
         }

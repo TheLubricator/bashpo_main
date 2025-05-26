@@ -78,10 +78,6 @@
                         <option value="ASI">Asia(ASI)</option>
                     </select>
 
-                    <p class="text-l text-bold mt-5">Enter Your Card Info</p>
-                    <input type="text" id="card_info" name="card_info"
-                        class="pl-5 block rounded-lg w-full lg:w-[500px] h-[35px] lg:h-[40px] mt-3 bg-white text-black"
-                        placeholder="Enter Your Card Info here" required>
 
                     <div id="error-message" class="text-red-500 text-center mt-3 hidden"></div>
 
@@ -171,8 +167,10 @@
                 password: document.getElementById("password").value,
                 buyer_address: document.getElementById("buyer_address").value,
                 store_region: document.getElementById("store_region").value,
-                card_info: document.getElementById("card_info").value,
+                card_info: " ",
+               
             };
+            console.log(formData);  // Log the form data for debugging
 
             try {
                 const response = await fetch("/create_buyer", {

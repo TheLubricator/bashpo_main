@@ -29,7 +29,7 @@
 </head>
 
 <body class="font-inter">
-    <header
+    <header id="navbar"
         class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
         <div class="ml-5 lg:ml-20 mt-5 w-[80px] lg:w-[120px]">
             <div
@@ -166,7 +166,7 @@
 
     </header>
 
-    <main>
+    <main class="flex-1 p-0 -m-5">
         <section class="mt-5">
             <div
                 class="gap-5 relative bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80">
@@ -337,21 +337,6 @@
                         <!---inner modal end-->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <!-- Modal trigger button (Send Publication Request) -->
                         <div class="flex justify-end">
                             <button type="button" id="SendPubReqButton" data-modal-target="#SendPubReqModal"
                                 data-modal-toggle="SendPubReqModal"
@@ -413,13 +398,6 @@
                                             class="block text-sm font-medium text-gray-900 dark:text-white">Enter Basic
                                             Description</label>
                                         <input type="text" id="basic_description" name="basic_description" required
-                                            class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                    </div>
-                                    <div>
-                                        <label for="card_number"
-                                            class="block text-sm font-medium text-gray-900 dark:text-white">Enter Card
-                                            Number</label>
-                                        <input type="number" id="card_number" name="card_number" required
                                             class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                     </div>
                                     <div class="mt-4 flex justify-end space-x-2">
@@ -487,9 +465,21 @@
                                             <li class="flex items-center justify-between mb-9 text-white">
                                                 <!-- Left Column: Game Name -->
                                                 <span class="buyer-username">{{ game_request[0] }}</span>
-                                                {% if game_request[1] == 'Accepted' %}
-                                                <!-- Show button only if status is 'Accepted' -->
-                                                <div class="mt-4"> <!-- Increased margin to move the button down -->
+                                                {% if game_request[1] == 'Accepted' and game_request[2] == False %}
+                                                <div class="mt-4">
+                                                    <form action="/PayPublishingFee" method="POST">
+                                                        <!-- Include game name as a hidden field -->
+                                                        <input type="hidden" name="game_name" value="{{ game_request[0] }}">
+                                                        <button type="submit"
+                                                            class="text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-xs px-4 py-2 dark:bg-orange-500 dark:hover:bg-orange-600 dark:focus:ring-orange-900">
+                                                            Pay publishing fee
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                       
+                                            
+                                                {% elif game_request[1] == 'Accepted' and game_request[2]==True %}
+                                                <div class="mt-4"> 
                                                     <button type="button"
                                                         class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-900"
                                                         data-game_name="{{ game_request[0] }}"
@@ -675,7 +665,7 @@
         </section>
     </main>
 
-    <footer
+    <footer id="footer"
         class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center bg-neutral text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
         <!-- Logo and Description -->
         <aside class="flex flex-col items-center text-center lg:text-left lg:items-start">
@@ -1362,7 +1352,34 @@
         });
 
 
-
+        function updateNavbarColor() {
+            const navbar = document.getElementById('navbar');
+            const navbar1=document.getElementById('navbar1');
+            const footer=document.getElementById('footer');
+            const currentHour = new Date().getHours();  // Get current hour (0-23)
+    
+            // Apply different background color based on the time
+            if (currentHour >= 6 && currentHour < 18) {
+                // Daytime (6 AM to 6 PM)
+                navbar.classList.remove('bg-[#010321]');
+                navbar.classList.add('bg-base-100');
+                //navbar1.classList.remove('bg-[#010321]');
+                //navbar1.classList.add('bg-base-100');
+                footer.classList.remove('bg-[#010321]');
+                footer.classList.add('bg-neutral');
+            } else {
+                // Nighttime (6 PM to 6 AM)
+                navbar.classList.remove('bg-base-100');
+                navbar.classList.add('bg-[#010321]');
+                //navbar1.classList.remove('bg-base-100');
+                //navbar1.classList.add('bg-[#010321]');
+                footer.classList.remove('bg-neutral');
+                footer.classList.add('bg-[#010321]');
+            }
+        }
+    
+        // Call the function to update navbar color when the page loads
+        updateNavbarColor();
 
 
 

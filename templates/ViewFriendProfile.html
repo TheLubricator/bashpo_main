@@ -29,7 +29,7 @@
 </head>
 
 <body class="font-inter">
-    <header
+    <header id="navbar"
         class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
         <div class="ml-5 lg:ml-20 mt-5 w-[80px] lg:w-[120px]">
             <div
@@ -131,7 +131,7 @@
 
     </header>
 
-    <main>
+    <main class="flex-1 p-0 -m-5">
         <section class="mt-5 relative">
             <div
                 class="gap-5 bg-[url('{{ url_for('static', filename='img/bg-1.jpg') }}')] bg-cover bg-center w-full min-h-screen bg-blue-600 opacity-80 z-0">
@@ -236,7 +236,7 @@
             </div>
         </section>
     </main>
-    <footer
+    <footer id="footer"
         class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center  text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
         <!-- Logo and Description -->
         <aside class="flex flex-col items-center text-center lg:text-left lg:items-start">
@@ -453,7 +453,32 @@
 
 
         });
-
+        function updateNavbarColor() {
+            const navbar = document.getElementById('navbar');
+            const navbar1=document.getElementById('navbar1');
+            const footer=document.getElementById('footer');
+            const currentHour = new Date().getHours();  // Get current hour (0-23)
+    
+            // Apply different background color based on the time
+            if (currentHour >= 6 && currentHour < 18) {
+                // Daytime (6 AM to 6 PM)
+                navbar.classList.remove('bg-[#010321]');
+                navbar.classList.add('bg-base-100');
+               // navbar1.classList.remove('bg-[#010321]');
+               // navbar1.classList.add('bg-base-100');
+                footer.classList.remove('bg-[#010321]');
+                footer.classList.add('bg-neutral');
+            } else {
+                // Nighttime (6 PM to 6 AM)
+                navbar.classList.remove('bg-base-100');
+                navbar.classList.add('bg-[#010321]');
+                //navbar1.classList.remove('bg-base-100');
+               // navbar1.classList.add('bg-[#010321]');
+                footer.classList.remove('bg-neutral');
+                footer.classList.add('bg-[#010321]');
+            }
+        }
+        updateNavbarColor()
 
         function logout() {
             window.location.href = '/logout'; // Redirect to logout route

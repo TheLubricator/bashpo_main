@@ -28,9 +28,9 @@
 
 <body class="font-inter">
     <!-- Header Section -->
-    <header
+    <header id="navbar"
         class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 p-2 bg-base-100 rounded-lg">
-        <div class="flex navbar bg-base-100 justify-start rounded-lg">
+        <div id = 'navbar1' class="flex navbar bg-base-100 justify-start rounded-lg">
             <div class="ml-5 lg:ml-20 mt-5 px-0.5 py-0.5 w-[80px] lg:w-[120px] relative">
                 <div class="absolute inset-0 bg-gradient-to-r from-sky-700 via-purple-400 to-violet-700 rounded-xl p-2">
                 </div>
@@ -46,7 +46,7 @@
                 onchange="handleDropdownChange(this)" required>
                 <!-- Disabled Option (Gradient Background) -->
                 <option value="" disabled selected
-                    class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold">
+                    class="bg-gradient-to-r from-[#515151] to-[#676161] text-[#1A97F0] text-center font-bold drop-shadow-md">
                     {{ buyer_username }} {{ balance }} $
                 </option>
 
@@ -110,7 +110,7 @@
         </div>
     </div>
 
-    <section class="mt-5 mx-auto">
+    <section class="mx-auto">
         <div class="mx-auto grid relative min-h-screen bg-blue-950 opacity-100">
             <div class="absolute right-0 top-0 flex flex-col gap-4 p-2 items-end">
                 <div class="w-[80%] lg:w-full flex flex-col lg:flex-row gap-4 mt-5">
@@ -229,11 +229,11 @@
     <section class="bg-blue-950 opacity-100">
 
         <div class="lg:mx-[25rem] flex flex-col justify-start items-start min-h-screen">
-            <div class="mx-auto">
+            <div class="mx-auto mt-0">
                 <h1 class="text-xl lg:text-2xl font-bold">Prioritize available games by:</h1>
             </div>
 
-            <div class="mx-auto flex flex-col lg:flex-row justify-center items-center gap-4 mt-4">
+            <div class="mx-auto flex flex-col lg:flex-row justify-center items-center gap-4 mt-4 mb-12">
                 <div class="relative">
                     <select id="genre" name="genre"
                         class="items-center justify-center block rounded-lg w-[150px] lg:w-[200px] h-[40px] bg-gradient-to-r from-[#3E7C7F] to-[#1E7C9F] text-black text-center"
@@ -269,30 +269,22 @@
             <div class="flex justify-center items-center flex-1 w-full mt-5">
                 <div class="w-[95%] h-auto lg:w-[1200px] bg-[#0A0221] rounded-xl" id="SortingTest">
                     {% for games in game_list %}
-                    <a href="/ViewGamePage/{{games[0]}}" class="block">
-                        <div
-                            class="px-2 flex justify-between items-center lg:mx-[10rem] mx-[1rem] my-[1rem] lg:my-[3rem] lg:h-[120px] lg:w-[820px] bg-[#1e3647] rounded-xl">
+                    <a href="/ViewGamePage/{{games[0]}}" class="block game-item" data-yt-src="https://www.youtube.com/embed/{{games[7]}}?autoplay=1&mute=1">
+                        <div class="px-2 flex justify-between items-center lg:mx-[10rem] mx-[1rem] my-[1rem] lg:my-[3rem] lg:h-[120px] lg:w-[820px] bg-[#1e3647] rounded-xl">
                             <div class="flex items-center mx-5 h-[auto]">
-                                <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo"
-                                    class="mx-1 my-4 w-1/3 rounded-xl">
+                                <img src="{{ url_for('static', filename = games[3]) }}" alt="Game-Logo" class="mx-1 my-4 w-1/3 rounded-xl">
                                 <div class="ml-5">
                                     <h1 class="text-l lg:text-xl font-bold text-white">{{games[0]}}</h1>
-                                    <h1 class="text-l lg:text-xl text-slate-300 font-semibold mt-5 italic">{{games[1]}}
-                                    </h1>
+                                    <h1 class="text-l lg:text-xl text-slate-300 font-semibold mt-5 italic">{{games[1]}}</h1>
                                 </div>
                             </div>
                             <div class="flex flex-col items-center justify-center">
-
                                 {% if games[5] == '1' %}
                                 <h1 class="flex items-center text-l lg:text-xl font-bold">
-                                    <!-- games[6]% in light green -->
-                                    <span
-                                        class="bg-[#335c1b] text-[#3ae310] text-sm font-bold py-1 px-2 rounded-lg shadow-md mr-2">
+                                    <span class="bg-[#335c1b] text-[#3ae310] text-sm font-bold py-1 px-2 rounded-lg shadow-md mr-2">
                                         {{games[6]}}%
                                     </span>
-                                    <!-- games[4] with line-through -->
                                     <span class="text-white line-through mr-2">{{games[4]}}$</span>
-                                    <!-- games[2] in normal text -->
                                     <span class="text-[#3ae310]">{{games[2]}}$</span>
                                 </h1>
                                 {% else %}
@@ -308,6 +300,21 @@
             </div>
 
         </div>
+
+        <div id="popover-image" class="absolute z-10 invisible opacity-0 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-4 dark:bg-gray-800 dark:border-gray-600">
+            <div class="relative w-full h-0" style="padding-top: 56.25%;">
+                <iframe id="yt-player" 
+                        src="https://www.youtube.com/embed/mr15Xzb1Ook?autoplay=1&mute=1" 
+                        title="Tailwind in 100 Seconds" 
+                        class="absolute top-0 left-0 w-full h-full rounded-lg" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
     </section>
     <div id="ViewWishlistedGamesModal" tabindex="-1" aria-hidden="true"
         class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center flex">
@@ -421,7 +428,7 @@
             </div>
         </div>
     </div>
-    <footer
+    <footer id="footer"
         class="flex flex-col lg:flex-row sm:justify-between lg:justify-center items-center bg-neutral text-neutral-content p-6 lg:p-10 gap-6 lg:gap-[50rem]">
         <!-- Logo and Description -->
         <aside class="flex flex-col items-center text-center lg:text-left lg:items-start">
@@ -661,6 +668,7 @@
                             })
                             .then(html => {
                                 SortingTest.innerHTML = html
+                                initializePopover();
                             })
 
                     }
@@ -911,13 +919,132 @@
                 });
             });
         });
+        let player;  // Global player variable to access the iframe player
 
+        function onYouTubeIframeAPIReady() {
+            const iframe = document.getElementById('yt-player');
+            player = new YT.Player(iframe, {
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
 
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                // Video is playing, do something if needed
+            }
+        }
+
+        // Handling popover appearance and video change dynamically
+        const popoverTrigger = document.querySelectorAll('.game-item');
+        const popover = document.getElementById('popover-image');
+        const iframe = document.getElementById('yt-player');
+
+        // Show popover and change the video source when hovering over each game block
+        popoverTrigger.forEach(trigger => {
+            trigger.addEventListener('mouseover', function() {
+                const ytSrc = this.getAttribute('data-yt-src');
+                
+                // Dynamically update the iframe source
+                iframe.src = '';  // Clear the old src to reload the video
+                setTimeout(() => {
+                    iframe.src = ytSrc;  // Set the new source
+                }, 10);
+
+                // Position the popover correctly
+                const rect = trigger.getBoundingClientRect();
+                popover.style.top = `${rect.bottom + window.scrollY + 10}px`;  // Position below the trigger
+                popover.style.left = `${rect.left + window.scrollX+100}px`;  // Align with the left of the trigger
+
+                // Show the popover
+                popover.classList.remove('invisible', 'opacity-0');
+                popover.classList.add('visible', 'opacity-100');
+            });
+
+            // Hide popover and pause the video when mouse leaves the game block
+            trigger.addEventListener('mouseleave', function() {
+                popover.classList.remove('opacity-100');
+                popover.classList.add('invisible', 'opacity-0');
+
+                // Pause the video when popover is hidden
+                player.pauseVideo();
+            });
+        });
+
+        function initializePopover() {
+            const gameBlocks = document.querySelectorAll('.game-block');
+        
+            gameBlocks.forEach(block => {
+                let popover = document.createElement('div');
+                popover.className = 'popover-video absolute z-10 invisible opacity-0 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-4 dark:bg-gray-800 dark:border-gray-600';
+        
+                // Append initially so we can reuse the popover
+                document.body.appendChild(popover);
+        
+                block.addEventListener('mouseover', function () {
+                    const ytSrc = block.getAttribute('data-yt-src') || '';
+                    popover.innerHTML = `
+                        <div class="relative w-full h-0" style="padding-top: 56.25%;">
+                            <iframe src="${ytSrc}" 
+                                    title="Game Video" 
+                                    class="absolute top-0 left-0 w-full h-full rounded-lg" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    referrerpolicy="strict-origin-when-cross-origin" 
+                                    allowfullscreen></iframe>
+                        </div>`;
+        
+                    const rect = block.getBoundingClientRect();
+                    popover.style.top = `${rect.bottom + window.scrollY + 10}px`;
+                    popover.style.left = `${rect.left + window.scrollX}px`;
+                    popover.classList.remove('invisible', 'opacity-0');
+                    popover.classList.add('visible', 'opacity-100');
+                });
+        
+                block.addEventListener('mouseleave', function () {
+                    const iframe = popover.querySelector('iframe');
+                    if (iframe) iframe.src = ''; // Unload to stop video
+                    popover.classList.remove('visible', 'opacity-100');
+                    popover.classList.add('invisible', 'opacity-0');
+                });
+            });
+        }
+
+        function updateNavbarColor() {
+            const navbar = document.getElementById('navbar');
+            const navbar1=document.getElementById('navbar1');
+            const footer=document.getElementById('footer');
+            const currentHour = new Date().getHours();  // Get current hour (0-23)
+    
+            // Apply different background color based on the time
+            if (currentHour >= 6 && currentHour < 18) {
+                // Daytime (6 AM to 6 PM)
+                navbar.classList.remove('bg-[#010321]');
+                navbar.classList.add('bg-base-100');
+                navbar1.classList.remove('bg-[#010321]');
+                navbar1.classList.add('bg-base-100');
+                footer.classList.remove('bg-[#010321]');
+                footer.classList.add('bg-neutral');
+            } else {
+                // Nighttime (6 PM to 6 AM)
+                navbar.classList.remove('bg-base-100');
+                navbar.classList.add('bg-[#010321]');
+                navbar1.classList.remove('bg-base-100');
+                navbar1.classList.add('bg-[#010321]');
+                footer.classList.remove('bg-neutral');
+                footer.classList.add('bg-[#010321]');
+            }
+        }
+    
+        // Call the function to update navbar color when the page loads
+        updateNavbarColor();
 
         // Logout function that clears the session and redirects to login
         function logout() {
             window.location.href = '/logout'; // Redirect to logout route
         }
+        
 
     </script>
 </body>
